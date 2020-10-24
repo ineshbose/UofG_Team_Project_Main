@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sleeping Sickness Surveillance Form</title>
+    </head>
+    <body>
+    <h1> Sleeping Sickness Form </h1>
+    {% if symptom %}
+        <h2>{{ symptom.name }}</h2>
+
+        {% if symptom.image %}
+        <img src= {{ symptom.image.url}} height=300 width=450/>
+        {% endif %}
+        <p>{{ symptom.question }}</p>
+        <form id="response_form" method="post" action="">
+        {% csrf_token %}
+        {% for hidden in response_form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for field in response_form.visible_fields %}
+            {{ field.errors }}
+            {{ field.help_text }}
+            {{ field }}
+        {% endfor %}
+
+        <input type="submit" name="submit" value="Report"/>
+        </form>
+    {% else %}
+    <strong>This symptom does not exist!</strong>
+    {% endif %}
+
+    </body>
+</html>
