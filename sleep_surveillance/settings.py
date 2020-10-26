@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'sleep_app',
 #    django polymorphic - to allow subclassing of the Reponse model
     'polymorphic',
+    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -119,6 +121,36 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+ASGI_APPLICATION = 'sleep_surveillance.routing.application'
+
+CRISPY_TEMPLATE_PACK = 'bootstap4'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379),],
+        },
+    },
+}
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django_plotly_dash.finders.DashAssetFinder',
+    'django_plotly_dash.finders.DashComponentFinder'
+]
+
+PLOTLY_COMPONENT = [
+    'dash_core_components',
+    'dash_html_components',
+    'dash_render',
+
+    'dqd_components'
+]
 
 
 # Static files (CSS, JavaScript, Images)
