@@ -5,6 +5,13 @@ from django.shortcuts import redirect
 from django.http import HttpResponse
 # Create your views here.
 
+
+
+def map(request):
+    context_dict = {}
+
+    return render(request,'sleep_app/map.html', context_dict)
+
 #the view for the page that takes you to the questions
 def form(request):
     context_dict = {}
