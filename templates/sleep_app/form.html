@@ -5,7 +5,12 @@
     </head>
     <body>
     <h1> Sleeping Sickness Form </h1>
-    <a href="{{ first_symptom.slug }}">Fill out the sleeping sickness form!</a>
+    Fill out the sleeping sickness form!
+    <ol>
+    <li><a href="{{ first_symptom_mop.slug }}">Form for members of the public</a></li>
+    <li><a href="{{ first_symptom_hcw.slug }}">Form for healthcare workers</a></li>
+    <li><a href="{{ first_symptom_eov.slug }}">Form for entomologists and vets</a></li>
+    </ol>
     {% if log_amount == 1 %}
     <p>You have logged data for <b>1</b> person today.</p>
     {% else %}

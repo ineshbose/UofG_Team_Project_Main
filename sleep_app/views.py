@@ -4,6 +4,8 @@ from sleep_app.forms import YesNoResponseForm, TextResponseForm, ScaleResponseFo
 import random
 import datetime
 from django.shortcuts import redirect
+
+from next_prev import next_in_order, prev_in_order
 from django.http import HttpResponse
 
 
@@ -27,8 +29,12 @@ def increase_log_amount(request):
 def form(request):
     context_dict = {}
 #   this is fine for testing, but should be replaced by something more stable
-    first_symptom = Symptom.objects.first()
-    context_dict['first_symptom'] = first_symptom
+    first_symptom_mop = Symptom.objects.filter(symptom_type='MOP').first()
+    first_symptom_hcw = Symptom.objects.filter(symptom_type='HCW').first()
+    first_symptom_eov = Symptom.objects.filter(symptom_type='EOV').first()
+    context_dict = {'first_symptom_mop':first_symptom_mop,
+                    'first_symptom_hcw':first_symptom_hcw,
+                    'first_symptom_eov':first_symptom_eov}
 
 #   this means that that the session will expire in *24h*, not at the beginning of the next day
 #   1209600 is the default return value
@@ -36,7 +42,6 @@ def form(request):
     if request.session.get_expiry_age() == 1209600:
         request.session.set_expiry(60*60*24)
     create_person_and_id(request)
-    print("exp: {age}".format(age=request.session.get_expiry_age()))
     context_dict['log_amount'] = request.session.get('log_amount', 0)
 
     print("Person id is {id}".format(id = request.session['person']))
@@ -68,20 +73,19 @@ def symptom_question(request, symptom_name_slug):
                 if response_form.is_valid():
                     response = YesNoResponse(symptom=symptom, answer=response_form.cleaned_data['answer'])
                     response.save()
-
             elif symptom.answer_type == 'text':
                 response_form = TextResponseForm(request.POST)
                 if response_form.is_valid():
                     response = TextResponse(symptom=symptom, answer=response_form.cleaned_data['answer'])
                     response.save()
-
             else:
                 response_form = ScaleResponseForm(request.POST)
                 if response_form.is_valid():
                     response = ScaleResponse(symptom=symptom, answer=response_form.cleaned_data['answer'])
                     response.save()
-#       for some reason we got here through a page with an invalid symptom slug. Should never happen
+#       for some reason we got here through a page with an invalid symptom slug. Should never happen.
         except Symptom.DoesNotExist:
+            print("ERROR: Symptom with slug {slug} does not exist.".format(slug=symptom_name_slug))
             return redirect('/form')
 
         try:
@@ -90,25 +94,25 @@ def symptom_question(request, symptom_name_slug):
             current_person.save()
 
         except Person.DoesNotExist:
-            print("person does not exist")
+            print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
             return redirect('/form')
 
 #       this is probably NOT a good way of getting to the next symptom!
         try:
-            if symptom == Symptom.objects.last():
+            if symptom == Symptom.objects.filter(symptom_type=symptom.symptom_type).last():
                 increase_log_amount(request)
                 return redirect('/form')
             else:
-                next_symptom = None
-                key = symptom.pk
-                while not next_symptom:
-                    key = key + 1
-                    next_symptom = Symptom.objects.filter(pk=key).first()
+                # next_symptom = None
+                # key = symptom.pk
+                # while not next_symptom:
+                #     key = key + 1
+                #     next_symptom = Symptom.objects.filter(pk=key).first()
+                next_symptom = next_in_order(symptom)
                 return redirect('/form/{slug}'.format(slug=next_symptom.slug))
 
         except Symptom.DoesNotExist:
-            print("symptom does not exist")
-            context_dict['symptom'] = context_dict['response'] = context_dict['response_form'] = None
+            print("Symptom does not exist")
             return redirect('/form')
 
     return render(request, 'sleep_app/symptom_question.html', context=context_dict)
