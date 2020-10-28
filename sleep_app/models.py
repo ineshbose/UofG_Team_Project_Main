@@ -38,6 +38,7 @@ class Response(PolymorphicModel):
 
 
 class Person(models.Model):
+    id = models.IntegerField(primary_key=True)
     response = models.ManyToManyField(Response)
 
 
