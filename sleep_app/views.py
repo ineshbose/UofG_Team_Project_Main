@@ -8,6 +8,10 @@ from django.shortcuts import redirect
 from next_prev import next_in_order, prev_in_order
 from django.http import HttpResponse
 
+def map(request):
+    context_dict = {}
+
+    return render(request,'sleep_app/map.html', context_dict)
 
 # helper function. Generates a person object with a unique random id whenever the first page of a question is visited.
 def create_person_and_id(request):
