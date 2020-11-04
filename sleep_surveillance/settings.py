@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'sleep_app',
 #    django polymorphic - to allow subclassing of the Reponse model
     'polymorphic',
-    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
+#    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
     'channels',
 ]
 
@@ -84,8 +84,16 @@ WSGI_APPLICATION = 'sleep_surveillance.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'djongo',
+        "CLIENT": {
+            "name": "sleep_app",
+            "host": "mongodb+srv://team_cs04:SleepSickness123>@cluster0.3uwlm.mongodb.net/sleep_app?retryWrites=true&w=majority",
+            "username": "team_cs04",
+            "password": "SleepSickness123",
+            "authMechanism": "SCRAM-SHA-1",
+        }
     }
 }
 
@@ -140,8 +148,8 @@ CHANNEL_LAYERS = {
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'django_plotly_dash.finders.DashAssetFinder',
-    'django_plotly_dash.finders.DashComponentFinder'
+#    'django_plotly_dash.finders.DashAssetFinder',
+#    'django_plotly_dash.finders.DashComponentFinder'
 ]
 
 PLOTLY_COMPONENT = [

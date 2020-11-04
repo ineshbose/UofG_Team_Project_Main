@@ -8,6 +8,9 @@ from django.shortcuts import redirect
 from next_prev import next_in_order, prev_in_order
 from django.http import HttpResponse
 
+def index(request):
+    return redirect('/form')
+
 def map(request):
     context_dict = {}
 
