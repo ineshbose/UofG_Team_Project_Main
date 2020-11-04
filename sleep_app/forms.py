@@ -12,7 +12,7 @@ class YesNoResponseForm(forms.ModelForm):
 
 
 class TextResponseForm(forms.ModelForm):
-    answer = forms.CharField()
+    answer = forms.TextInput()
 
     class Meta:
         model = TextResponse
