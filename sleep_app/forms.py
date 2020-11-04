@@ -3,12 +3,12 @@ from sleep_app.models import Person, Symptom, YesNoResponse, TextResponse, Scale
 
 
 class YesNoResponseForm(forms.ModelForm):
-#   needs to be required=False because the answer can be yes or no
+    #   needs to be required=False because the answer can be yes or no
     answer = forms.BooleanField(widget=forms.NullBooleanSelect, required=False)
 
     class Meta:
         model = YesNoResponse
-        fields = ('answer',)
+        fields = ("answer",)
 
 
 class TextResponseForm(forms.ModelForm):
@@ -16,7 +16,7 @@ class TextResponseForm(forms.ModelForm):
 
     class Meta:
         model = TextResponse
-        fields = ('answer',)
+        fields = ("answer",)
 
 
 class ScaleResponseForm(forms.ModelForm):
@@ -24,4 +24,4 @@ class ScaleResponseForm(forms.ModelForm):
 
     class Meta:
         model = ScaleResponse
-        fields = ('answer',)
+        fields = ("answer",)
