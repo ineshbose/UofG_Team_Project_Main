@@ -20,7 +20,6 @@ import plotly.offline as opy
 import plotly.graph_objs as go
 import plotly.express as px
 import pandas as pd
-import geopandas as gpd
 
 
 def index(request):
