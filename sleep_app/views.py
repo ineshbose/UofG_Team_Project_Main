@@ -18,22 +18,39 @@ from django.shortcuts import render
 
 import plotly.offline as opy
 import plotly.graph_objs as go
-
-
-
 import plotly.express as px
+import pandas as pd
+import geopandas as gpd
+
 
 def index(request):
     return redirect("/form")
 
 
 def map(request):
-    df = px.data.gapminder().query("continent=='Africa'")
+    df = pd.read_csv('testing2.csv')
     print(df)
-    fig = px.scatter_geo(df, locations="iso_alpha", color="pop",
-                     hover_name="country", size="pop",
-                     projection="natural earth")
-    fig.update_geos(fitbounds="locations", showcountries=True) # Automatically zoom into the zone of interest
+    df['text'] = df['name'] + ' - ' + df['size'].astype(str) + ' cases'
+
+    fig = go.Figure(data=go.Scattergeo(
+        lon=df['long'],
+        lat=df['lat'],
+        text=df['text'],
+        mode='markers',
+        marker=dict(
+            color='red',
+            opacity=0.8,
+            symbol='circle',
+            line=dict(
+                width=1,
+                color='rgba(102, 102, 102)'
+            ),
+            cmin=0,
+            size=df['size']+5,
+            cmax=df['size'].max(),
+        )))
+
+    fig.update_geos(showcountries=True) # Automatically zoom into the zone of interest
     plot_div = fig.to_html(full_html=False, default_height=900, default_width=1600)
     return render(request, "sleep_app/map.html", context={'plot_div': plot_div})
 
@@ -145,8 +162,8 @@ def symptom_question(request, symptom_name_slug):
         #       this is probably NOT a good way of getting to the next symptom!
         try:
             if (
-                symptom
-                == Symptom.objects.filter(symptom_type=symptom.symptom_type).last()
+                    symptom
+                    == Symptom.objects.filter(symptom_type=symptom.symptom_type).last()
             ):
                 increase_log_amount(request)
                 return redirect("/form")
