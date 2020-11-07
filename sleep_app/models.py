@@ -30,9 +30,9 @@ class Symptom(models.Model):
     #   optional picture
     image = models.ImageField(upload_to="symptoms", blank=True)
 
-    #   this is form django-next-prev. The symptoms are ordered by symptom_type and pk and can be iterated over in that
-    #   order in views. This makes it possible to display one symptom form per page, and to have a variable amount of
-    #   symptoms.
+#   this is for django-next-prev. The symptoms are ordered by symptom_type and pk and can be iterated over in that
+#   order in views. This makes it possible to display one symptom form per page, and to have a variable amount of
+#   symptoms.
     class Meta:
         ordering = ("symptom_type", "pk")
 
@@ -56,6 +56,11 @@ class Response(PolymorphicModel):
 class Person(models.Model):
     id = models.IntegerField(primary_key=True)
     response = models.ManyToManyField(Response)
+
+#   this can be replaced by something more "fancy" (for example GeoDjango) once it is clear how the maps functionality
+#   will be handled.
+    lat = models.FloatField(null=True)
+    long = models.FloatField(null=True)
 
 
 class YesNoResponse(Response):
