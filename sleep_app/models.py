@@ -4,42 +4,41 @@ from polymorphic.models import PolymorphicModel
 
 
 class Symptom(models.Model):
-#   e.g. fever
+    #   e.g. fever
     name = models.CharField(max_length=128)
-#   e.g. do you have a fever?
+    #   e.g. do you have a fever?
     question = models.CharField(max_length=256)
 
-#   the different types of answers that a question about a symptom could require
-    ANSWER_TYPES = [('bool', 'True/False'),
-                   ('int', 'Scale'),
-                    ('text', 'Text')]
+    #   the different types of answers that a question about a symptom could require
+    ANSWER_TYPES = [("bool", "True/False"), ("int", "Scale"), ("text", "Text")]
 
-    answer_type = models.CharField(max_length=4, choices=ANSWER_TYPES, default='bool')
+    answer_type = models.CharField(max_length=4, choices=ANSWER_TYPES, default="bool")
 
-#   the "type" of the symptom, i.e. is this a symptom that a member of the public, a health care worker or a
-#   entomologist/vet will be able to log?
-    SYMPTOM_TYPES = [('MOP', 'Member of public'),
-                     ('HCW', 'Health care worker'),
-                     ('EOV', 'Entomologist/vet')]
+    #   the "type" of the symptom, i.e. is this a symptom that a member of the public, a health care worker or a
+    #   entomologist/vet will be able to log?
+    SYMPTOM_TYPES = [
+        ("MOP", "Member of public"),
+        ("HCW", "Health care worker"),
+        ("EOV", "Entomologist/vet"),
+    ]
 
-    symptom_type = models.CharField(max_length=4, choices=SYMPTOM_TYPES, default='MOP')
+    symptom_type = models.CharField(max_length=4, choices=SYMPTOM_TYPES, default="MOP")
 
-
-#   the slug is used in the URL for the question about the symptom
+    #   the slug is used in the URL for the question about the symptom
     slug = models.SlugField(unique=True)
 
-#   optional picture
-    image = models.ImageField(upload_to='symptoms', blank=True)
+    #   optional picture
+    image = models.ImageField(upload_to="symptoms", blank=True)
 
 #   this is for django-next-prev. The symptoms are ordered by symptom_type and pk and can be iterated over in that
 #   order in views. This makes it possible to display one symptom form per page, and to have a variable amount of
 #   symptoms.
     class Meta:
-        ordering = ('symptom_type', 'pk')
+        ordering = ("symptom_type", "pk")
 
     def save(self, *args, **kwargs):
-#       the name is concatenated with the symptom type because two symptoms of different types might have the same name
-        self.slug = slugify(self.name+ " " + self.symptom_type)
+        #       the name is concatenated with the symptom type because two symptoms of different types might have the same name
+        self.slug = slugify(self.name + " " + self.symptom_type)
         super(Symptom, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -73,7 +72,7 @@ class YesNoResponse(Response):
 
 
 class TextResponse(Response):
-    #answer = models.CharField(max_length=1028, null=True)
+    # answer = models.CharField(max_length=1028, null=True)
     answer = models.TextField(max_length=2056, default="", blank=True)
     symptom = models.ForeignKey(Symptom, on_delete=models.SET_NULL, null=True)
 
@@ -87,6 +86,3 @@ class ScaleResponse(Response):
 
     def __str__(self):
         return "ScaleResponse: " + self.symptom.__str__()
-
-
-
