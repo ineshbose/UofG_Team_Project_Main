@@ -4,7 +4,7 @@ from sleep_app.forms import YesNoResponseForm, TextResponseForm, ScaleResponseFo
 import random
 import datetime
 from django.shortcuts import redirect
-
+from urllib import parse
 from next_prev import next_in_order, prev_in_order
 from django.http import HttpResponse
 
@@ -97,17 +97,11 @@ def symptom_question(request, symptom_name_slug):
             print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
             return redirect('/form')
 
-#       this is probably NOT a good way of getting to the next symptom!
         try:
             if symptom == Symptom.objects.filter(symptom_type=symptom.symptom_type).last():
                 increase_log_amount(request)
-                return redirect('/form')
+                return redirect('/location')
             else:
-                # next_symptom = None
-                # key = symptom.pk
-                # while not next_symptom:
-                #     key = key + 1
-                #     next_symptom = Symptom.objects.filter(pk=key).first()
                 next_symptom = next_in_order(symptom)
                 return redirect('/form/{slug}'.format(slug=next_symptom.slug))
 
@@ -116,3 +110,23 @@ def symptom_question(request, symptom_name_slug):
             return redirect('/form')
 
     return render(request, 'sleep_app/symptom_question.html', context=context_dict)
+
+
+def location(request):
+    if request.method == 'POST':
+        try:
+            current_person = Person.objects.get(id=request.session['person'])
+            if request.POST["lat"] != "no-permission":
+                current_person.lat = request.POST["lat"]
+                current_person.long = request.POST["long"]
+                current_person.save()
+                print("ok lat " + current_person.lat + "long " + current_person.long)
+# make sure that it is deleted *if and only if* no permission was given
+            elif request.POST["lat"] == "no-permission":
+                current_person.delete()
+                print("no permission")
+        except Person.DoesNotExist:
+            print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
+        return redirect('/form')
+
+    return render(request, 'sleep_app/location.html')
