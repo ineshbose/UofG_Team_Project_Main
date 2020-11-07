@@ -28,11 +28,12 @@ def index(request):
 
 
 def map(request):
-    df = px.data.gapminder()
-    fig = px.scatter_geo(df, locations="iso_alpha", color="continent",
+    df = px.data.gapminder().query("continent=='Africa'")
+    print(df)
+    fig = px.scatter_geo(df, locations="iso_alpha", color="pop",
                      hover_name="country", size="pop",
-                     animation_frame="year",
                      projection="natural earth")
+    fig.update_geos(fitbounds="locations", showcountries=True) # Automatically zoom into the zone of interest
     plot_div = fig.to_html(full_html=False, default_height=900, default_width=1600)
     return render(request, "sleep_app/map.html", context={'plot_div': plot_div})
 
