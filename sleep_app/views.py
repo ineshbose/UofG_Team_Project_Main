@@ -50,9 +50,31 @@ def map(request):
             cmax=df['size'].max(),
         )))
 
+    fig2 = go.Figure(data=go.Scattergeo(
+        lon=df['long'],
+        lat=df['lat'],
+        text=df['text'],
+        mode='markers',
+        marker=dict(
+            color='red',
+            opacity=0.8,
+            symbol='circle',
+            line=dict(
+                width=1,
+                color='rgba(102, 102, 102)'
+            ),
+            cmin=0,
+            size=df['size']+5,
+            cmax=df['size'].max(),
+        )))
+
+
+
     fig.update_geos(showcountries=True) # Automatically zoom into the zone of interest
-    plot_div = fig.to_html(full_html=False, default_height=900, default_width=1600)
-    return render(request, "sleep_app/map.html", context={'plot_div': plot_div})
+    fig2.update_geos(showcountries=True, scope='africa') # Automatically zoom into the zone of interest
+    plot_div = fig.to_html(full_html=False, default_height=700, default_width=1000)
+    plot_div2 = fig2.to_html(full_html=False, default_height=700, default_width=1000)
+    return render(request, "sleep_app/map.html", context={'plot_div': plot_div, 'plot_div2':plot_div2})
 
 
 # helper function. Generates a person object with a unique random id whenever the first page of a question is visited.
