@@ -14,16 +14,27 @@ from django.shortcuts import redirect
 
 from next_prev import next_in_order, prev_in_order
 from django.http import HttpResponse
+from django.shortcuts import render
 
+import plotly.offline as opy
+import plotly.graph_objs as go
+
+
+
+import plotly.express as px
 
 def index(request):
     return redirect("/form")
 
 
 def map(request):
-    context_dict = {}
-
-    return render(request, "sleep_app/map.html", context_dict)
+    df = px.data.gapminder()
+    fig = px.scatter_geo(df, locations="iso_alpha", color="continent",
+                     hover_name="country", size="pop",
+                     animation_frame="year",
+                     projection="natural earth")
+    plot_div = fig.to_html(full_html=False, default_height=900, default_width=1600)
+    return render(request, "sleep_app/map.html", context={'plot_div': plot_div})
 
 
 # helper function. Generates a person object with a unique random id whenever the first page of a question is visited.
