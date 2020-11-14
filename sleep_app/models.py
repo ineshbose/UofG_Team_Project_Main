@@ -38,8 +38,15 @@ class Symptom(models.Model):
         ordering = ('symptom_type', 'pk')
 
     def save(self, *args, **kwargs):
+        #if the symptom_type or answer_type is not is SYMPTOM_TYPES or ANSWER_TYPES then they get set to MOP or bool
+        #should not usually happen
+        if self.answer_type not in self.ANSWER_TYPES[:][0]:
+            self.answer_type = 'bool'
+        if self.symptom_type not in self.SYMPTOM_TYPES[:][0]:
+            self.symptom_type = 'MOP'
+
 #       the name is concatenated with the symptom type because two symptoms of different types might have the same name
-        self.slug = slugify(self.name+ " " + self.symptom_type)
+        self.slug = slugify(self.name + " " + self.symptom_type)
         super(Symptom, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -62,6 +69,17 @@ class Person(models.Model):
 #   will be handled.
     lat = models.FloatField(null=True)
     long = models.FloatField(null=True)
+
+    def save(self, *args, **kwargs):
+#Invalid coordinates will get set to None. Might be replaced by a different kind of error handling if necessary.
+#Also should not usually be an issue, since the coordinates are not entered manually.
+        if self.lat:
+            if self.lat <= -90 or self.lat >= 90:
+                self.lat = None
+        if self.long:
+            if self.long <= 0 or self.long >= 180:
+                self.long = None
+        super(Person, self).save(*args, **kwargs)
 
 
 class YesNoResponse(Response):
