@@ -27,4 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('sleep_app.urls')),
     path('django_plotly_dash/', include('django_plotly_dash.urls')),
+    path("admin/", admin.site.urls),
+    path("", include("sleep_app.urls")),
+    #    path('django_plotly_dash/', include('django_plotly_dash.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
