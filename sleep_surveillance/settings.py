@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'sleep_app',
 #    django polymorphic - to allow subclassing of the Reponse model
     'polymorphic',
+#    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
+    'channels',
 ]
 
 MIDDLEWARE = [
