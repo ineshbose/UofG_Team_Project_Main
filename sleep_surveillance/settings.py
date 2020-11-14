@@ -132,7 +132,6 @@ ASGI_APPLICATION = 'sleep_surveillance.routing.application'
 
 CRISPY_TEMPLATE_PACK = 'bootstap4'
 
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
