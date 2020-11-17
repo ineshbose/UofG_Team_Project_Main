@@ -39,7 +39,7 @@ class PersonModelTests(TestCase):
         person_lat_small.save()
         person_lat_big = Person(id=2, lat=91, long=100)
         person_lat_big.save()
-        person_long_small = Person(id=3, lat=80, long=-1)
+        person_long_small = Person(id=3, lat=80, long=-181)
         person_long_small.save()
         person_long_big = Person(id=4, lat=80, long=181)
         person_long_big.save()
