@@ -36,17 +36,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "sleep_app",
-    #    django polymorphic - to allow subclassing of the Reponse model
-    "polymorphic",
-    #    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
-    "channels",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'sleep_app',
+#    django polymorphic - to allow subclassing of the Reponse model
+    'polymorphic',
+  #  'django_plotly_dash.apps.DjangoPlotlyDashConfig',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -126,11 +126,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-X_FRAME_OPTIONS = "SAMEORIGIN"
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-ASGI_APPLICATION = "sleep_surveillance.routing.application"
+ASGI_APPLICATION = 'sleep_surveillance.routing.application'
 
-CRISPY_TEMPLATE_PACK = "bootstap4"
+CRISPY_TEMPLATE_PACK = 'bootstap4'
 
 CHANNEL_LAYERS = {
     "default": {
@@ -140,18 +140,19 @@ CHANNEL_LAYERS = {
 }
 
 STATICFILES_FINDERS = [
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    #    'django_plotly_dash.finders.DashAssetFinder',
-    #    'django_plotly_dash.finders.DashComponentFinder'
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+   # 'django_plotly_dash.finders.DashAssetFinder',
+   # 'django_plotly_dash.finders.DashComponentFinder'
 ]
 
 PLOTLY_COMPONENT = [
-    "dash_core_components",
-    "dash_html_components",
-    "dash_render",
-    "dqd_components",
+    'dash_core_components',
+    'dash_html_components',
+    'dash_render',
+    'dqd_components'
 ]
+
 
 
 # Static files (CSS, JavaScript, Images)
