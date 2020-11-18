@@ -1,0 +1,7 @@
+image: python:3.8
+build:
+  tags:
+    - docker
+  script:
+    - pip3 install -r requirements.txt
+    - python3 manage.py test
