@@ -67,10 +67,11 @@ class Person(models.Model):
     long = models.FloatField(null=True)
 
     def save(self, *args, **kwargs):
-        #both get set to None as soon as one is false, because a coordinate of, say,  "45, None" is of little use..
-        if self.lat < -90 or self.lat > 90 or self.long < -180 or self.long > 180:
-            self.lat = None
-            self.long = None
+        if self.lat and self.long:
+            #both get set to None as soon as one is false, because a coordinate of, say,  "45, None" is of little use..
+            if self.lat < -90 or self.lat > 90 or self.long < -180 or self.long > 180:
+                self.lat = None
+                self.long = None
         super(Person, self).save(*args, **kwargs)
 
 
