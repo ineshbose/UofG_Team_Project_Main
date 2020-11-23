@@ -2,9 +2,6 @@ stages:
   - test
   - deploy
 
-tags:
-  - docker
-
 test:
   stage: test
   script:
