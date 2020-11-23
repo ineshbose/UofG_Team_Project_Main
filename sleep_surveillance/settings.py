@@ -157,6 +157,6 @@ PLOTLY_COMPONENT = [
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
-STATIC_ROOT = "/static/"
+STATIC_ROOT = STATIC_DIR if not DEBUG else ""
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR, ]
