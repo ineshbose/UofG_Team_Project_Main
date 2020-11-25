@@ -30,6 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "sleepsurv.herokuapp.com",
+    "sleepsurv-dev.herokuapp.com",
 ]
 
 
