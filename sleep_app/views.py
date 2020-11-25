@@ -31,10 +31,38 @@ def map(request):
     print(df)
     df['text'] = df['name'] + ' - ' + df['size'].astype(str) + ' cases'
 
+    selected_symptom = None
+    latitude = []
+    longtitdue = []
+    id = []
+    s = Symptom.objects.all()
+    print(selected_symptom)
+    if request.method == "POST":
+        selected_symptom = request.POST.get("dropdown")
+
+    if selected_symptom == None:
+        for person in Person.objects.all():
+            if person.lat != None and person.long != None:
+                latitude.append(person.lat)
+                longtitdue.append(person.long)
+                id.append(person.id)
+    else:
+        for person in Person.objects.all():
+            if person.response.exists():
+                print(person.id)
+                print(person.lat)
+                print(person.long)
+                for response in person.response.all():
+                    if str(response.symptom) == selected_symptom and response.answer == True:
+                        latitude.append(person.lat)
+                        longtitdue.append(person.long)
+                        id.append(person.id)
+
+
     fig = go.Figure(data=go.Scattergeo(
-        lon=df['long'],
-        lat=df['lat'],
-        text=df['text'],
+        lon=longtitdue,
+        lat=latitude,
+        text=id,
         mode='markers',
         marker=dict(
             color='red',
@@ -45,14 +73,14 @@ def map(request):
                 color='rgba(102, 102, 102)'
             ),
             cmin=0,
-            size=df['size']+5,
-            cmax=df['size'].max(),
+            size=5,
+            cmax=5,
         )))
 
     fig2 = go.Figure(data=go.Scattergeo(
-        lon=df['long'],
-        lat=df['lat'],
-        text=df['text'],
+        lon=latitude,
+        lat=longtitdue,
+        text=id,
         mode='markers',
         marker=dict(
             color='red',
@@ -63,8 +91,8 @@ def map(request):
                 color='rgba(102, 102, 102)'
             ),
             cmin=0,
-            size=df['size']+5,
-            cmax=df['size'].max(),
+            size=5,
+            cmax=5,
         )))
 
 
@@ -73,7 +101,12 @@ def map(request):
     fig2.update_geos(showcountries=True, scope='africa') # Automatically zoom into the zone of interest
     plot_div = fig.to_html(full_html=False, default_height=700, default_width=1000)
     plot_div2 = fig2.to_html(full_html=False, default_height=700, default_width=1000)
-    return render(request, "sleep_app/map.html", context={'plot_div': plot_div, 'plot_div2':plot_div2})
+    context = {'plot_div': plot_div,
+               'plot_div2': plot_div2,
+               'all_symptoms': s,
+               'selected_symtpom': selected_symptom,
+               }
+    return render(request, "sleep_app/map.html", context)
 
 
 # helper function. Generates a person object with a unique random id whenever the first page of a question is visited.
