@@ -14,6 +14,8 @@ from django.shortcuts import redirect
 from urllib import parse
 from next_prev import next_in_order, prev_in_order
 from django.http import HttpResponse
+import urllib
+import json
 
 def map(request):
     context_dict = {}
@@ -148,21 +150,44 @@ def symptom_question(request, symptom_name_slug):
 
 
 def location(request):
+    context_dict = {"browser_location": True}
     if request.method == 'POST':
         try:
             current_person = Person.objects.get(id=request.session['person'])
-            if request.POST["lat"] != "no-permission":
-                current_person.lat = request.POST["lat"]
-                current_person.long = request.POST["long"]
-                current_person.save()
-                increase_log_amount(request)
-                print("ok lat " + current_person.lat + "long " + current_person.long)
-# make sure that it is deleted *if and only if* no permission was given
-            elif request.POST["lat"] == "no-permission":
-                current_person.delete()
-                print("no permission")
+            if "lat" in request.POST:
+                if request.POST["lat"] != "no-permission":
+                    current_person.lat = request.POST["lat"]
+                    current_person.long = request.POST["long"]
+                    current_person.save()
+                    increase_log_amount(request)
+                    print("ok lat " + current_person.lat + "long " + current_person.long)
+                else:
+                    print("no permission")
+
+            elif "location" in request.POST:
+                print("location")
+                context_dict = {"browser_location": False}
+                query = {"q": request.POST["location"],
+                         "format": "geojson"
+                        }
+                encode = urllib.parse.urlencode(query)
+                url = "https://nominatim.openstreetmap.org/search?" + encode
+                data = urllib.request.urlopen(url).read().decode()
+                x = json.loads(data)
+                if len(x['features']) != 0:
+                    print(x['features'][0]['geometry']['coordinates'])
+                    long, lat = x['features'][0]['geometry']['coordinates']
+                    context_dict["success"] = True
+                    context_dict["lat"] = lat
+                    context_dict["long"] = long
+                    current_person.lat = long
+                    current_person.long = lat
+                    current_person.save()
+                    increase_log_amount(request)
+                else:
+                    context_dict["failure"] = True
+
         except Person.DoesNotExist:
             print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
-        return redirect('/form')
 
-    return render(request, 'sleep_app/location.html')
+    return render(request, 'sleep_app/location.html', context=context_dict)
