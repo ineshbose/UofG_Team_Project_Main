@@ -12,6 +12,18 @@ def populate():
     symptom_list = [
         #       Member of public symptoms
         {
+            "name":"Age",
+            "question": "How old are you?",
+            "answer_type": "int",
+            "symptom_type": "MOP"
+        },
+        {
+            "name": "Gender",
+            "question": "Are you male or female?",
+            "answer_type": "text",
+            "symptom_type": "MOP"
+        },
+        {
             "name": "Fever",
             "question": "Do you have a fever?",
             "answer_type": "bool",
@@ -54,6 +66,18 @@ def populate():
         #   Healthcare worker symptoms. There are some duplicates here - the questions will be different if they're not addressing
         #   the patient directly
         {
+            "name": "Age",
+            "question": "How old is the patient?",
+            "answer_type": "int",
+            "symptom_type": "HCW"
+        },
+        {
+            "name": "Gender",
+            "question": "Is the patient male or female?",
+            "answer_type": "text",
+            "symptom_type": "HCW"
+        },
+        {
             "name": "Fever",
             "question": "Does the patient have a fever?",
             "answer_type": "bool",
@@ -95,7 +119,7 @@ def populate():
         },
         {
             "name": "Anaemia",
-            "question": "Is the person anaemic?",
+            "question": "Is the patient anaemic?",
             "answer_type": "bool",
             "symptom_type": "HCW",
         },
@@ -120,15 +144,7 @@ def populate():
     ]
 
     for s in symptom_list:
-        a_symptom = Symptom(
-            name=s["name"],
-            question=s["question"],
-            answer_type=s["answer_type"],
-            symptom_type=s["symptom_type"],
-        )
-        if "image" in s.keys():
-            a_symptom.image = s["image"]
-        a_symptom.save()
+        Symptom.objects.get_or_create(**s)
 
     # Start execution here!
 
