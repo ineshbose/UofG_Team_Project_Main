@@ -2,6 +2,7 @@ image: python:3.8
 
 stages:
   - test
+  - develop
   - deploy
 
 test:
@@ -11,6 +12,16 @@ test:
   script:
     - pip3 install -r requirements.txt
     - python3 manage.py test
+
+develop:
+  stage: develop
+  tags:
+    - docker
+  script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=sleepsurv-dev --api-key=$HEROKU_API_KEY
 
 deploy:
   stage: deploy
