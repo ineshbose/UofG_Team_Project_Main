@@ -39,12 +39,15 @@ class Symptom(models.Model):
     def save(self, *args, **kwargs):
         #if the symptom_type or answer_type is not is SYMPTOM_TYPES or ANSWER_TYPES then they get set to MOP or bool
         #should not usually happen
-        if self.answer_type not in self.ANSWER_TYPES[:][0]:
+        #needs to be done in this slightly awkward way because django expects ANSWER_TYPES and SYMPTOM_TYPES to be of that
+        #format
+        if self.answer_type not in [a[0] for a in self.ANSWER_TYPES]:
             self.answer_type = 'bool'
-        if self.symptom_type not in self.SYMPTOM_TYPES[:][0]:
+        if self.symptom_type not in [s[0] for s in self.SYMPTOM_TYPES]:
             self.symptom_type = 'MOP'
 
-#       the name is concatenated with the symptom type because two symptoms of different types might have the same name
+        #       the name is concatenated with the symptom type because two symptoms of different types might have the same name
+
         self.slug = slugify(self.name + " " + self.symptom_type)
         super(Symptom, self).save(*args, **kwargs)
 
@@ -70,14 +73,16 @@ class Person(models.Model):
     long = models.FloatField(null=True)
 
     def save(self, *args, **kwargs):
-#Invalid coordinates will get set to None. Might be replaced by a different kind of error handling if necessary.
-#Also should not usually be an issue, since the coordinates are not entered manually.
+        # both get set to None as soon as one is false, because a coordinate of, say,  "45, None" is of little use..
         if self.lat:
-            if self.lat <= -90 or self.lat >= 90:
+            if float(self.lat) < -90 or float(self.lat)> 90:
                 self.lat = None
-        if self.long:
-            if self.long <= 0 or self.long >= 180:
                 self.long = None
+        if self.long:
+            if float(self.long) < -180 or float(self.long) > 180:
+                self.lat = None
+                self.long = None
+
         super(Person, self).save(*args, **kwargs)
 
 

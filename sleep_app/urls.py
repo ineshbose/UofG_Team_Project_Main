@@ -10,5 +10,4 @@ urlpatterns = [
     path("form/", views.form, name="main_form_page"),
     path("map/", views.map, name="map"),
     path('location/', views.location, name='location')
-
 ]

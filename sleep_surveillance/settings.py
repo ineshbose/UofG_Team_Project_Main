@@ -19,8 +19,6 @@ MEDIA_DIR = os.path.join(BASE_DIR, "media")
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = "/media/"
 
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -30,23 +28,25 @@ SECRET_KEY = "hv8^y04w&h%t4jq4elnn$$hxj-95!f)a*os8$4e07*-s8ra0ex"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "sleepsurv.herokuapp.com",
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "sleep_app",
-    #    django polymorphic - to allow subclassing of the Reponse model
-    "polymorphic",
-    #    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
-    "channels",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'sleep_app',
+#    django polymorphic - to allow subclassing of the Reponse model
+    'polymorphic',
+  #  'django_plotly_dash.apps.DjangoPlotlyDashConfig',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -91,7 +91,7 @@ DATABASES = {
         "ENGINE": "djongo",
         "CLIENT": {
             "name": "sleep_app",
-            "host": "mongodb+srv://team_cs04:SleepSickness123>@cluster0.3uwlm.mongodb.net/sleep_app?retryWrites=true&w=majority",
+            "host": "mongodb+srv://team_cs04:SleepSickness123@cluster0.3uwlm.mongodb.net/sleep_app?retryWrites=true&w=majority",
             "username": "team_cs04",
             "password": "SleepSickness123",
             "authMechanism": "SCRAM-SHA-1",
@@ -126,11 +126,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-X_FRAME_OPTIONS = "SAMEORIGIN"
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-ASGI_APPLICATION = "sleep_surveillance.routing.application"
+ASGI_APPLICATION = 'sleep_surveillance.routing.application'
 
-CRISPY_TEMPLATE_PACK = "bootstap4"
+CRISPY_TEMPLATE_PACK = 'bootstap4'
 
 CHANNEL_LAYERS = {
     "default": {
@@ -140,22 +140,25 @@ CHANNEL_LAYERS = {
 }
 
 STATICFILES_FINDERS = [
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    #    'django_plotly_dash.finders.DashAssetFinder',
-    #    'django_plotly_dash.finders.DashComponentFinder'
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+   # 'django_plotly_dash.finders.DashAssetFinder',
+   # 'django_plotly_dash.finders.DashComponentFinder'
 ]
 
 PLOTLY_COMPONENT = [
-    "dash_core_components",
-    "dash_html_components",
-    "dash_render",
-    "dqd_components",
+    'dash_core_components',
+    'dash_html_components',
+    'dash_render',
+    'dqd_components'
 ]
+
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR, ]

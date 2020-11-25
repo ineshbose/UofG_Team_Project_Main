@@ -15,6 +15,10 @@ from urllib import parse
 from next_prev import next_in_order, prev_in_order
 from django.http import HttpResponse
 
+def map(request):
+    context_dict = {}
+
+    return render(request,'sleep_app/map.html', context_dict)
 
 def index(request):
     return redirect("/form")
