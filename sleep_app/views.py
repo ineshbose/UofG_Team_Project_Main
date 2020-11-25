@@ -131,7 +131,6 @@ def symptom_question(request, symptom_name_slug):
                 symptom
                 == Symptom.objects.filter(symptom_type=symptom.symptom_type).last()
             ):
-                increase_log_amount(request)
                 return redirect('/location')
             else:
                 next_symptom = next_in_order(symptom)
@@ -152,6 +151,7 @@ def location(request):
                 current_person.lat = request.POST["lat"]
                 current_person.long = request.POST["long"]
                 current_person.save()
+                increase_log_amount(request)
                 print("ok lat " + current_person.lat + "long " + current_person.long)
 # make sure that it is deleted *if and only if* no permission was given
             elif request.POST["lat"] == "no-permission":
