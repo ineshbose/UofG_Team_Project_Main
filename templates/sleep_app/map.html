@@ -1,10 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>test</title>
 </head>
 <body>
-Map
+<form action="." method="post">{% csrf_token %}
+    <select name='dropdown'>
+    <option selected="selected" disabled>Symptom to select</option>
+    {% for symptom in all_symptoms %}
+    <option value="{{ symptom.name }}"{% if selected_symptom == symptom.name %} selected="selected" {% endif %}>{{ symptom.name }}</option>
+    {% endfor %}
+    </select>
+    <input type="submit" value="Select">
+</form>
+
+<p style="font-family: 'Arial Black'; padding-left: 80px; font-size: 30px; margin: 0">Whole map view</p>
+  {% autoescape off %}
+  {{ plot_div }}
+  {% endautoescape %}
+<p style="font-family: 'Arial Black'; padding-left: 80px; font-size: 30px; margin: 0">Africa view</p>
+    {% autoescape off %}
+    {{ plot_div2 }}
+    {% endautoescape %}
 </body>
 </html>
