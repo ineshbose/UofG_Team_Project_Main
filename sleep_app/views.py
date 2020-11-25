@@ -33,7 +33,7 @@ def map(request):
 
     selected_symptom = None
     latitude = []
-    longtitdue = []
+    longitude = []
     id = []
     s = Symptom.objects.all()
     print(selected_symptom)
@@ -44,7 +44,7 @@ def map(request):
         for person in Person.objects.all():
             if person.lat != None and person.long != None:
                 latitude.append(person.lat)
-                longtitdue.append(person.long)
+                longitude.append(person.long)
                 id.append(person.id)
     else:
         for person in Person.objects.all():
@@ -55,12 +55,12 @@ def map(request):
                 for response in person.response.all():
                     if str(response.symptom) == selected_symptom and response.answer == True:
                         latitude.append(person.lat)
-                        longtitdue.append(person.long)
+                        longitude.append(person.long)
                         id.append(person.id)
 
 
     fig = go.Figure(data=go.Scattergeo(
-        lon=longtitdue,
+        lon=longitude,
         lat=latitude,
         text=id,
         mode='markers',
@@ -78,8 +78,8 @@ def map(request):
         )))
 
     fig2 = go.Figure(data=go.Scattergeo(
-        lon=latitude,
-        lat=longtitdue,
+        lon=longitude,
+        lat=latitude,
         text=id,
         mode='markers',
         marker=dict(
@@ -104,7 +104,7 @@ def map(request):
     context = {'plot_div': plot_div,
                'plot_div2': plot_div2,
                'all_symptoms': s,
-               'selected_symtpom': selected_symptom,
+               'selected_symptom': selected_symptom,
                }
     return render(request, "sleep_app/map.html", context)
 
