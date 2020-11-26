@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 {% load static %}
 
-{% csrf_token %}
 
+{% if browser_location %}
+{% csrf_token %}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
 <script src="{% static "/scripts/location.js" %}"></script>
+{% endif %}
 
 <html lang="en">
 
@@ -14,7 +16,34 @@
 </head>
 <body>
 <h1>Please give us location permission</h1>
-Thank you for filling out the form! Please give this page location permission so that we can use your results.</br>
+Thank you for filling out the form! Please give this page location permission so that we can use your results.</br></br>
+Alternatively, you can also enter your location into this search bar.
+<form method="post", action="{% url 'sleep_app:location' %}">
+{% csrf_token %}
+            <input class="form-control"
+                    name="location"
+                   type="text"/>
+
+        <button class="btn btn-primary"
+                type="submit"
+                name="submit">Search
+        </button>
+    </form></br>
+ {% if success %}
+ Your location has been recorded! Your latitude is {{lat}} and your longitude is {{long}}.</br></br>
+ {% elif failure %}
+ Sorry, that did not work.</br></br>
+ {% endif %}
+
+
+
+
 <a href={% url 'sleep_app:main_form_page' %}>Back to the main page</a>
+
+
+
+
+
+
 </body>
 </html>
