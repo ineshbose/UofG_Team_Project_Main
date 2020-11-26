@@ -18,7 +18,8 @@ class SymptomModelTests(TestCase):
         text_symptom = Symptom(name="text symptom", question="test?", answer_type='text',
                                symptom_type='MOP')
         text_symptom.save()
-        self.assertEqual(xyz_symptom.answer_type, 'bool')
+        self.assertEqual(xyz_symptom.answer_type,'bool')
+
         self.assertEqual(text_symptom.answer_type, 'text')
 
     def test_invalid_symptom_type_set_to_MOP(self):
@@ -29,7 +30,8 @@ class SymptomModelTests(TestCase):
         hcw_symptom = Symptom(name="hcw symptom", question="test?", answer_type='text',
                               symptom_type='HCW')
         hcw_symptom.save()
-        self.assertEqual(xyz_symptom.symptom_type, 'MOP')
+
+        self.assertEqual(xyz_symptom.symptom_type,'MOP')
         self.assertEqual(hcw_symptom.symptom_type, 'HCW')
 
     def test_slug_is_name_and_symptom_type(self):

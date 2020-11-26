@@ -45,8 +45,6 @@ window.onload = function() {
 
 
   var geoError = function(){
-    alert("You have not given us location permission, so your data will not be recorded.")
-
     //making the data have the same structure regardless of error status makes handling it in the view easier
     var form = new FormData();
     form.append('lat',encodeURIComponent("no-permission"));
