@@ -188,23 +188,24 @@ class SymptomQuestionViewTests(TestCase):
         response = current_person.response.all()[0]
         self.assertEqual(response.answer, 2)
 
-    def test_person_is_deleted_if_response_is_invalid(self):
-        xyz_symptom = Symptom(name="xyz symptom", question="Is this a test question?", answer_type='int',
-                              symptom_type='MOP')
-        xyz_symptom.save()
-        current_person = Person(id=456)
-        current_person.save()
-
-        session = self.client.session
-        session["person"] = current_person.id
-        session.save()
-
-        response = self.client.post(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
-                                                                       xyz_symptom.slug}),
-                         {"answer": "sdafsafds"})
-
-        self.assertRaises(Person.DoesNotExist, lambda: Person.objects.get(id=456))
-        self.assertRedirects(response, reverse('sleep_app:main_form_page'))
+# might not be needed/desired
+#     def test_person_is_deleted_if_response_is_invalid(self):
+#         xyz_symptom = Symptom(name="xyz symptom", question="Is this a test question?", answer_type='int',
+#                               symptom_type='MOP')
+#         xyz_symptom.save()
+#         current_person = Person(id=456)
+#         current_person.save()
+#
+#         session = self.client.session
+#         session["person"] = current_person.id
+#         session.save()
+#
+#         response = self.client.post(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
+#                                                                        xyz_symptom.slug}),
+#                          {"answer": "sdafsafds"})
+#
+#         self.assertRaises(Person.DoesNotExist, lambda: Person.objects.get(id=456))
+#         self.assertRedirects(response, reverse('sleep_app:main_form_page'))
 
 
 class LocationViewTests(TestCase):
@@ -224,18 +225,19 @@ class LocationViewTests(TestCase):
         self.assertEqual(current_person.lat, 49.748235)
         self.assertEqual(current_person.long, 6.658348)
 
-    def test_person_object_is_deleted_if_no_permission_is_given(self):
-        current_person = Person(id=456)
-        current_person.save()
-
-        session = self.client.session
-        session["person"] = current_person.id
-        session.save()
-
-        self.client.post(reverse('sleep_app:location'), {'lat': "no-permission", 'long': "no-permission"})
-
-#       need to put Person.objects.get(id=456) into a lambda expression so it doesn't get called too soon
-#       (https://stackoverflow.com/questions/6103825/how-to-properly-use-unit-testings-assertraises-with-nonetype-objects)
-        self.assertRaises(Person.DoesNotExist, lambda: Person.objects.get(id=456))
+#no longer needed/desired
+#     def test_person_object_is_deleted_if_no_permission_is_given(self):
+#         current_person = Person(id=456)
+#         current_person.save()
+#
+#         session = self.client.session
+#         session["person"] = current_person.id
+#         session.save()
+#
+#         self.client.post(reverse('sleep_app:location'), {'lat': "no-permission", 'long': "no-permission"})
+#
+# #       need to put Person.objects.get(id=456) into a lambda expression so it doesn't get called too soon
+# #       (https://stackoverflow.com/questions/6103825/how-to-properly-use-unit-testings-assertraises-with-nonetype-objects)
+#         self.assertRaises(Person.DoesNotExist, lambda: Person.objects.get(id=456))
 
 

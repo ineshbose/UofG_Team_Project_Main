@@ -10,7 +10,7 @@ from sleep_app.models import (
 from sleep_app.forms import YesNoResponseForm, TextResponseForm, ScaleResponseForm
 import random
 import datetime
-from django.shortcuts import redirect
+from django.shortcuts import redirect, reverse
 from urllib import parse
 from next_prev import next_in_order, prev_in_order
 from django.http import HttpResponse
@@ -29,7 +29,7 @@ def map(request):
     return render(request,'sleep_app/map.html', context_dict)
 
 def index(request):
-    return redirect("/form")
+    return redirect("sleep_app:main_form_page")
 
 
 def map(request):
@@ -204,7 +204,7 @@ def symptom_question(request, symptom_name_slug):
                     slug=symptom_name_slug
                 )
             )
-            return redirect("/form")
+            return redirect("sleep_app:main_form_page")
 
         try:
             current_person = Person.objects.get(id=request.session["person"])
@@ -213,21 +213,23 @@ def symptom_question(request, symptom_name_slug):
 
         except Person.DoesNotExist:
             print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
-            return redirect('/form')
+            return redirect("sleep_app:main_form_page")
 
         try:
             if (
                     symptom
                     == Symptom.objects.filter(symptom_type=symptom.symptom_type).last()
             ):
-                return redirect('/location')
+                return redirect('sleep_app:location')
             else:
                 next_symptom = next_in_order(symptom)
-                return redirect("/form/{slug}".format(slug=next_symptom.slug))
+                #return redirect("sleep_app:form/{slug}".format(slug=next_symptom.slug))
+                return redirect(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
+                                                                    next_symptom.slug}))
 
         except Symptom.DoesNotExist:
             print("Symptom does not exist")
-            return redirect("/form")
+            return redirect("sleep_app:main_form_page")
 
     return render(request, 'sleep_app/symptom_question.html', context=context_dict)
 
