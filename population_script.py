@@ -58,8 +58,38 @@ def populate():
             "symptom_type": "MOP",
         },
         {
+            "name": "Awareness",
+            "question": "Are you aware of sleeping sickness?",
+            "answer_type": "bool",
+            "symptom_type": "MOP"
+        },
+        {
+            "name": "Occupation",
+            "question": "What is your occupation?",
+            "answer_type": "text",
+            "symptom_type": "MOP"
+        },
+        {
+            "name": "Tsetse fly contact",
+            "question": "Have you spent time in areas with high numbers of tsetse flies?",
+            "answer_type": "bool",
+            "symptom_type": "MOP"
+        },
+        {
+            "name": "Tsetse fly bite",
+            "question": "Have you been bitten by a tsetse fly recently?",
+            "answer_type": "bool",
+            "symptom_type": "MOP"
+        },
+        {
+            "name": "Tsetse fly bite rash",
+            "question": "Do you have a rash around the location of the bite? (If not applicable select 'unknown')",
+            "answer_type": "bool",
+            "symptom_type": "MOP"
+        },
+        {
             "name": "Other Symptoms",
-            "question": "Is there anything else you would like to report?",
+            "question": "Are there any other symptoms you would like to report?",
             "answer_type": "text",
             "symptom_type": "MOP",
         },
