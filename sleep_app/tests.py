@@ -3,7 +3,7 @@ from sleep_app.models import Symptom, Person
 
 
 from django.test import TestCase
-from sleep_app.models import Symptom, Person, Response, YesNoResponse
+from sleep_app.models import Symptom, Person, Response, YesNoResponse, ScaleResponse, TextResponse
 from sleep_app.forms import YesNoResponseForm
 from django.urls import reverse
 
@@ -241,3 +241,51 @@ class LocationViewTests(TestCase):
 #         self.assertRaises(Person.DoesNotExist, lambda: Person.objects.get(id=456))
 
 
+class TableTest(TestCase):
+    def test_bool_data_is_added_to_table(self):
+        person = Person(id=123)
+        person.save()
+        xyz_symptom = Symptom(name="xyz symptom", question="Do you have xyz?", answer_type='bool',
+                              symptom_type='MOP')
+
+        xyz_symptom.save()
+        xyz_response = YesNoResponse(symptom=xyz_symptom, answer=True)
+        xyz_response.save()
+        person.response.add(xyz_response)
+        response = self.client.get(reverse('sleep_app:table'))
+        self.assertContains(response, """<th class="orderable">
+                                        <a href="?sort=xyz+symptom">Xyz symptom</a>
+                                        </th>""", html=True)
+        self.assertContains(response, """<td >True</td>""", html=True)
+
+    def test_text_data_is_added_to_table(self):
+        person = Person(id=123)
+        person.save()
+        abc_symptom = Symptom(name="abc symptom", question="What is your abc?", answer_type='text',
+                              symptom_type='MOP')
+
+        abc_symptom.save()
+        abc_response = TextResponse(symptom=abc_symptom, answer="My abc is asdfsd")
+        abc_response.save()
+        person.response.add(abc_response)
+        response = self.client.get(reverse('sleep_app:table'))
+        self.assertContains(response, """<th class="orderable">
+                                        <a href="?sort=abc+symptom">Abc symptom</a>
+                                        </th>""", html=True)
+        self.assertContains(response, """<td >My abc is asdfsd</td>""", html=True)
+
+    def test_scale_data_is_added_to_table(self):
+        person = Person(id=123)
+        person.save()
+        abc_symptom = Symptom(name="abc symptom", question="How much abc do you have?", answer_type='scale',
+                              symptom_type='MOP')
+
+        abc_symptom.save()
+        abc_response = ScaleResponse(symptom=abc_symptom, answer=4)
+        abc_response.save()
+        person.response.add(abc_response)
+        response = self.client.get(reverse('sleep_app:table'))
+        self.assertContains(response, """<th class="orderable">
+                                        <a href="?sort=abc+symptom">Abc symptom</a>
+                                        </th>""", html=True)
+        self.assertContains(response, """<td >4</td>""", html=True)
