@@ -22,6 +22,8 @@ import plotly.offline as opy
 import plotly.graph_objs as go
 import plotly.express as px
 import pandas as pd
+from .tables import *
+
 
 def map(request):
     context_dict = {}
@@ -276,3 +278,20 @@ def location(request):
             print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
 
     return render(request, 'sleep_app/location.html', context=context_dict)
+
+
+#Normally it would be easier to just let the PersonTable class use Person.objects.all() (as shown in the django-tables2
+#tutorial). However django-tables2 does not make it possible to put the items in the response many to many field into the
+#appropriate symptom columns. So this generates a list of dicts, where each dict represents one person's data in the proper
+#format. The disadvantage of doing it this way is that it is rather slow (when using the cloud database)
+# so a better solution might be needed later.
+def table(request):
+    data = []
+    for p in Person.objects.all():
+        info = {"id": p.id, "lat": p.lat, "long": p.long}
+        for r in p.response.all():
+            info[r.symptom.name] = r.answer
+        data.append(info)
+
+    person_table = PersonTable(data)
+    return render(request, "sleep_app/table.html", {"table": person_table})
