@@ -265,8 +265,8 @@ def location(request):
                     context_dict["success"] = True
                     context_dict["lat"] = lat
                     context_dict["long"] = long
-                    current_person.lat = long
-                    current_person.long = lat
+                    current_person.lat = lat
+                    current_person.long = long
                     current_person.save()
                     increase_log_amount(request)
                 else:
