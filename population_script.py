@@ -12,6 +12,18 @@ def populate():
     symptom_list = [
         #       Member of public symptoms
         {
+            "name":"Age",
+            "question": "How old are you?",
+            "answer_type": "int",
+            "symptom_type": "MOP"
+        },
+        {
+            "name": "Gender",
+            "question": "'What is your gender identity?",
+            "answer_type": "text",
+            "symptom_type": "MOP"
+        },
+        {
             "name": "Fever",
             "question": "Do you have a fever?",
             "answer_type": "bool",
@@ -46,13 +58,55 @@ def populate():
             "symptom_type": "MOP",
         },
         {
+            "name": "Awareness",
+            "question": "Are you aware of sleeping sickness?",
+            "answer_type": "bool",
+            "symptom_type": "MOP"
+        },
+        {
+            "name": "Occupation",
+            "question": "What is your occupation?",
+            "answer_type": "text",
+            "symptom_type": "MOP"
+        },
+        {
+            "name": "Tsetse fly contact",
+            "question": "Have you spent time in areas with high numbers of tsetse flies?",
+            "answer_type": "bool",
+            "symptom_type": "MOP"
+        },
+        {
+            "name": "Tsetse fly bite",
+            "question": "Have you been bitten by a tsetse fly recently?",
+            "answer_type": "bool",
+            "symptom_type": "MOP"
+        },
+        {
+            "name": "Tsetse fly bite rash",
+            "question": "Do you have a rash around the location of the bite? (If not applicable select 'unknown')",
+            "answer_type": "bool",
+            "symptom_type": "MOP"
+        },
+        {
             "name": "Other Symptoms",
-            "question": "Is there anything else you would like to report?",
+            "question": "Are there any other symptoms you would like to report?",
             "answer_type": "text",
             "symptom_type": "MOP",
         },
         #   Healthcare worker symptoms. There are some duplicates here - the questions will be different if they're not addressing
         #   the patient directly
+        {
+            "name": "Age",
+            "question": "How old is the patient?",
+            "answer_type": "int",
+            "symptom_type": "HCW"
+        },
+        {
+            "name": "Gender",
+            "question": "'What is the patient's gender identity?",
+            "answer_type": "text",
+            "symptom_type": "HCW"
+        },
         {
             "name": "Fever",
             "question": "Does the patient have a fever?",
@@ -95,7 +149,7 @@ def populate():
         },
         {
             "name": "Anaemia",
-            "question": "Is the person anaemic?",
+            "question": "Is the patient anaemic?",
             "answer_type": "bool",
             "symptom_type": "HCW",
         },
@@ -120,15 +174,7 @@ def populate():
     ]
 
     for s in symptom_list:
-        a_symptom = Symptom(
-            name=s["name"],
-            question=s["question"],
-            answer_type=s["answer_type"],
-            symptom_type=s["symptom_type"],
-        )
-        if "image" in s.keys():
-            a_symptom.image = s["image"]
-        a_symptom.save()
+        Symptom.objects.get_or_create(**s)
 
     # Start execution here!
 
