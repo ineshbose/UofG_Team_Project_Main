@@ -30,5 +30,10 @@
     <strong>This symptom does not exist!</strong>
     {% endif %}
 
+    <form action="{% url 'sleep_app:main_form_page' %}" method="post">
+            {% csrf_token %}
+    <input type="submit" value="Cancel and go back to the main page"/>
+    </form>
+
     </body>
 </html>

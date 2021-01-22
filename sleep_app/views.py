@@ -128,6 +128,10 @@ def increase_log_amount(request):
 
 # the view for the page that takes you to the questions
 def form(request):
+    if request.method == "POST":
+        current_person = Person.objects.get(id=request.session["person"])
+        current_person.delete()
+
     first_symptom_mop = Symptom.objects.filter(symptom_type="MOP").first()
     first_symptom_hcw = Symptom.objects.filter(symptom_type="HCW").first()
     first_symptom_eov = Symptom.objects.filter(symptom_type="EOV").first()
@@ -156,7 +160,6 @@ def symptom_question(request, symptom_name_slug):
                symptom == Symptom.objects.filter(symptom_type="HCW").first() or
                symptom== Symptom.objects.filter(symptom_type="EOV").first()):
                 create_person_and_id(request)
-
             context_dict["symptom"] = symptom
             # need to pass the proper type of response object to the template, depending on what type of response is needed
             if symptom.answer_type == "bool":
