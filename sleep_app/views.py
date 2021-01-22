@@ -142,29 +142,34 @@ def form(request):
     #   (https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-SESSION_COOKIE_AGE)
     if request.session.get_expiry_age() == 1209600:
         request.session.set_expiry(60 * 60 * 24)
-    create_person_and_id(request)
     context_dict["log_amount"] = request.session.get("log_amount", 0)
     return render(request, "sleep_app/form.html", context_dict)
 
 
 # the view for the page that asks about a specific symptom
 def symptom_question(request, symptom_name_slug):
-    context_dict = {}
-    try:
-        symptom = Symptom.objects.get(slug=symptom_name_slug)
-        context_dict["symptom"] = symptom
-        # need to pass the proper type of response object to the template, depending on what type of response is needed
-        if symptom.answer_type == "bool":
-            response_form = YesNoResponseForm()
-        elif symptom.answer_type == "text":
-            response_form = TextResponseForm()
-        else:
-            response_form = ScaleResponseForm()
-        context_dict["response_form"] = response_form
-    except Symptom.DoesNotExist:
-        context_dict["symptom"] = context_dict["response_form"] = None
+    if request.method == "GET":
+        context_dict = {}
+        try:
+            symptom = Symptom.objects.get(slug=symptom_name_slug)
+            if (symptom == Symptom.objects.filter(symptom_type="MOP").first() or
+               symptom == Symptom.objects.filter(symptom_type="HCW").first() or
+               symptom== Symptom.objects.filter(symptom_type="EOV").first()):
+                create_person_and_id(request)
 
-    if request.method == "POST":
+            context_dict["symptom"] = symptom
+            # need to pass the proper type of response object to the template, depending on what type of response is needed
+            if symptom.answer_type == "bool":
+                response_form = YesNoResponseForm()
+            elif symptom.answer_type == "text":
+                response_form = TextResponseForm()
+            else:
+                response_form = ScaleResponseForm()
+            context_dict["response_form"] = response_form
+        except Symptom.DoesNotExist:
+            context_dict["symptom"] = context_dict["response_form"] = None
+
+    elif request.method == "POST":
         try:
             symptom = Symptom.objects.get(slug=symptom_name_slug)
             if symptom.answer_type == "bool":
