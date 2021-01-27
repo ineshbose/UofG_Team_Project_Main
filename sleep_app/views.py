@@ -132,6 +132,7 @@ def form(request):
         if "cancel" in request.POST:
             current_person = Person.objects.get(id=request.session["person"])
             current_person.delete()
+            del request.session["person"]
 
     first_symptom_mop = Symptom.objects.filter(symptom_type="MOP").first()
     first_symptom_hcw = Symptom.objects.filter(symptom_type="HCW").first()
