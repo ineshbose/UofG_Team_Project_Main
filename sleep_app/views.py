@@ -129,8 +129,9 @@ def increase_log_amount(request):
 # the view for the page that takes you to the questions
 def form(request):
     if request.method == "POST":
-        current_person = Person.objects.get(id=request.session["person"])
-        current_person.delete()
+        if "cancel" in request.POST:
+            current_person = Person.objects.get(id=request.session["person"])
+            current_person.delete()
 
     first_symptom_mop = Symptom.objects.filter(symptom_type="MOP").first()
     first_symptom_hcw = Symptom.objects.filter(symptom_type="HCW").first()
@@ -156,10 +157,6 @@ def symptom_question(request, symptom_name_slug):
         context_dict = {}
         try:
             symptom = Symptom.objects.get(slug=symptom_name_slug)
-            if (symptom == Symptom.objects.filter(symptom_type="MOP").first() or
-               symptom == Symptom.objects.filter(symptom_type="HCW").first() or
-               symptom== Symptom.objects.filter(symptom_type="EOV").first()):
-                create_person_and_id(request)
             context_dict["symptom"] = symptom
             # need to pass the proper type of response object to the template, depending on what type of response is needed
             if symptom.answer_type == "bool":
@@ -171,57 +168,66 @@ def symptom_question(request, symptom_name_slug):
             context_dict["response_form"] = response_form
         except Symptom.DoesNotExist:
             context_dict["symptom"] = context_dict["response_form"] = None
+        return render(request, 'sleep_app/symptom_question.html', context=context_dict)
 
     elif request.method == "POST":
-        try:
-            symptom = Symptom.objects.get(slug=symptom_name_slug)
-            if symptom.answer_type == "bool":
-                response_form = YesNoResponseForm(request.POST)
-                if response_form.is_valid():
-                    response = YesNoResponse(
-                        symptom=symptom, answer=response_form.cleaned_data["answer"]
-                    )
-                    response.save()
-            elif symptom.answer_type == "text":
-                response_form = TextResponseForm(request.POST)
-                if response_form.is_valid():
-                    response = TextResponse(
-                        symptom=symptom, answer=response_form.cleaned_data["answer"]
-                    )
-                    response.save()
-            else:
-                response_form = ScaleResponseForm(request.POST)
-                if response_form.is_valid():
-                    response = ScaleResponse(
-                        symptom=symptom, answer=response_form.cleaned_data["answer"]
-                    )
-                    response.save()
-        # for some reason we got here through a page with an invalid symptom slug. Should never happen.
-        except Symptom.DoesNotExist:
-            print(
-                "ERROR: Symptom with slug {slug} does not exist.".format(
-                    slug=symptom_name_slug
-                )
-            )
-            return redirect("sleep_app:main_form_page")
-
-        try:
-            current_person = Person.objects.get(id=request.session["person"])
-            current_person.response.add(response)
-            current_person.save()
-
-        except Person.DoesNotExist:
-            print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
-            return redirect("sleep_app:main_form_page")
-
-        if symptom == Symptom.objects.filter(symptom_type=symptom.symptom_type).last():
-            return redirect('sleep_app:location')
+        #clicking on the link to the form sends a POST request to this page. That causes a new person object to be generated
+        if "first" in request.POST:
+            try:
+                create_person_and_id(request)
+                symptom = Symptom.objects.get(slug=symptom_name_slug)
+                return redirect(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
+                                                                          symptom.slug}))
+            except Person.DoesNotExist:
+                print("Error: could not find symptom")
         else:
-            next_symptom = next_in_order(symptom)
-            return redirect(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
-                                                                          next_symptom.slug}))
+            try:
+                symptom = Symptom.objects.get(slug=symptom_name_slug)
+                if symptom.answer_type == "bool":
+                    response_form = YesNoResponseForm(request.POST)
+                    if response_form.is_valid():
+                        response = YesNoResponse(
+                            symptom=symptom, answer=response_form.cleaned_data["answer"]
+                        )
+                        response.save()
+                elif symptom.answer_type == "text":
+                    response_form = TextResponseForm(request.POST)
+                    if response_form.is_valid():
+                        response = TextResponse(
+                            symptom=symptom, answer=response_form.cleaned_data["answer"]
+                        )
+                        response.save()
+                else:
+                    response_form = ScaleResponseForm(request.POST)
+                    if response_form.is_valid():
+                        response = ScaleResponse(
+                            symptom=symptom, answer=response_form.cleaned_data["answer"]
+                        )
+                        response.save()
+            # for some reason we got here through a page with an invalid symptom slug. Should never happen.
+            except Symptom.DoesNotExist:
+                print(
+                    "ERROR: Symptom with slug {slug} does not exist.".format(
+                        slug=symptom_name_slug
+                    )
+                )
+                return redirect("sleep_app:main_form_page")
 
-    return render(request, 'sleep_app/symptom_question.html', context=context_dict)
+            try:
+                current_person = Person.objects.get(id=request.session["person"])
+                current_person.response.add(response)
+                current_person.save()
+
+            except Person.DoesNotExist:
+                print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
+                return redirect("sleep_app:main_form_page")
+
+            if symptom == Symptom.objects.filter(symptom_type=symptom.symptom_type).last():
+                return redirect('sleep_app:location')
+            else:
+                next_symptom = next_in_order(symptom)
+                return redirect(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
+                                                                              next_symptom.slug}))
 
 
 def location(request):
