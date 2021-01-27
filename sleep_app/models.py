@@ -1,6 +1,7 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 from polymorphic.models import PolymorphicModel
+from datetime import datetime, date
 
 
 class Symptom(models.Model):
@@ -66,6 +67,8 @@ class Response(PolymorphicModel):
 class Person(models.Model):
     id = models.IntegerField(primary_key=True)
     response = models.ManyToManyField(Response)
+
+    date = models.DateTimeField(auto_now_add=True, blank=True)
 
 #   this can be replaced by something more "fancy" (for example GeoDjango) once it is clear how the maps functionality
 #   will be handled.
