@@ -50,29 +50,33 @@
     </div>
     <div class="jumbotron pt-4 pb-5 pl-5">
 
-    {% if symptom %}
+        {% if symptom %}
         <h2>{{ symptom.name }}</h2>
 
         {% if symptom.image %}
-            <img src={{ symptom.image.url }} height=300 width=450/>
+        <img src={{ symptom.image.url }} height=300 width=450/>
         {% endif %}
         <p class="symptom mt-2">{{ symptom.question }}</p>
         <form id="response_form" method="post" action="">
             {% csrf_token %}
             {% for hidden in response_form.hidden_fields %}
-                {{ hidden }}
+            {{ hidden }}
             {% endfor %}
 
             {% for field in response_form.visible_fields %}
-                {{ field.errors }}
-                {{ field.help_text }}
-                {{ field }}
+            {{ field.errors }}
+            {{ field.help_text }}
+            {{ field }}
             {% endfor %}
             <input class="btn btn-primary" type="submit" name="submit" value="Report"/>
         </form>
-    {% else %}
+        {% else %}
         <strong>This symptom does not exist!</strong>
-    {% endif %}
+        {% endif %}
+        <form action="{% url 'sleep_app:main_form_page' %}" method="post">
+            {% csrf_token %}
+            <input type="submit" name="cancel" value="Cancel and go back to the main page"/>
+        </form>
     </div>
 </main>
 </body>

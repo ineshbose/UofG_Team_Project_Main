@@ -27,9 +27,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="/map">Map</a>
             </li>
-{#            <li class="nav-item">#}
-{#                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>#}
-{#            </li>#}
+            {#            <li class="nav-item">#}
+            {#                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>#}
+            {#            </li>#}
         </ul>
         <ul class="navbar-nav md-0">
             <a class="nav-link" href="#">Login<span class="sr-only"></span></a>
@@ -47,14 +47,19 @@
 
         <p class="text">Fill out the sleeping sickness form!</p>
         <ul>
-            <li class="list-item"><a href="{{ first_symptom_mop.slug }}">Form for members of the public</a></li>
-            <li class="list-item"><a href="{{ first_symptom_hcw.slug }}">Form for healthcare workers</a></li>
-            <li class="list-item"><a href="{{ first_symptom_eov.slug }}">Form for entomologists and vets</a></li>
+            <li class="list-item"><form action="{{ first_symptom_mop.slug }}/" method="post">
+                {% csrf_token %}
+                <input type="submit" name="first" value="Form for members of the public"/></li>
+            <li class="list-item"><form action="{{ first_symptom_mop.slug }}/" method="post">
+                {% csrf_token %}
+                <input type="submit" name="first" value="Form for healthcare workers"/></li>
+            <li class="list-item"><form action="{{ first_symptom_eov.slug }}/" method="post">
+                {% csrf_token %}<input type="submit" name="first" value="Form for entomologists and vets"/></li>
         </ul>
         {% if log_amount == 1 %}
-            <p class="text">You have logged data for <b>1</b> person today.</p>
+        <p class="text">You have logged data for <b>1</b> person today.</p>
         {% else %}
-            <p class="text">You have logged data for <b>{{ log_amount }}</b> people today.</p>
+        <p class="text">You have logged data for <b>{{ log_amount }}</b> people today.</p>
         {% endif %}
     </div>
 </main>
