@@ -75,7 +75,7 @@
         {% endif %}
         <form action="{% url 'sleep_app:main_form_page' %}" method="post">
             {% csrf_token %}
-            <input type="submit" name="cancel" value="Cancel and go back to the main page"/>
+            <input class="btn btn-outline-primary cancel" type="submit" name="cancel" value="Cancel and go back to the main page"/>
         </form>
     </div>
 </main>
@@ -150,6 +150,13 @@
         margin-left: 5px;
         font-size: 15px;
         vertical-align: middle;
+    }
+
+    .cancel {
+        color: black;
+        border: 1px solid black;
+        margin-top: 50px;
+        margin-left: 0px;
     }
 
     input{
