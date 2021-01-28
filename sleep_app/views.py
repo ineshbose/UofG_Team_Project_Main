@@ -28,7 +28,8 @@ from .tables import *
 def map(request):
     context_dict = {}
 
-    return render(request,'sleep_app/map.html', context_dict)
+    return render(request, 'sleep_app/map.html', context_dict)
+
 
 def index(request):
     return redirect("sleep_app:main_form_page")
@@ -66,7 +67,6 @@ def map(request):
                         longitude.append(person.long)
                         id.append(person.id)
 
-
     fig = go.Figure(data=go.Scattergeo(
         lon=longitude,
         lat=latitude,
@@ -103,10 +103,8 @@ def map(request):
             cmax=5,
         )))
 
-
-
-    fig.update_geos(showcountries=True) # Automatically zoom into the zone of interest
-    fig2.update_geos(showcountries=True, scope='africa') # Automatically zoom into the zone of interest
+    fig.update_geos(showcountries=True)  # Automatically zoom into the zone of interest
+    fig2.update_geos(showcountries=True, scope='africa')  # Automatically zoom into the zone of interest
     plot_div = fig.to_html(full_html=False, default_height=700, default_width=1000)
     plot_div2 = fig2.to_html(full_html=False, default_height=700, default_width=1000)
     context = {'plot_div': plot_div,
@@ -162,9 +160,11 @@ def form(request):
 def symptom_question(request, symptom_name_slug):
     context_dict = {}
     try:
+        total_symptoms = Symptom.objects.all().count()  # To keep track of how many questions there are
+        context_dict["total"] = total_symptoms
         symptom = Symptom.objects.get(slug=symptom_name_slug)
         context_dict["symptom"] = symptom
-        #       need to pass the proper type of response object to the template, depending on what type of response is needed
+        # need to pass the proper type of response object to the template, depending on what type of response is needed
         if symptom.answer_type == "bool":
             response_form = YesNoResponseForm()
         elif symptom.answer_type == "text":
@@ -225,9 +225,9 @@ def symptom_question(request, symptom_name_slug):
                 return redirect('sleep_app:location')
             else:
                 next_symptom = next_in_order(symptom)
-                #return redirect("sleep_app:form/{slug}".format(slug=next_symptom.slug))
+                # return redirect("sleep_app:form/{slug}".format(slug=next_symptom.slug))
                 return redirect(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
-                                                                    next_symptom.slug}))
+                                                                              next_symptom.slug}))
 
         except Symptom.DoesNotExist:
             print("Symptom does not exist")
@@ -256,7 +256,7 @@ def location(request):
                 context_dict = {"browser_location": False}
                 query = {"q": request.POST["location"],
                          "format": "geojson"
-                        }
+                         }
                 encode = urllib.parse.urlencode(query)
                 url = "https://nominatim.openstreetmap.org/search?" + encode
                 data = urllib.request.urlopen(url).read().decode()
@@ -280,10 +280,10 @@ def location(request):
     return render(request, 'sleep_app/location.html', context=context_dict)
 
 
-#Normally it would be easier to just let the PersonTable class use Person.objects.all() (as shown in the django-tables2
-#tutorial). However django-tables2 does not make it possible to put the items in the response many to many field into the
-#appropriate symptom columns. So this generates a list of dicts, where each dict represents one person's data in the proper
-#format. The disadvantage of doing it this way is that it is rather slow (when using the cloud database)
+# Normally it would be easier to just let the PersonTable class use Person.objects.all() (as shown in the django-tables2
+# tutorial). However django-tables2 does not make it possible to put the items in the response many to many field into the
+# appropriate symptom columns. So this generates a list of dicts, where each dict represents one person's data in the proper
+# format. The disadvantage of doing it this way is that it is rather slow (when using the cloud database)
 # so a better solution might be needed later.
 def table(request):
     data = []
