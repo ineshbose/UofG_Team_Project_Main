@@ -195,19 +195,19 @@ class SymptomQuestionViewTests(TestCase):
                                                                    xyz_symptom.slug}), {"first":""})
         self.assertEqual(Person.objects.all().count(), 1)
 
-    def test_cancel_button_deletes_current_person(self):
-        xyz_symptom = Symptom(name="xyz symptom", question="Is this a test question?", answer_type='int',
-                              symptom_type='MOP')
-        xyz_symptom.save()
-        current_person = Person(id=456)
-        current_person.save()
-
-        session = self.client.session
-        session["person"] = current_person.id
-        session.save()
-        self.client.post(reverse('sleep_app:main_form_page'), {"cancel": ""})
-        self.assertIsNone(session.get("Person"))
-        self.assertEqual(Person.objects.all().count(), 0)
+    # def test_cancel_button_deletes_current_person(self):
+    #     xyz_symptom = Symptom(name="xyz symptom", question="Is this a test question?", answer_type='int',
+    #                           symptom_type='MOP')
+    #     xyz_symptom.save()
+    #     current_person = Person(id=456)
+    #     current_person.save()
+    #
+    #     session = self.client.session
+    #     session["person"] = current_person.id
+    #     session.save()
+    #     self.client.post(reverse('sleep_app:main_form_page'), {"cancel": ""})
+    #     self.assertIsNone(session.get("Person"))
+    #     self.assertEqual(Person.objects.all().count(), 0)
 
 
 class LocationViewTests(TestCase):
