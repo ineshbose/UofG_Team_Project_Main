@@ -176,9 +176,8 @@ def symptom_question(request, symptom_name_slug):
         if "first" in request.POST:
             try:
                 create_person_and_id(request)
-                symptom = Symptom.objects.get(slug=symptom_name_slug)
                 return redirect(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
-                                                                          symptom.slug}))
+                                                                          symptom_name_slug}))
             except Person.DoesNotExist:
                 print("Error: could not find symptom")
         else:
