@@ -229,7 +229,6 @@ def symptom_question(request, symptom_name_slug):
                 return redirect(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
                                                                               next_symptom.slug}))
 
-
 def location(request):
     context_dict = {"browser_location": True}
     if request.method == 'POST':
@@ -278,7 +277,7 @@ def location(request):
 def table(request):
     data = []
     for p in Person.objects.all():
-        info = {"id": p.id, "lat": p.lat, "long": p.long}
+        info = {"id": p.id, "date": p.date, "lat": p.lat, "long": p.long}
         for r in p.response.all():
             info[r.symptom.name] = r.answer
         data.append(info)
