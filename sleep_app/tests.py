@@ -1,9 +1,8 @@
 from django.test import TestCase
 from sleep_app.models import Symptom, Person
 
-
 from django.test import TestCase
-from sleep_app.models import Symptom, Person, Response, YesNoResponse
+from sleep_app.models import Symptom, Person, Response, YesNoResponse, ScaleResponse, TextResponse
 from sleep_app.forms import YesNoResponseForm
 from django.urls import reverse
 
@@ -188,24 +187,27 @@ class SymptomQuestionViewTests(TestCase):
         response = current_person.response.all()[0]
         self.assertEqual(response.answer, 2)
 
-# might not be needed/desired
-#     def test_person_is_deleted_if_response_is_invalid(self):
-#         xyz_symptom = Symptom(name="xyz symptom", question="Is this a test question?", answer_type='int',
-#                               symptom_type='MOP')
-#         xyz_symptom.save()
-#         current_person = Person(id=456)
-#         current_person.save()
-#
-#         session = self.client.session
-#         session["person"] = current_person.id
-#         session.save()
-#
-#         response = self.client.post(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
-#                                                                        xyz_symptom.slug}),
-#                          {"answer": "sdafsafds"})
-#
-#         self.assertRaises(Person.DoesNotExist, lambda: Person.objects.get(id=456))
-#         self.assertRedirects(response, reverse('sleep_app:main_form_page'))
+    def test_new_person_is_created_when_clicking_on_the_first_symptom(self):
+        xyz_symptom = Symptom(name="xyz symptom", question="Is this a test question?", answer_type='int',
+                              symptom_type='MOP')
+        xyz_symptom.save()
+        self.client.post(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
+                                                                   xyz_symptom.slug}), {"first":""})
+        self.assertEqual(Person.objects.all().count(), 1)
+
+    def test_cancel_button_deletes_current_person(self):
+        xyz_symptom = Symptom(name="xyz symptom", question="Is this a test question?", answer_type='int',
+                              symptom_type='MOP')
+        xyz_symptom.save()
+        current_person = Person(id=456)
+        current_person.save()
+
+        session = self.client.session
+        session["person"] = current_person.id
+        session.save()
+        self.client.post(reverse('sleep_app:main_form_page'), {"cancel": ""})
+        self.assertIsNone(session.get("Person"))
+        self.assertEqual(Person.objects.all().count(), 0)
 
 
 class LocationViewTests(TestCase):
@@ -225,19 +227,52 @@ class LocationViewTests(TestCase):
         self.assertEqual(current_person.lat, 49.748235)
         self.assertEqual(current_person.long, 6.658348)
 
-#no longer needed/desired
-#     def test_person_object_is_deleted_if_no_permission_is_given(self):
-#         current_person = Person(id=456)
-#         current_person.save()
-#
-#         session = self.client.session
-#         session["person"] = current_person.id
-#         session.save()
-#
-#         self.client.post(reverse('sleep_app:location'), {'lat': "no-permission", 'long': "no-permission"})
-#
-# #       need to put Person.objects.get(id=456) into a lambda expression so it doesn't get called too soon
-# #       (https://stackoverflow.com/questions/6103825/how-to-properly-use-unit-testings-assertraises-with-nonetype-objects)
-#         self.assertRaises(Person.DoesNotExist, lambda: Person.objects.get(id=456))
 
+class TableTest(TestCase):
+    def test_bool_data_is_added_to_table(self):
+        person = Person(id=123)
+        person.save()
+        xyz_symptom = Symptom(name="xyz symptom", question="Do you have xyz?", answer_type='bool',
+                              symptom_type='MOP')
 
+        xyz_symptom.save()
+        xyz_response = YesNoResponse(symptom=xyz_symptom, answer=True)
+        xyz_response.save()
+        person.response.add(xyz_response)
+        response = self.client.get(reverse('sleep_app:table'))
+        self.assertContains(response, """<th class="orderable">
+                                        <a href="?sort=xyz+symptom">Xyz symptom</a>
+                                        </th>""", html=True)
+        self.assertContains(response, """<td >True</td>""", html=True)
+
+    def test_text_data_is_added_to_table(self):
+        person = Person(id=123)
+        person.save()
+        abc_symptom = Symptom(name="abc symptom", question="What is your abc?", answer_type='text',
+                              symptom_type='MOP')
+
+        abc_symptom.save()
+        abc_response = TextResponse(symptom=abc_symptom, answer="My abc is asdfsd")
+        abc_response.save()
+        person.response.add(abc_response)
+        response = self.client.get(reverse('sleep_app:table'))
+        self.assertContains(response, """<th class="orderable">
+                                        <a href="?sort=abc+symptom">Abc symptom</a>
+                                        </th>""", html=True)
+        self.assertContains(response, """<td >My abc is asdfsd</td>""", html=True)
+
+    def test_scale_data_is_added_to_table(self):
+        person = Person(id=123)
+        person.save()
+        abc_symptom = Symptom(name="abc symptom", question="How much abc do you have?", answer_type='scale',
+                              symptom_type='MOP')
+
+        abc_symptom.save()
+        abc_response = ScaleResponse(symptom=abc_symptom, answer=4)
+        abc_response.save()
+        person.response.add(abc_response)
+        response = self.client.get(reverse('sleep_app:table'))
+        self.assertContains(response, """<th class="orderable">
+                                        <a href="?sort=abc+symptom">Abc symptom</a>
+                                        </th>""", html=True)
+        self.assertContains(response, """<td >4</td>""", html=True)

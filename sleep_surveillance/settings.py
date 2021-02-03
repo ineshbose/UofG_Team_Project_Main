@@ -31,6 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "sleepsurv.herokuapp.com",
     "sleepsurv-dev.herokuapp.com",
+    '127.0.0.1'
 ]
 
 
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     'polymorphic',
   #  'django_plotly_dash.apps.DjangoPlotlyDashConfig',
     'channels',
+    'django_tables2'
 ]
 
 MIDDLEWARE = [
@@ -87,8 +89,8 @@ WSGI_APPLICATION = "sleep_surveillance.wsgi.application"
 
 DATABASES = {
     "default": {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         "ENGINE": "djongo",
         "CLIENT": {
             "name": "sleep_app",

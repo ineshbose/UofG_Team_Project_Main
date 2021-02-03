@@ -9,24 +9,23 @@ from sleep_app.models import (
 )
 from sleep_app.forms import YesNoResponseForm, TextResponseForm, ScaleResponseForm
 import random
-import datetime
 from django.shortcuts import redirect, reverse
 from urllib import parse
-from next_prev import next_in_order, prev_in_order
-from django.http import HttpResponse
+from next_prev import next_in_order
 import urllib
 import json
 from django.shortcuts import render
 
-import plotly.offline as opy
 import plotly.graph_objs as go
-import plotly.express as px
 import pandas as pd
+from .tables import *
+
 
 def map(request):
     context_dict = {}
 
-    return render(request,'sleep_app/map.html', context_dict)
+    return render(request, 'sleep_app/map.html', context_dict)
+
 
 def index(request):
     return redirect("sleep_app:main_form_page")
@@ -64,7 +63,6 @@ def map(request):
                         longitude.append(person.long)
                         id.append(person.id)
 
-
     fig = go.Figure(data=go.Scattergeo(
         lon=longitude,
         lat=latitude,
@@ -101,10 +99,8 @@ def map(request):
             cmax=5,
         )))
 
-
-
-    fig.update_geos(showcountries=True) # Automatically zoom into the zone of interest
-    fig2.update_geos(showcountries=True, scope='africa') # Automatically zoom into the zone of interest
+    fig.update_geos(showcountries=True)  # Automatically zoom into the zone of interest
+    fig2.update_geos(showcountries=True, scope='africa')  # Automatically zoom into the zone of interest
     plot_div = fig.to_html(full_html=False, default_height=700, default_width=1000)
     plot_div2 = fig2.to_html(full_html=False, default_height=700, default_width=1000)
     context = {'plot_div': plot_div,
@@ -118,8 +114,8 @@ def map(request):
 # helper function. Generates a person object with a unique random id whenever the first page of a question is visited.
 def create_person_and_id(request):
     new_id = int(random.uniform(0, 1000000))
-    #   to prevent id collision
-    while request.session.get("person") == new_id:
+    # to prevent id collision
+    while Person.objects.filter(id=new_id).count() > 0:
         new_id = int(random.uniform(0, 1000000))
     person = Person(id=new_id)
     person.save()
@@ -130,11 +126,14 @@ def increase_log_amount(request):
     request.session["log_amount"] = request.session.get("log_amount", 0) + 1
 
 
-# Create your views here.
 # the view for the page that takes you to the questions
 def form(request):
-    context_dict = {}
-    #   this is fine for testing, but should be replaced by something more stable
+    if request.method == "POST":
+        if "cancel" in request.POST:
+            current_person = Person.objects.get(id=request.session["person"])
+            current_person.delete()
+            del request.session["person"]
+
     first_symptom_mop = Symptom.objects.filter(symptom_type="MOP").first()
     first_symptom_hcw = Symptom.objects.filter(symptom_type="HCW").first()
     first_symptom_eov = Symptom.objects.filter(symptom_type="EOV").first()
@@ -149,90 +148,86 @@ def form(request):
     #   (https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-SESSION_COOKIE_AGE)
     if request.session.get_expiry_age() == 1209600:
         request.session.set_expiry(60 * 60 * 24)
-    create_person_and_id(request)
     context_dict["log_amount"] = request.session.get("log_amount", 0)
-
-    print("Person id is {id}".format(id=request.session["person"]))
     return render(request, "sleep_app/form.html", context_dict)
 
 
 # the view for the page that asks about a specific symptom
 def symptom_question(request, symptom_name_slug):
-    context_dict = {}
-    try:
-        symptom = Symptom.objects.get(slug=symptom_name_slug)
-        context_dict["symptom"] = symptom
-        #       need to pass the proper type of response object to the template, depending on what type of response is needed
-        if symptom.answer_type == "bool":
-            response_form = YesNoResponseForm()
-        elif symptom.answer_type == "text":
-            response_form = TextResponseForm()
-        else:
-            response_form = ScaleResponseForm()
-        context_dict["response_form"] = response_form
-    except Symptom.DoesNotExist:
-        context_dict["symptom"] = context_dict["response_form"] = None
-
-    if request.method == "POST":
+    if request.method == "GET":
+        context_dict = {}
         try:
             symptom = Symptom.objects.get(slug=symptom_name_slug)
+            context_dict["symptom"] = symptom
+            # need to pass the proper type of response object to the template, depending on what type of response is needed
             if symptom.answer_type == "bool":
-                response_form = YesNoResponseForm(request.POST)
-                if response_form.is_valid():
-                    response = YesNoResponse(
-                        symptom=symptom, answer=response_form.cleaned_data["answer"]
-                    )
-                    response.save()
+                response_form = YesNoResponseForm()
             elif symptom.answer_type == "text":
-                response_form = TextResponseForm(request.POST)
-                if response_form.is_valid():
-                    response = TextResponse(
-                        symptom=symptom, answer=response_form.cleaned_data["answer"]
-                    )
-                    response.save()
+                response_form = TextResponseForm()
             else:
-                response_form = ScaleResponseForm(request.POST)
-                if response_form.is_valid():
-                    response = ScaleResponse(
-                        symptom=symptom, answer=response_form.cleaned_data["answer"]
-                    )
-                    response.save()
-        #       for some reason we got here through a page with an invalid symptom slug. Should never happen.
+                response_form = ScaleResponseForm()
+            context_dict["response_form"] = response_form
         except Symptom.DoesNotExist:
-            print(
-                "ERROR: Symptom with slug {slug} does not exist.".format(
-                    slug=symptom_name_slug
+            context_dict["symptom"] = context_dict["response_form"] = None
+        return render(request, 'sleep_app/symptom_question.html', context=context_dict)
+
+    elif request.method == "POST":
+        #clicking on the link to the form sends a POST request to this page. That causes a new person object to be generated
+        if "first" in request.POST:
+            try:
+                create_person_and_id(request)
+                return redirect(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
+                                                                          symptom_name_slug}))
+            except Person.DoesNotExist:
+                print("Error: could not find symptom")
+        else:
+            try:
+                symptom = Symptom.objects.get(slug=symptom_name_slug)
+                if symptom.answer_type == "bool":
+                    response_form = YesNoResponseForm(request.POST)
+                    if response_form.is_valid():
+                        response = YesNoResponse(
+                            symptom=symptom, answer=response_form.cleaned_data["answer"]
+                        )
+                        response.save()
+                elif symptom.answer_type == "text":
+                    response_form = TextResponseForm(request.POST)
+                    if response_form.is_valid():
+                        response = TextResponse(
+                            symptom=symptom, answer=response_form.cleaned_data["answer"]
+                        )
+                        response.save()
+                else:
+                    response_form = ScaleResponseForm(request.POST)
+                    if response_form.is_valid():
+                        response = ScaleResponse(
+                            symptom=symptom, answer=response_form.cleaned_data["answer"]
+                        )
+                        response.save()
+            # for some reason we got here through a page with an invalid symptom slug. Should never happen.
+            except Symptom.DoesNotExist:
+                print(
+                    "ERROR: Symptom with slug {slug} does not exist.".format(
+                        slug=symptom_name_slug
+                    )
                 )
-            )
-            return redirect("sleep_app:main_form_page")
+                return redirect("sleep_app:main_form_page")
 
-        try:
-            current_person = Person.objects.get(id=request.session["person"])
-            current_person.response.add(response)
-            current_person.save()
+            try:
+                current_person = Person.objects.get(id=request.session["person"])
+                current_person.response.add(response)
+                current_person.save()
 
-        except Person.DoesNotExist:
-            print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
-            return redirect("sleep_app:main_form_page")
+            except Person.DoesNotExist:
+                print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
+                return redirect("sleep_app:main_form_page")
 
-        try:
-            if (
-                    symptom
-                    == Symptom.objects.filter(symptom_type=symptom.symptom_type).last()
-            ):
+            if symptom == Symptom.objects.filter(symptom_type=symptom.symptom_type).last():
                 return redirect('sleep_app:location')
             else:
                 next_symptom = next_in_order(symptom)
-                #return redirect("sleep_app:form/{slug}".format(slug=next_symptom.slug))
                 return redirect(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
-                                                                    next_symptom.slug}))
-
-        except Symptom.DoesNotExist:
-            print("Symptom does not exist")
-            return redirect("sleep_app:main_form_page")
-
-    return render(request, 'sleep_app/symptom_question.html', context=context_dict)
-
+                                                                              next_symptom.slug}))
 
 def location(request):
     context_dict = {"browser_location": True}
@@ -245,16 +240,12 @@ def location(request):
                     current_person.long = request.POST["long"]
                     current_person.save()
                     increase_log_amount(request)
-                    print("ok lat " + current_person.lat + "long " + current_person.long)
-                else:
-                    print("no permission")
 
             elif "location" in request.POST:
-                print("location")
                 context_dict = {"browser_location": False}
                 query = {"q": request.POST["location"],
                          "format": "geojson"
-                        }
+                         }
                 encode = urllib.parse.urlencode(query)
                 url = "https://nominatim.openstreetmap.org/search?" + encode
                 data = urllib.request.urlopen(url).read().decode()
@@ -276,3 +267,20 @@ def location(request):
             print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
 
     return render(request, 'sleep_app/location.html', context=context_dict)
+
+
+# Normally it would be easier to just let the PersonTable class use Person.objects.all() (as shown in the django-tables2
+# tutorial). However django-tables2 does not make it possible to put the items in the response many to many field into the
+# appropriate symptom columns. So this generates a list of dicts, where each dict represents one person's data in the proper
+# format. The disadvantage of doing it this way is that it is rather slow (when using the cloud database)
+# so a better solution might be needed later.
+def table(request):
+    data = []
+    for p in Person.objects.all():
+        info = {"id": p.id, "date": p.date, "lat": p.lat, "long": p.long}
+        for r in p.response.all():
+            info[r.symptom.name] = r.answer
+        data.append(info)
+
+    person_table = PersonTable(data)
+    return render(request, "sleep_app/table.html", {"table": person_table})
