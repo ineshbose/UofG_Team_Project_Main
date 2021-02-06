@@ -1,5 +1,6 @@
 from django import forms
 from sleep_app.models import Person, Symptom, YesNoResponse, TextResponse, ScaleResponse
+from django.contrib.auth.forms import UserCreationForm, User
 
 
 class YesNoResponseForm(forms.ModelForm):
@@ -25,3 +26,10 @@ class ScaleResponseForm(forms.ModelForm):
     class Meta:
         model = ScaleResponse
         fields = ("answer",)
+
+
+class RegisterForm(UserCreationForm):
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
