@@ -17,17 +17,16 @@ from django.contrib import messages
 import urllib
 import json
 from django.shortcuts import render
+from sleep_app.decorators import staff_required
+from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
-from .decorators import unauthenticated_user, allowed_users
+
 import plotly.graph_objs as go
 import pandas as pd
 from .tables import *
 
 
-@login_required(login_url='login')
-@staff_member_required
+@staff_required
 def map(request):
     context_dict = {}
     return render(request, 'sleep_app/map.html', context_dict)
@@ -37,8 +36,7 @@ def index(request):
     return redirect("sleep_app:main_form_page")
 
 
-@login_required(login_url='login')
-@staff_member_required
+@staff_required
 def map(request):
     df = pd.read_csv('testing2.csv')
     print(df)
@@ -283,8 +281,7 @@ def location(request):
 # format. The disadvantage of doing it this way is that it is rather slow (when using the cloud database)
 # so a better solution might be needed later.
 
-@login_required(login_url='login')
-@staff_member_required
+@staff_required
 def table(request):
     data = []
     for p in Person.objects.all():
@@ -301,9 +298,12 @@ def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
+
             user = form.get_user()
-            auth.login(request, user)
+            print(user.is_staff)
             print(user)
+            authenticate(username= user.username, password=user.password)
+            auth.login(request, user)
             return redirect('sleep_app:main_form_page')
     else:
         form = AuthenticationForm()
@@ -316,13 +316,14 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
+            print("register success")
             form.save()
             user = form.cleaned_data.get('username')
-            messages.success(request, 'Account is created for' + user)
             return redirect('sleep_app:login')
         else:
-            messages.info('invalid registration')
-            return  redirect('sleep_app:register')
+            print(form.cleaned_data)
+            print(form.errors)
+            return redirect('sleep_app:register')
     context = {'form': form}
 
     return render(request, "sleep_app/register.html", context)
@@ -330,4 +331,5 @@ def register(request):
 
 def logout(request):
     auth.logout(request)
+    print("logout success")
     return redirect('sleep_app:main_form_page')
