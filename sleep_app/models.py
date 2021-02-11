@@ -1,6 +1,7 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 from polymorphic.models import PolymorphicModel
+from location_field.models.plain import PlainLocationField
 from datetime import datetime, date
 
 
@@ -67,26 +68,8 @@ class Response(PolymorphicModel):
 class Person(models.Model):
     id = models.IntegerField(primary_key=True)
     response = models.ManyToManyField(Response)
-
     date = models.DateTimeField(auto_now_add=True, blank=True)
-
-#   this can be replaced by something more "fancy" (for example GeoDjango) once it is clear how the maps functionality
-#   will be handled.
-    lat = models.FloatField(null=True)
-    long = models.FloatField(null=True)
-
-    def save(self, *args, **kwargs):
-        # both get set to None as soon as one is false, because a coordinate of, say,  "45, None" is of little use..
-        if self.lat:
-            if float(self.lat) < -90 or float(self.lat)> 90:
-                self.lat = None
-                self.long = None
-        if self.long:
-            if float(self.long) < -180 or float(self.long) > 180:
-                self.lat = None
-                self.long = None
-
-        super(Person, self).save(*args, **kwargs)
+    location = PlainLocationField(based_fields=['city'], zoom=7)
 
 
 class YesNoResponse(Response):

@@ -5,13 +5,19 @@ stages:
   - develop
   - deploy
 
+before_script:
+    - pip3 install -r requirements.txt
+    - python3 manage.py makemigrations
+    - python3 manage.py migrate
+
 test:
   stage: test
   tags:
     - docker
   script:
-    - pip3 install -r requirements.txt
     - python3 manage.py test
+  only:
+    - merge_requests
 
 develop:
   stage: develop
