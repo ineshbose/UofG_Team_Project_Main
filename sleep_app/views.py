@@ -252,8 +252,10 @@ def location(request):
                 if len(x['features']) != 0:
                     print(x['features'][0]['geometry']['coordinates'])
                     context_dict["success"] = True
-                    context_dict["location"] = ",".join(x['features'][0]['geometry']['coordinates'])
-                    current_person.location = ",".join(x['features'][0]['geometry']['coordinates'])
+                    coords = ",".join([str(x['features'][0]['geometry']['coordinates'][1]),
+                                       str(x['features'][0]['geometry']['coordinates'][0])])
+                    context_dict["location"] = coords
+                    current_person.location = coords
                     current_person.save()
                     increase_log_amount(request)
                 else:
