@@ -40,21 +40,6 @@ class SymptomModelTests(TestCase):
         self.assertEqual(xyz_symptom.slug, "xyz-symptom-mop")
 
 
-class PersonModelTests(TestCase):
-    '''
-    def test_invalid_coordinates_get_set_to_none(self):
-        person_lat_small = Person(id=1, location="-91,100")
-        person_lat_small.save()
-        person_lat_big = Person(id=2, location="91,100")
-        person_lat_big.save()
-        person_long_small = Person(id=3, location="80,-181")
-        person_long_small.save()
-        person_long_big = Person(id=4, location="80,181")
-        person_long_big.save()
-        self.assertIsNone(person_lat_small.location)
-        self.assertIsNone(person_lat_big.location)
-    '''
-
 
 class SymptomQuestionViewTests(TestCase):
     def test_symptom_does_not_exist(self):
