@@ -12,8 +12,7 @@ from .models import Symptom
 class PersonTable(tables.Table):
     id = tables.Column()
     date = tables.Column()
-    lat = tables.Column()
-    long = tables.Column()
+    location = tables.Column()
 
     class Meta:
         template_name = "django_tables2/bootstrap.html"

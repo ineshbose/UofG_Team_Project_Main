@@ -40,21 +40,6 @@ class SymptomModelTests(TestCase):
         self.assertEqual(xyz_symptom.slug, "xyz-symptom-mop")
 
 
-class PersonModelTests(TestCase):
-    def test_invalid_coordinates_get_set_to_none(self):
-        person_lat_small = Person(id=1, lat=-91, long=100)
-        person_lat_small.save()
-        person_lat_big = Person(id=2, lat=91, long=100)
-        person_lat_big.save()
-        person_long_small = Person(id=3, lat=80, long=-181)
-        person_long_small.save()
-        person_long_big = Person(id=4, lat=80, long=181)
-        person_long_big.save()
-        self.assertIsNone(person_lat_small.lat)
-        self.assertIsNone(person_lat_big.lat)
-        self.assertIsNone(person_long_small.long)
-        self.assertIsNone(person_long_big.long)
-
 
 class SymptomQuestionViewTests(TestCase):
     def test_symptom_does_not_exist(self):
@@ -224,8 +209,7 @@ class LocationViewTests(TestCase):
 
 #       need to get the object from the database again to access the latest changes
         current_person = Person.objects.get(id=456)
-        self.assertEqual(current_person.lat, 49.748235)
-        self.assertEqual(current_person.long, 6.658348)
+        self.assertEqual(current_person.location, "49.748235,6.658348")
 
 
 class TableTest(TestCase):

@@ -47,20 +47,20 @@ def map(request):
 
     if selected_symptom == None:
         for person in Person.objects.all():
-            if person.lat != None and person.long != None:
-                latitude.append(person.lat)
-                longitude.append(person.long)
+            if person.location != None:
+                latitude.append(person.location.split(",")[0])
+                longitude.append(person.location.split(",")[1])
                 id.append(person.id)
     else:
         for person in Person.objects.all():
             if person.response.exists():
                 print(person.id)
-                print(person.lat)
-                print(person.long)
+                print(person.location.split(",")[0])
+                print(person.location.split(",")[1])
                 for response in person.response.all():
                     if str(response.symptom) == selected_symptom and response.answer == True:
-                        latitude.append(person.lat)
-                        longitude.append(person.long)
+                        latitude.append(person.location.split(",")[0])
+                        longitude.append(person.location.split(",")[1])
                         id.append(person.id)
 
     fig = go.Figure(data=go.Scattergeo(
@@ -236,8 +236,7 @@ def location(request):
             current_person = Person.objects.get(id=request.session['person'])
             if "lat" in request.POST:
                 if request.POST["lat"] != "no-permission":
-                    current_person.lat = request.POST["lat"]
-                    current_person.long = request.POST["long"]
+                    current_person.location = ",".join([request.POST["lat"], request.POST["long"]])
                     current_person.save()
                     increase_log_amount(request)
 
@@ -252,12 +251,11 @@ def location(request):
                 x = json.loads(data)
                 if len(x['features']) != 0:
                     print(x['features'][0]['geometry']['coordinates'])
-                    long, lat = x['features'][0]['geometry']['coordinates']
                     context_dict["success"] = True
-                    context_dict["lat"] = lat
-                    context_dict["long"] = long
-                    current_person.lat = lat
-                    current_person.long = long
+                    coords = ",".join([str(x['features'][0]['geometry']['coordinates'][1]),
+                                       str(x['features'][0]['geometry']['coordinates'][0])])
+                    context_dict["location"] = coords
+                    current_person.location = coords
                     current_person.save()
                     increase_log_amount(request)
                 else:
@@ -277,7 +275,7 @@ def location(request):
 def table(request):
     data = []
     for p in Person.objects.all():
-        info = {"id": p.id, "date": p.date, "lat": p.lat, "long": p.long}
+        info = {"id": p.id, "date": p.date, "location": p.location}
         for r in p.response.all():
             info[r.symptom.name] = r.answer
         data.append(info)

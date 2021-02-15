@@ -45,11 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sleep_app',
-#    django polymorphic - to allow subclassing of the Reponse model
     'polymorphic',
-  #  'django_plotly_dash.apps.DjangoPlotlyDashConfig',
     'channels',
-    'django_tables2'
+    'django_tables2',
+    'location_field.apps.DefaultConfig',
 ]
 
 MIDDLEWARE = [
@@ -89,16 +88,8 @@ WSGI_APPLICATION = "sleep_surveillance.wsgi.application"
 
 DATABASES = {
     "default": {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        "ENGINE": "djongo",
-        "CLIENT": {
-            "name": "sleep_app",
-            "host": "mongodb+srv://team_cs04:SleepSickness123@cluster0.3uwlm.mongodb.net/sleep_app?retryWrites=true&w=majority",
-            "username": "team_cs04",
-            "password": "SleepSickness123",
-            "authMechanism": "SCRAM-SHA-1",
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -165,3 +156,9 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR, ]
+
+
+LOCATION_FIELD = {
+    'map.provider': 'openstreetmap',
+    'search.provider': 'nominatim',
+}
