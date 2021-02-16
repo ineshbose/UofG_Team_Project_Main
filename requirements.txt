@@ -16,6 +16,7 @@ dash-html-components==1.1.1
 dash-renderer==1.8.3
 dash-table==4.11.0
 Django==3.0.5
+django-heroku==0.3.1
 django-location-field==2.1.0
 django-next-prev==1.0.1
 django-plotly-dash==1.4.2

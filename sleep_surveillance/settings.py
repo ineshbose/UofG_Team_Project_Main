@@ -162,3 +162,6 @@ LOCATION_FIELD = {
     'map.provider': 'openstreetmap',
     'search.provider': 'nominatim',
 }
+
+import django_heroku
+django_heroku.settings(locals())
