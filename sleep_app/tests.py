@@ -5,7 +5,7 @@ from django.test import TestCase
 from sleep_app.models import Symptom, Person, Response, YesNoResponse, ScaleResponse, TextResponse
 from sleep_app.forms import YesNoResponseForm
 from django.urls import reverse
-
+from django.contrib.auth.models import User
 
 # Create your tests here.
 class SymptomModelTests(TestCase):
@@ -229,6 +229,10 @@ class LocationViewTests(TestCase):
 
 class TableTest(TestCase):
     def test_bool_data_is_added_to_table(self):
+        user = User(username="test", password="123")
+        user.is_staff = True
+        user.save()
+        self.client.force_login(user)
         person = Person(id=123)
         person.save()
         xyz_symptom = Symptom(name="xyz symptom", question="Do you have xyz?", answer_type='bool',
@@ -245,6 +249,10 @@ class TableTest(TestCase):
         self.assertContains(response, """<td >True</td>""", html=True)
 
     def test_text_data_is_added_to_table(self):
+        user = User(username="test", password="123")
+        user.is_staff = True
+        user.save()
+        self.client.force_login(user)
         person = Person(id=123)
         person.save()
         abc_symptom = Symptom(name="abc symptom", question="What is your abc?", answer_type='text',
@@ -261,6 +269,10 @@ class TableTest(TestCase):
         self.assertContains(response, """<td >My abc is asdfsd</td>""", html=True)
 
     def test_scale_data_is_added_to_table(self):
+        user = User(username="test", password="123")
+        user.is_staff = True
+        user.save()
+        self.client.force_login(user)
         person = Person(id=123)
         person.save()
         abc_symptom = Symptom(name="abc symptom", question="How much abc do you have?", answer_type='scale',
