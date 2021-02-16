@@ -41,7 +41,7 @@
             <p class="navbar-text m-0 mr-2" style="font-size: 15px; color: #e8f3ff; font-weight: bold">Hello, {{ user.username }}</p>
             <a class="nav-link" href="{% url 'sleep_app:logout' %}">Logout<span class="sr-only"></span></a>
             {% else %}
-            <a class="nav-link" href="{% url 'sleep_app:login' %}">Login<span class="sr-only"></span></a>
+            <a class="nav-link" href="{% url 'sleep_app:login' %}">Log In<span class="sr-only"></span></a>
             {% endif %}
             <a class="nav-link active" href="{% url 'sleep_app:register' %}">Register <span class="sr-only"></span></a>
             <ul class="navbar-nav mr-auto">
@@ -51,13 +51,13 @@
 <div class="container-fluid pr-0 pl-0 ml-0 pt-5 mt-5">
 
     <form class="form-signin text-center" method="POST" action="{% url 'sleep_app:login' %}">
-        <h3 class="text-center font-weight-normal mb-3"><strong>PLEASE SIGN IN</strong></h3>
+        <h3 class="text-center font-weight-normal mb-3">Please Sign In</h3>
         {% csrf_token %}
         <input type="text" id="username" name="username" class="form-control" placeholder="Username" required="" autofocus="">
         <input type="password" name="password" value="" id="password" class="form-control" placeholder="Password" required="">
 
 
-        <input class="btn btn-lg btn-block mb-3" style="border-color: #2f5aab" type="submit" value="Log In"></input>
+        <input class="btn btn-lg btn-block mb-3" style="border-color: #2f5aab" type="submit" value="Log In">
 
         <br>
         Not yet registered?
@@ -65,31 +65,10 @@
 
         <input type="hidden" name="next" value="">
     </form>
-    <script>
-        window.onload = function() {
-            document.getElementById("login_link").remove();
-            document.getElementById("register_link").remove();
-
-        }
-    </script>
-    <!--
-    <h1>Login</h1>
-
-    <form method="post" action=".">
-        <input type="hidden" name="csrfmiddlewaretoken" value="yPqQhoQWrXYioiwn2TXrtpda6dVH0GmwC1lNtCZ9PEkc1SudVOaNK8ar6VN9CYki">
 
 
-
-        <input type="submit" value="Log In" />
-        <input type="hidden" name="next" value="" />
-    </form>
-    -->
 
 </div>
-<script src="/static/js/base.js"></script>
-<script src="/static/js/paginationHandler.js"></script>
-
-
 
 </body>
 <style>
