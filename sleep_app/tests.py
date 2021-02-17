@@ -2,6 +2,7 @@ from django.test import TestCase
 from sleep_app.models import Symptom, Person
 
 from django.test import TestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from sleep_app.models import Symptom, Person, Response, YesNoResponse, ScaleResponse, TextResponse
 from sleep_app.forms import YesNoResponseForm
 from django.urls import reverse
@@ -41,6 +42,7 @@ class SymptomModelTests(TestCase):
 
 
 
+#class SymptomQuestionViewTests(StaticLiveServerTestCase):
 class SymptomQuestionViewTests(TestCase):
     def test_symptom_does_not_exist(self):
         response = self.client.get(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
@@ -98,21 +100,22 @@ class SymptomQuestionViewTests(TestCase):
                                                                                      second_symptom.slug}))
 
     def test_last_symptom_redirects_to_location(self):
-        xyz_symptom = Symptom(name="xyz symptom", question="Is this a test question?", answer_type='bool',
-                              symptom_type='MOP')
-        xyz_symptom.save()
+        with self.settings(STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'):
+            xyz_symptom = Symptom(name="xyz symptom", question="Is this a test question?", answer_type='bool',
+                                  symptom_type='MOP')
+            xyz_symptom.save()
 
-        current_person = Person(id=123)
-        current_person.save()
+            current_person = Person(id=123)
+            current_person.save()
 
-        session = self.client.session
-        session["person"] = current_person.id
-        session.save()
+            session = self.client.session
+            session["person"] = current_person.id
+            session.save()
 
-        response = self.client.post(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
-                                                                                  xyz_symptom.slug}))
+            response = self.client.post(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
+                                                                                      xyz_symptom.slug}))
 
-        self.assertRedirects(response, reverse('sleep_app:location'))
+            self.assertRedirects(response, reverse('sleep_app:location'))
 
     def test_yes_no_response_is_associated_with_person(self):
         xyz_symptom = Symptom(name="xyz symptom", question="Is this a test question?", answer_type='bool',
@@ -197,19 +200,21 @@ class SymptomQuestionViewTests(TestCase):
 
 class LocationViewTests(TestCase):
     def test_coordinates_are_saved_if_permission_is_given(self):
-        # lat:49.748235, long: 6.658348
-        current_person = Person(id=456)
-        current_person.save()
+        with self.settings(STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'):
 
-        session = self.client.session
-        session["person"] = current_person.id
-        session.save()
+            # lat:49.748235, long: 6.658348
+            current_person = Person(id=456)
+            current_person.save()
 
-        self.client.post(reverse('sleep_app:location'), {'lat': "49.748235", 'long': "6.658348"})
+            session = self.client.session
+            session["person"] = current_person.id
+            session.save()
 
-#       need to get the object from the database again to access the latest changes
-        current_person = Person.objects.get(id=456)
-        self.assertEqual(current_person.location, "49.748235,6.658348")
+            self.client.post(reverse('sleep_app:location'), {'lat': "49.748235", 'long': "6.658348"})
+
+            #       need to get the object from the database again to access the latest changes
+            current_person = Person.objects.get(id=456)
+            self.assertEqual(current_person.location, "49.748235,6.658348")
 
 
 class TableTest(TestCase):
