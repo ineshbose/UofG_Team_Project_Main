@@ -1,2 +1,2 @@
 release: python manage.py makemigrations && python manage.py migrate
-web: gunicorn sleep_surveillance.wsgi
+web: gunicorn sleep_surv.wsgi

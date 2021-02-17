@@ -1,6 +1,6 @@
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sleep_surveillance.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sleep_surv.settings")
 
 import django
 
@@ -12,16 +12,16 @@ def populate():
     symptom_list = [
         #       Member of public symptoms
         {
-            "name":"Age",
+            "name": "Age",
             "question": "How old are you?",
             "answer_type": "int",
-            "symptom_type": "MOP"
+            "symptom_type": "MOP",
         },
         {
             "name": "Gender",
             "question": "'What is your gender identity?",
             "answer_type": "text",
-            "symptom_type": "MOP"
+            "symptom_type": "MOP",
         },
         {
             "name": "Fever",
@@ -61,31 +61,31 @@ def populate():
             "name": "Awareness",
             "question": "Are you aware of sleeping sickness?",
             "answer_type": "bool",
-            "symptom_type": "MOP"
+            "symptom_type": "MOP",
         },
         {
             "name": "Occupation",
             "question": "What is your occupation?",
             "answer_type": "text",
-            "symptom_type": "MOP"
+            "symptom_type": "MOP",
         },
         {
             "name": "Tsetse fly contact",
             "question": "Have you spent time in areas with high numbers of tsetse flies?",
             "answer_type": "bool",
-            "symptom_type": "MOP"
+            "symptom_type": "MOP",
         },
         {
             "name": "Tsetse fly bite",
             "question": "Have you been bitten by a tsetse fly recently?",
             "answer_type": "bool",
-            "symptom_type": "MOP"
+            "symptom_type": "MOP",
         },
         {
             "name": "Tsetse fly bite rash",
             "question": "Do you have a rash around the location of the bite? (If not applicable select 'unknown')",
             "answer_type": "bool",
-            "symptom_type": "MOP"
+            "symptom_type": "MOP",
         },
         {
             "name": "Other Symptoms",
@@ -99,13 +99,13 @@ def populate():
             "name": "Age",
             "question": "How old is the patient?",
             "answer_type": "int",
-            "symptom_type": "HCW"
+            "symptom_type": "HCW",
         },
         {
             "name": "Gender",
             "question": "'What is the patient's gender identity?",
             "answer_type": "text",
-            "symptom_type": "HCW"
+            "symptom_type": "HCW",
         },
         {
             "name": "Fever",

@@ -32,21 +32,21 @@ class Symptom(models.Model):
     #   optional picture
     image = models.ImageField(upload_to="symptoms", blank=True)
 
-#   this is for django-next-prev. The symptoms are ordered by symptom_type and pk and can be iterated over in that
-#   order in views. This makes it possible to display one symptom form per page, and to have a variable amount of
-#   symptoms.
+    #   this is for django-next-prev. The symptoms are ordered by symptom_type and pk and can be iterated over in that
+    #   order in views. This makes it possible to display one symptom form per page, and to have a variable amount of
+    #   symptoms.
     class Meta:
         ordering = ("symptom_type", "pk")
 
     def save(self, *args, **kwargs):
-        #if the symptom_type or answer_type is not is SYMPTOM_TYPES or ANSWER_TYPES then they get set to MOP or bool
-        #should not usually happen
-        #needs to be done in this slightly awkward way because django expects ANSWER_TYPES and SYMPTOM_TYPES to be of that
-        #format
+        # if the symptom_type or answer_type is not is SYMPTOM_TYPES or ANSWER_TYPES then they get set to MOP or bool
+        # should not usually happen
+        # needs to be done in this slightly awkward way because django expects ANSWER_TYPES and SYMPTOM_TYPES to be of that
+        # format
         if self.answer_type not in [a[0] for a in self.ANSWER_TYPES]:
-            self.answer_type = 'bool'
+            self.answer_type = "bool"
         if self.symptom_type not in [s[0] for s in self.SYMPTOM_TYPES]:
-            self.symptom_type = 'MOP'
+            self.symptom_type = "MOP"
 
         #       the name is concatenated with the symptom type because two symptoms of different types might have the same name
 
@@ -69,7 +69,7 @@ class Person(models.Model):
     id = models.IntegerField(primary_key=True)
     response = models.ManyToManyField(Response)
     date = models.DateTimeField(auto_now_add=True, blank=True)
-    location = PlainLocationField(based_fields=['city'], zoom=7)
+    location = PlainLocationField(based_fields=["city"], zoom=7)
 
 
 class YesNoResponse(Response):

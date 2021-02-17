@@ -22,6 +22,7 @@ django-next-prev==1.0.1
 django-plotly-dash==1.4.2
 django-polymorphic==3.0.0
 django-tables2==2.3.3
+djangorestframework==3.12.2
 dnspython==2.0.0
 dpd-components==0.1.0
 Flask==1.1.2
