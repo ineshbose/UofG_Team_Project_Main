@@ -24,7 +24,7 @@ from .tables import *
 def map(request):
     context_dict = {}
 
-    return render(request, 'sleep_app/map.html', context_dict)
+    return render(request, "sleep_app/map.html", context_dict)
 
 
 def index(request):
@@ -32,9 +32,9 @@ def index(request):
 
 
 def map(request):
-    df = pd.read_csv('testing2.csv')
+    df = pd.read_csv("testing2.csv")
     print(df)
-    df['text'] = df['name'] + ' - ' + df['size'].astype(str) + ' cases'
+    df["text"] = df["name"] + " - " + df["size"].astype(str) + " cases"
 
     selected_symptom = None
     latitude = []
@@ -58,56 +58,62 @@ def map(request):
                 print(person.location.split(",")[0])
                 print(person.location.split(",")[1])
                 for response in person.response.all():
-                    if str(response.symptom) == selected_symptom and response.answer == True:
+                    if (
+                        str(response.symptom) == selected_symptom
+                        and response.answer == True
+                    ):
                         latitude.append(person.location.split(",")[0])
                         longitude.append(person.location.split(",")[1])
                         id.append(person.id)
 
-    fig = go.Figure(data=go.Scattergeo(
-        lon=longitude,
-        lat=latitude,
-        text=id,
-        mode='markers',
-        marker=dict(
-            color='red',
-            opacity=0.8,
-            symbol='circle',
-            line=dict(
-                width=1,
-                color='rgba(102, 102, 102)'
+    fig = go.Figure(
+        data=go.Scattergeo(
+            lon=longitude,
+            lat=latitude,
+            text=id,
+            mode="markers",
+            marker=dict(
+                color="red",
+                opacity=0.8,
+                symbol="circle",
+                line=dict(width=1, color="rgba(102, 102, 102)"),
+                cmin=0,
+                size=5,
+                cmax=5,
             ),
-            cmin=0,
-            size=5,
-            cmax=5,
-        )))
+        )
+    )
 
-    fig2 = go.Figure(data=go.Scattergeo(
-        lon=longitude,
-        lat=latitude,
-        text=id,
-        mode='markers',
-        marker=dict(
-            color='red',
-            opacity=0.8,
-            symbol='circle',
-            line=dict(
-                width=1,
-                color='rgba(102, 102, 102)'
+    fig2 = go.Figure(
+        data=go.Scattergeo(
+            lon=longitude,
+            lat=latitude,
+            text=id,
+            mode="markers",
+            marker=dict(
+                color="red",
+                opacity=0.8,
+                symbol="circle",
+                line=dict(width=1, color="rgba(102, 102, 102)"),
+                cmin=0,
+                size=5,
+                cmax=5,
             ),
-            cmin=0,
-            size=5,
-            cmax=5,
-        )))
+        )
+    )
 
     fig.update_geos(showcountries=True)  # Automatically zoom into the zone of interest
-    fig2.update_geos(showcountries=True, scope='africa')  # Automatically zoom into the zone of interest
+    fig2.update_geos(
+        showcountries=True, scope="africa"
+    )  # Automatically zoom into the zone of interest
     plot_div = fig.to_html(full_html=False, default_height=700, default_width=1000)
     plot_div2 = fig2.to_html(full_html=False, default_height=700, default_width=1000)
-    context = {'plot_div': plot_div,
-               'plot_div2': plot_div2,
-               'all_symptoms': s,
-               'selected_symptom': selected_symptom,
-               }
+    context = {
+        "plot_div": plot_div,
+        "plot_div2": plot_div2,
+        "all_symptoms": s,
+        "selected_symptom": selected_symptom,
+    }
     return render(request, "sleep_app/map.html", context)
 
 
@@ -169,15 +175,19 @@ def symptom_question(request, symptom_name_slug):
             context_dict["response_form"] = response_form
         except Symptom.DoesNotExist:
             context_dict["symptom"] = context_dict["response_form"] = None
-        return render(request, 'sleep_app/symptom_question.html', context=context_dict)
+        return render(request, "sleep_app/symptom_question.html", context=context_dict)
 
     elif request.method == "POST":
-        #clicking on the link to the form sends a POST request to this page. That causes a new person object to be generated
+        # clicking on the link to the form sends a POST request to this page. That causes a new person object to be generated
         if "first" in request.POST:
             try:
                 create_person_and_id(request)
-                return redirect(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
-                                                                          symptom_name_slug}))
+                return redirect(
+                    reverse(
+                        "sleep_app:symptom_form",
+                        kwargs={"symptom_name_slug": symptom_name_slug},
+                    )
+                )
             except Person.DoesNotExist:
                 print("Error: could not find symptom")
         else:
@@ -219,41 +229,57 @@ def symptom_question(request, symptom_name_slug):
                 current_person.save()
 
             except Person.DoesNotExist:
-                print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
+                print(
+                    "ERROR: Person with id {id} does not exist".format(
+                        id=request.session["person"]
+                    )
+                )
                 return redirect("sleep_app:main_form_page")
 
-            if symptom == Symptom.objects.filter(symptom_type=symptom.symptom_type).last():
-                return redirect('sleep_app:location')
+            if (
+                symptom
+                == Symptom.objects.filter(symptom_type=symptom.symptom_type).last()
+            ):
+                return redirect("sleep_app:location")
             else:
                 next_symptom = next_in_order(symptom)
-                return redirect(reverse('sleep_app:symptom_form', kwargs={'symptom_name_slug':
-                                                                              next_symptom.slug}))
+                return redirect(
+                    reverse(
+                        "sleep_app:symptom_form",
+                        kwargs={"symptom_name_slug": next_symptom.slug},
+                    )
+                )
+
 
 def location(request):
     context_dict = {"browser_location": True}
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
-            current_person = Person.objects.get(id=request.session['person'])
+            current_person = Person.objects.get(id=request.session["person"])
             if "lat" in request.POST:
                 if request.POST["lat"] != "no-permission":
-                    current_person.location = ",".join([request.POST["lat"], request.POST["long"]])
+                    current_person.location = ",".join(
+                        [request.POST["lat"], request.POST["long"]]
+                    )
                     current_person.save()
                     increase_log_amount(request)
 
             elif "location" in request.POST:
                 context_dict = {"browser_location": False}
-                query = {"q": request.POST["location"],
-                         "format": "geojson"
-                         }
+                query = {"q": request.POST["location"], "format": "geojson"}
                 encode = urllib.parse.urlencode(query)
                 url = "https://nominatim.openstreetmap.org/search?" + encode
                 data = urllib.request.urlopen(url).read().decode()
                 x = json.loads(data)
-                if len(x['features']) != 0:
-                    print(x['features'][0]['geometry']['coordinates'])
+                if len(x["features"]) != 0:
+                    print(x["features"][0]["geometry"]["coordinates"])
                     context_dict["success"] = True
-                    coords = ",".join([str(x['features'][0]['geometry']['coordinates'][1]),
-                                       str(x['features'][0]['geometry']['coordinates'][0])])
+                    coords = ",".join(
+                        [
+                            str(x["features"][0]["geometry"]["coordinates"][1]),
+                            str(x["features"][0]["geometry"]["coordinates"][0]),
+                        ]
+                    )
                     context_dict["location"] = coords
                     current_person.location = coords
                     current_person.save()
@@ -262,9 +288,13 @@ def location(request):
                     context_dict["failure"] = True
 
         except Person.DoesNotExist:
-            print("ERROR: Person with id {id} does not exist".format(id=request.session['person']))
+            print(
+                "ERROR: Person with id {id} does not exist".format(
+                    id=request.session["person"]
+                )
+            )
 
-    return render(request, 'sleep_app/location.html', context=context_dict)
+    return render(request, "sleep_app/location.html", context=context_dict)
 
 
 # Normally it would be easier to just let the PersonTable class use Person.objects.all() (as shown in the django-tables2
