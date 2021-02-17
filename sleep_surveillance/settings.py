@@ -163,5 +163,6 @@ LOCATION_FIELD = {
     'search.provider': 'nominatim',
 }
 
-import django_heroku
-django_heroku.settings(locals())
+if os.environ.get('SERVER'):
+    import django_heroku
+    django_heroku.settings(locals())
