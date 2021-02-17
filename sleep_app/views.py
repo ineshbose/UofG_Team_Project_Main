@@ -1,3 +1,4 @@
+from django.contrib import auth
 from django.shortcuts import render
 from sleep_app.models import (
     Symptom,
@@ -7,23 +8,27 @@ from sleep_app.models import (
     TextResponse,
     ScaleResponse,
 )
-from sleep_app.forms import YesNoResponseForm, TextResponseForm, ScaleResponseForm
+from sleep_app.forms import YesNoResponseForm, TextResponseForm, ScaleResponseForm, RegisterForm
 import random
 from django.shortcuts import redirect, reverse
 from urllib import parse
 from next_prev import next_in_order
+from django.contrib import messages
 import urllib
 import json
 from django.shortcuts import render
+from sleep_app.decorators import staff_required
+from django.contrib.auth import authenticate
+from django.contrib.auth.forms import AuthenticationForm
 
 import plotly.graph_objs as go
 import pandas as pd
 from .tables import *
 
 
+@staff_required
 def map(request):
     context_dict = {}
-
     return render(request, 'sleep_app/map.html', context_dict)
 
 
@@ -31,6 +36,7 @@ def index(request):
     return redirect("sleep_app:main_form_page")
 
 
+@staff_required
 def map(request):
     df = pd.read_csv('testing2.csv')
     print(df)
@@ -272,6 +278,8 @@ def location(request):
 # appropriate symptom columns. So this generates a list of dicts, where each dict represents one person's data in the proper
 # format. The disadvantage of doing it this way is that it is rather slow (when using the cloud database)
 # so a better solution might be needed later.
+
+@staff_required
 def table(request):
     data = []
     for p in Person.objects.all():
@@ -282,3 +290,44 @@ def table(request):
 
     person_table = PersonTable(data)
     return render(request, "sleep_app/table.html", {"table": person_table})
+
+
+def login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+
+            user = form.get_user()
+            print(user.is_staff)
+            print(user)
+            authenticate(username= user.username, password=user.password)
+            auth.login(request, user)
+            return redirect('sleep_app:main_form_page')
+    else:
+        form = AuthenticationForm()
+    context = {'form': form}
+    return render(request, 'sleep_app/login.html', context)
+
+
+def register(request):
+    form = RegisterForm()
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            print("register success")
+            form.save()
+            user = form.cleaned_data.get('username')
+            return redirect('sleep_app:login')
+        else:
+            print(form.cleaned_data)
+            print(form.errors)
+            return redirect('sleep_app:register')
+    context = {'form': form}
+
+    return render(request, "sleep_app/register.html", context)
+
+
+def logout(request):
+    auth.logout(request)
+    print("logout success")
+    return redirect('sleep_app:main_form_page')
