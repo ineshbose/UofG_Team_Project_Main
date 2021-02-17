@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from .models import Symptom
+from . import models
 
 # The table should have a row for each person, and columns "id", "date" "lat", "long" and then one column per symptom. A person's
 # answer to a symptom question should be shown in the appropriate symptom column. django-tables2 does not offer a straight-forward
@@ -21,7 +21,7 @@ class PersonTable(tables.Table):
     # https://stackoverflow.com/questions/39472441/django-tables2-add-dynamic-columns-to-table-class-from-hstore
     def __init__(self, data, *args, **kwargs):
         if data:
-            symptoms = Symptom.objects.all()
+            symptoms = models.Symptom.objects.all()
             for s in symptoms:
                 self.base_columns[str(s)] = tables.Column()
         super(PersonTable, self).__init__(data, *args, **kwargs)

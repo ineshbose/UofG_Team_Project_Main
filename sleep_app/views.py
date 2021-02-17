@@ -1,29 +1,25 @@
-from django.shortcuts import render
-from sleep_app.models import (
-    Symptom,
-    Person,
-    Response,
-    YesNoResponse,
-    TextResponse,
-    ScaleResponse,
-)
-from sleep_app.forms import YesNoResponseForm, TextResponseForm, ScaleResponseForm
 import random
-from django.shortcuts import redirect, reverse
-from urllib import parse
-from next_prev import next_in_order
-import urllib
 import json
-from django.shortcuts import render
+import urllib
 
 import plotly.graph_objs as go
 import pandas as pd
-from .tables import *
+
+from django.contrib import auth, messages
+from django.shortcuts import render, redirect, reverse
+from next_prev import next_in_order
+from django.contrib.auth import authenticate
+from django.contrib.auth.forms import AuthenticationForm
+from sleep_app.decorators import staff_required
+
+from . import models
+from . import forms
+from . import tables
 
 
+@staff_required
 def map(request):
     context_dict = {}
-
     return render(request, "sleep_app/map.html", context_dict)
 
 
@@ -31,6 +27,7 @@ def index(request):
     return redirect("sleep_app:main_form_page")
 
 
+@staff_required
 def map(request):
     df = pd.read_csv("testing2.csv")
     print(df)
@@ -40,19 +37,19 @@ def map(request):
     latitude = []
     longitude = []
     id = []
-    s = Symptom.objects.all()
+    s = models.Symptom.objects.all()
     print(selected_symptom)
     if request.method == "POST":
         selected_symptom = request.POST.get("dropdown")
 
     if selected_symptom == None:
-        for person in Person.objects.all():
+        for person in models.Person.objects.all():
             if person.location != None:
                 latitude.append(person.location.split(",")[0])
                 longitude.append(person.location.split(",")[1])
                 id.append(person.id)
     else:
-        for person in Person.objects.all():
+        for person in models.Person.objects.all():
             if person.response.exists():
                 print(person.id)
                 print(person.location.split(",")[0])
@@ -121,9 +118,9 @@ def map(request):
 def create_person_and_id(request):
     new_id = int(random.uniform(0, 1000000))
     # to prevent id collision
-    while Person.objects.filter(id=new_id).count() > 0:
+    while models.Person.objects.filter(id=new_id).count() > 0:
         new_id = int(random.uniform(0, 1000000))
-    person = Person(id=new_id)
+    person = models.Person(id=new_id)
     person.save()
     request.session["person"] = person.id
 
@@ -136,13 +133,13 @@ def increase_log_amount(request):
 def form(request):
     if request.method == "POST":
         if "cancel" in request.POST:
-            current_person = Person.objects.get(id=request.session["person"])
+            current_person = models.Person.objects.get(id=request.session["person"])
             current_person.delete()
             del request.session["person"]
 
-    first_symptom_mop = Symptom.objects.filter(symptom_type="MOP").first()
-    first_symptom_hcw = Symptom.objects.filter(symptom_type="HCW").first()
-    first_symptom_eov = Symptom.objects.filter(symptom_type="EOV").first()
+    first_symptom_mop = models.Symptom.objects.filter(symptom_type="MOP").first()
+    first_symptom_hcw = models.Symptom.objects.filter(symptom_type="HCW").first()
+    first_symptom_eov = models.Symptom.objects.filter(symptom_type="EOV").first()
     context_dict = {
         "first_symptom_mop": first_symptom_mop,
         "first_symptom_hcw": first_symptom_hcw,
@@ -163,17 +160,17 @@ def symptom_question(request, symptom_name_slug):
     if request.method == "GET":
         context_dict = {}
         try:
-            symptom = Symptom.objects.get(slug=symptom_name_slug)
+            symptom = models.Symptom.objects.get(slug=symptom_name_slug)
             context_dict["symptom"] = symptom
             # need to pass the proper type of response object to the template, depending on what type of response is needed
             if symptom.answer_type == "bool":
-                response_form = YesNoResponseForm()
+                response_form = forms.YesNoResponseForm()
             elif symptom.answer_type == "text":
-                response_form = TextResponseForm()
+                response_form = forms.TextResponseForm()
             else:
-                response_form = ScaleResponseForm()
+                response_form = forms.ScaleResponseForm()
             context_dict["response_form"] = response_form
-        except Symptom.DoesNotExist:
+        except models.Symptom.DoesNotExist:
             context_dict["symptom"] = context_dict["response_form"] = None
         return render(request, "sleep_app/symptom_question.html", context=context_dict)
 
@@ -188,34 +185,34 @@ def symptom_question(request, symptom_name_slug):
                         kwargs={"symptom_name_slug": symptom_name_slug},
                     )
                 )
-            except Person.DoesNotExist:
+            except models.Person.DoesNotExist:
                 print("Error: could not find symptom")
         else:
             try:
-                symptom = Symptom.objects.get(slug=symptom_name_slug)
+                symptom = models.Symptom.objects.get(slug=symptom_name_slug)
                 if symptom.answer_type == "bool":
-                    response_form = YesNoResponseForm(request.POST)
+                    response_form = forms.YesNoResponseForm(request.POST)
                     if response_form.is_valid():
-                        response = YesNoResponse(
+                        response = models.YesNoResponse(
                             symptom=symptom, answer=response_form.cleaned_data["answer"]
                         )
                         response.save()
                 elif symptom.answer_type == "text":
-                    response_form = TextResponseForm(request.POST)
+                    response_form = forms.TextResponseForm(request.POST)
                     if response_form.is_valid():
-                        response = TextResponse(
+                        response = models.TextResponse(
                             symptom=symptom, answer=response_form.cleaned_data["answer"]
                         )
                         response.save()
                 else:
-                    response_form = ScaleResponseForm(request.POST)
+                    response_form = forms.ScaleResponseForm(request.POST)
                     if response_form.is_valid():
-                        response = ScaleResponse(
+                        response = models.ScaleResponse(
                             symptom=symptom, answer=response_form.cleaned_data["answer"]
                         )
                         response.save()
             # for some reason we got here through a page with an invalid symptom slug. Should never happen.
-            except Symptom.DoesNotExist:
+            except models.Symptom.DoesNotExist:
                 print(
                     "ERROR: Symptom with slug {slug} does not exist.".format(
                         slug=symptom_name_slug
@@ -224,11 +221,11 @@ def symptom_question(request, symptom_name_slug):
                 return redirect("sleep_app:main_form_page")
 
             try:
-                current_person = Person.objects.get(id=request.session["person"])
+                current_person = models.Person.objects.get(id=request.session["person"])
                 current_person.response.add(response)
                 current_person.save()
 
-            except Person.DoesNotExist:
+            except models.Person.DoesNotExist:
                 print(
                     "ERROR: Person with id {id} does not exist".format(
                         id=request.session["person"]
@@ -238,7 +235,9 @@ def symptom_question(request, symptom_name_slug):
 
             if (
                 symptom
-                == Symptom.objects.filter(symptom_type=symptom.symptom_type).last()
+                == models.Symptom.objects.filter(
+                    symptom_type=symptom.symptom_type
+                ).last()
             ):
                 return redirect("sleep_app:location")
             else:
@@ -255,7 +254,7 @@ def location(request):
     context_dict = {"browser_location": True}
     if request.method == "POST":
         try:
-            current_person = Person.objects.get(id=request.session["person"])
+            current_person = models.Person.objects.get(id=request.session["person"])
             if "lat" in request.POST:
                 if request.POST["lat"] != "no-permission":
                     current_person.location = ",".join(
@@ -287,7 +286,7 @@ def location(request):
                 else:
                     context_dict["failure"] = True
 
-        except Person.DoesNotExist:
+        except models.Person.DoesNotExist:
             print(
                 "ERROR: Person with id {id} does not exist".format(
                     id=request.session["person"]
@@ -302,13 +301,57 @@ def location(request):
 # appropriate symptom columns. So this generates a list of dicts, where each dict represents one person's data in the proper
 # format. The disadvantage of doing it this way is that it is rather slow (when using the cloud database)
 # so a better solution might be needed later.
+
+
+@staff_required
 def table(request):
     data = []
-    for p in Person.objects.all():
+    for p in models.Person.objects.all():
         info = {"id": p.id, "date": p.date, "location": p.location}
         for r in p.response.all():
             info[r.symptom.name] = r.answer
         data.append(info)
 
-    person_table = PersonTable(data)
+    person_table = tables.PersonTable(data)
     return render(request, "sleep_app/table.html", {"table": person_table})
+
+
+def login(request):
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+
+            user = form.get_user()
+            print(user.is_staff)
+            print(user)
+            authenticate(username=user.username, password=user.password)
+            auth.login(request, user)
+            return redirect("sleep_app:main_form_page")
+    else:
+        form = AuthenticationForm()
+    context = {"form": form}
+    return render(request, "sleep_app/login.html", context)
+
+
+def register(request):
+    form = forms.RegisterForm()
+    if request.method == "POST":
+        form = forms.RegisterForm(request.POST)
+        if form.is_valid():
+            print("register success")
+            form.save()
+            user = form.cleaned_data.get("username")
+            return redirect("sleep_app:login")
+        else:
+            print(form.cleaned_data)
+            print(form.errors)
+            return redirect("sleep_app:register")
+    context = {"form": form}
+
+    return render(request, "sleep_app/register.html", context)
+
+
+def logout(request):
+    auth.logout(request)
+    print("logout success")
+    return redirect("sleep_app:main_form_page")
