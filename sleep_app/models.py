@@ -44,7 +44,7 @@ class Symptom(models.Model):
 
 
 class Response(models.Model):
-    question = models.ForeignKey(Symptom, on_delete=models.CASCADE)
+    symptom = models.ForeignKey(Symptom, on_delete=models.CASCADE)
     text_response = models.TextField(max_length=2056, blank=True, null=True)
     scale_response = models.IntegerField(null=True)
     bool_response = models.BooleanField(null=True)
@@ -55,7 +55,7 @@ class Response(models.Model):
             "text": self.text_response,
             "bool": self.bool_response,
         }
-        return f'{self.question}: {choice_mapping.get(self.question.answer_type, "<error>")}'
+        return f'{self.symptom}: {choice_mapping.get(self.symptom.answer_type, "<error>")}'
 
 
 class Person(models.Model):
@@ -67,5 +67,3 @@ class Person(models.Model):
 class AnswerSet(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     response = models.ForeignKey(Response, on_delete=models.CASCADE)
-    attempt = models.IntegerField(default=1)
-    date = models.DateTimeField(auto_now_add=True, blank=True)

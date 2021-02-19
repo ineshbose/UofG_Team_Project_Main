@@ -193,22 +193,22 @@ def symptom_question(request, symptom_name_slug):
                 if symptom.answer_type == "bool":
                     response_form = forms.YesNoResponseForm(request.POST)
                     if response_form.is_valid():
-                        response = models.YesNoResponse(
-                            symptom=symptom, answer=response_form.cleaned_data["answer"]
+                        response = models.Response(
+                            symptom=symptom, bool_response=response_form.cleaned_data["bool_response"]
                         )
                         response.save()
                 elif symptom.answer_type == "text":
                     response_form = forms.TextResponseForm(request.POST)
                     if response_form.is_valid():
-                        response = models.TextResponse(
-                            symptom=symptom, answer=response_form.cleaned_data["answer"]
+                        response = models.Response(
+                            symptom=symptom, text_response=response_form.cleaned_data["text_response"]
                         )
                         response.save()
                 else:
                     response_form = forms.ScaleResponseForm(request.POST)
                     if response_form.is_valid():
-                        response = models.ScaleResponse(
-                            symptom=symptom, answer=response_form.cleaned_data["answer"]
+                        response = models.Response(
+                            symptom=symptom, scale_response=response_form.cleaned_data["scale_response"]
                         )
                         response.save()
             # for some reason we got here through a page with an invalid symptom slug. Should never happen.
@@ -222,8 +222,8 @@ def symptom_question(request, symptom_name_slug):
 
             try:
                 current_person = models.Person.objects.get(id=request.session["person"])
-                current_person.response.add(response)
-                current_person.save()
+                answer_set = models.AnswerSet(person=current_person, response = response)
+                answer_set.save()
 
             except models.Person.DoesNotExist:
                 print(
@@ -308,8 +308,14 @@ def table(request):
     data = []
     for p in models.Person.objects.all():
         info = {"id": p.id, "date": p.date, "location": p.location}
-        for r in p.response.all():
-            info[r.symptom.name] = r.answer
+        answers = p.answerset_set.all()
+        for a in answers:
+            if a.response.symptom.answer_type == 'bool':
+                info[a.response.symptom.name] = a.response.bool_response
+            elif a.response.symptom.answer_type == 'text':
+                info[a.response.symptom.name] = a.response.text_response
+            else:
+                info[a.response.symptom.name] = a.response.scale_response
         data.append(info)
 
     person_table = tables.PersonTable(data)
