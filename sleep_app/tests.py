@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -7,7 +6,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from . import forms
 from . import models
 
-# Create your tests here.
+
 class SymptomModelTests(TestCase):
     def test_invalid_answer_type_set_to_bool(self):
         xyz_symptom = models.Symptom(
@@ -48,7 +47,6 @@ class SymptomModelTests(TestCase):
         self.assertEqual(xyz_symptom.slug, "xyz-symptom-mop")
 
 
-# class SymptomQuestionViewTests(StaticLiveServerTestCase):
 class SymptomQuestionViewTests(TestCase):
     def test_symptom_does_not_exist(self):
         response = self.client.get(
@@ -216,7 +214,9 @@ class SymptomQuestionViewTests(TestCase):
 
         self.assertEqual(len(current_person.answerset_set.all()), 1)
         answer_set = current_person.answerset_set.all()[0]
-        self.assertEqual(answer_set.response.text_response, "This is what I want to say!")
+        self.assertEqual(
+            answer_set.response.text_response, "This is what I want to say!"
+        )
 
     def test_scale_response_is_associated_with_person(self):
         xyz_symptom = models.Symptom(
@@ -351,7 +351,7 @@ class TableTest(TestCase):
             symptom=abc_symptom, text_response="My abc is asdfsd"
         )
         abc_response.save()
-        answer_set = models.AnswerSet(person = person, response = abc_response)
+        answer_set = models.AnswerSet(person=person, response=abc_response)
         answer_set.save()
         response = self.client.get(reverse("sleep_app:table"))
         self.assertContains(
@@ -379,7 +379,7 @@ class TableTest(TestCase):
         cde_symptom.save()
         cde_response = models.Response(symptom=cde_symptom, scale_response=4)
         cde_response.save()
-        answer_set = models.AnswerSet(person = person, response = cde_response)
+        answer_set = models.AnswerSet(person=person, response=cde_response)
         answer_set.save()
         response = self.client.get(reverse("sleep_app:table"))
         self.assertContains(
@@ -389,5 +389,5 @@ class TableTest(TestCase):
                                         </th>""",
             html=True,
         )
-        #print(response.content)
+        # print(response.content)
         self.assertContains(response, """<td >4</td>""", html=True)

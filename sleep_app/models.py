@@ -55,7 +55,9 @@ class Response(models.Model):
             "text": self.text_response,
             "bool": self.bool_response,
         }
-        return f'{self.symptom}: {choice_mapping.get(self.symptom.answer_type, "<error>")}'
+        return (
+            f'{self.symptom}: {choice_mapping.get(self.symptom.answer_type, "<error>")}'
+        )
 
 
 class Person(models.Model):

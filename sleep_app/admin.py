@@ -8,4 +8,5 @@ class SymptomAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Person)
 admin.site.register(models.Response)
+admin.site.register(models.AnswerSet)
 admin.site.register(models.Symptom, SymptomAdmin)

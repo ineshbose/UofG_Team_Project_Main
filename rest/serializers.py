@@ -18,3 +18,9 @@ class SymptomSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Symptom
         fields = "__all__"
+
+
+class AnswerSetSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.AnswerSet
+        fields = "__all__"
