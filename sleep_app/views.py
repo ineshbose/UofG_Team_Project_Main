@@ -50,18 +50,18 @@ def map(request):
                 id.append(person.id)
     else:
         for person in models.Person.objects.all():
-            if person.response.exists():
-                print(person.id)
-                print(person.location.split(",")[0])
-                print(person.location.split(",")[1])
-                for response in person.response.all():
-                    if (
-                        str(response.symptom) == selected_symptom
-                        and response.answer == True
-                    ):
-                        latitude.append(person.location.split(",")[0])
-                        longitude.append(person.location.split(",")[1])
-                        id.append(person.id)
+            answers = person.answerset_set.all()
+            print(person.id)
+            print(person.location.split(",")[0])
+            print(person.location.split(",")[1])
+            for a in answers:
+                if (
+                    str(a.response.symptom) == selected_symptom
+                    and a.response.answer == True
+                ):
+                    latitude.append(person.location.split(",")[0])
+                    longitude.append(person.location.split(",")[1])
+                    id.append(person.id)
 
     fig = go.Figure(
         data=go.Scattergeo(
@@ -310,7 +310,7 @@ def location(request):
 def table(request):
     data = []
     for p in models.Person.objects.all():
-        info = {"id": p.id, "date": p.date, "location": p.location}
+        info = {"id": p.id, "date": p.date, "location": p.location, "location_text":p.location_text}
         answers = p.answerset_set.all()
         for a in answers:
             if a.response.symptom.answer_type == "bool":
