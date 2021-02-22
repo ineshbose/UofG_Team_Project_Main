@@ -13,6 +13,7 @@ router = routers.DefaultRouter()
 router.register(r"persons", rest_views.PersonViewSet)
 router.register(r"responses", rest_views.ResponseViewSet)
 router.register(r"symptoms", rest_views.SymptomViewSet)
+router.register(r"answersets", rest_views.AnswerSetViewSet)
 
 
 urlpatterns = [

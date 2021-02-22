@@ -23,7 +23,7 @@ window.onload = function() {
     }
     const csrftoken = getCookie('csrftoken');
 
-//  is this the best way to do this? Partly based on https://docs.djangoproject.com/en/2.2/ref/csrf/
+//  is this the best way to do this? Partly based on https://docs.djangoproject.com/en/3.0/ref/csrf/
     if (!this.crossDomain){
         httpRequest.setRequestHeader("X-CSRFToken", csrftoken, 'Content-Type', 'application/x-www-form-urlencoded');
     }
