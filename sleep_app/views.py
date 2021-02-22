@@ -279,12 +279,12 @@ def location(request):
                             str(x["features"][0]["geometry"]["coordinates"][0]),
                         ]
                     )
-                    context_dict["location"] = coords
+                    context_dict["lat"] = x["features"][0]["geometry"]["coordinates"][1]
+                    context_dict["long"] = x["features"][0]["geometry"]["coordinates"][0]
                     current_person.location = coords
-                    current_person.save()
                     increase_log_amount(request)
-                else:
-                    context_dict["failure"] = True
+                current_person.location_text = request.POST["location"]
+                current_person.save()
 
         except models.Person.DoesNotExist:
             print(
@@ -307,7 +307,7 @@ def location(request):
 def table(request):
     data = []
     for p in models.Person.objects.all():
-        info = {"id": p.id, "date": p.date, "location": p.location}
+        info = {"id": p.id, "date": p.date, "location": p.location, "location_text": p.location_text}
         for r in p.response.all():
             info[r.symptom.name] = r.answer
         data.append(info)

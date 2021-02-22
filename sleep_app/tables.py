@@ -14,6 +14,7 @@ class PersonTable(tables.Table):
     id = tables.Column()
     date = tables.Column()
     location = tables.Column()
+    location_text = tables.Column()
 
     class Meta:
         template_name = "django_tables2/bootstrap.html"

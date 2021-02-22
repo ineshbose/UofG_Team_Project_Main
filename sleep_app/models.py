@@ -70,7 +70,7 @@ class Person(models.Model):
     response = models.ManyToManyField(Response)
     date = models.DateTimeField(auto_now_add=True, blank=True)
     location = PlainLocationField(based_fields=["city"], zoom=7)
-
+    location_text = models.CharField(max_length=256, default="", blank=True, null=True)
 
 class YesNoResponse(Response):
     answer = models.BooleanField(null=True)
@@ -82,7 +82,7 @@ class YesNoResponse(Response):
 
 class TextResponse(Response):
     # answer = models.CharField(max_length=1028, null=True)
-    answer = models.TextField(max_length=2056, default="", blank=True)
+    answer = models.TextField(max_length=2056, default="", blank=True, null=True)
     symptom = models.ForeignKey(Symptom, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
