@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -7,7 +6,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from . import forms
 from . import models
 
-# Create your tests here.
+
 class SymptomModelTests(TestCase):
     def test_invalid_answer_type_set_to_bool(self):
         xyz_symptom = models.Symptom(
@@ -48,7 +47,6 @@ class SymptomModelTests(TestCase):
         self.assertEqual(xyz_symptom.slug, "xyz-symptom-mop")
 
 
-# class SymptomQuestionViewTests(StaticLiveServerTestCase):
 class SymptomQuestionViewTests(TestCase):
     def test_symptom_does_not_exist(self):
         response = self.client.get(
@@ -185,12 +183,12 @@ class SymptomQuestionViewTests(TestCase):
             reverse(
                 "sleep_app:symptom_form", kwargs={"symptom_name_slug": xyz_symptom.slug}
             ),
-            {"answer": True},
+            {"bool_response": True},
         )
 
-        self.assertEqual(len(current_person.response.all()), 1)
-        response = current_person.response.all()[0]
-        self.assertEqual(response.answer, True)
+        self.assertEqual(len(current_person.answerset_set.all()), 1)
+        answer_set = current_person.answerset_set.all()[0]
+        self.assertEqual(answer_set.response.bool_response, True)
 
     def test_text_response_is_associated_with_person(self):
         xyz_symptom = models.Symptom(
@@ -211,12 +209,14 @@ class SymptomQuestionViewTests(TestCase):
             reverse(
                 "sleep_app:symptom_form", kwargs={"symptom_name_slug": xyz_symptom.slug}
             ),
-            {"answer": "This is what I want to say!"},
+            {"text_response": "This is what I want to say!"},
         )
 
-        self.assertEqual(len(current_person.response.all()), 1)
-        response = current_person.response.all()[0]
-        self.assertEqual(response.answer, "This is what I want to say!")
+        self.assertEqual(len(current_person.answerset_set.all()), 1)
+        answer_set = current_person.answerset_set.all()[0]
+        self.assertEqual(
+            answer_set.response.text_response, "This is what I want to say!"
+        )
 
     def test_scale_response_is_associated_with_person(self):
         xyz_symptom = models.Symptom(
@@ -237,12 +237,12 @@ class SymptomQuestionViewTests(TestCase):
             reverse(
                 "sleep_app:symptom_form", kwargs={"symptom_name_slug": xyz_symptom.slug}
             ),
-            {"answer": 2},
+            {"scale_response": 2},
         )
 
-        self.assertEqual(len(current_person.response.all()), 1)
-        response = current_person.response.all()[0]
-        self.assertEqual(response.answer, 2)
+        self.assertEqual(len(current_person.answerset_set.all()), 1)
+        answer_set = current_person.answerset_set.all()[0]
+        self.assertEqual(answer_set.response.scale_response, 2)
 
     def test_new_person_is_created_when_clicking_on_the_first_symptom(self):
         xyz_symptom = models.Symptom(
@@ -318,9 +318,10 @@ class TableTest(TestCase):
         )
 
         xyz_symptom.save()
-        xyz_response = models.YesNoResponse(symptom=xyz_symptom, answer=True)
+        xyz_response = models.Response(symptom=xyz_symptom, bool_response=True)
         xyz_response.save()
-        person.response.add(xyz_response)
+        answer_set = models.AnswerSet(person=person, response=xyz_response)
+        answer_set.save()
         response = self.client.get(reverse("sleep_app:table"))
         self.assertContains(
             response,
@@ -346,11 +347,12 @@ class TableTest(TestCase):
         )
 
         abc_symptom.save()
-        abc_response = models.TextResponse(
-            symptom=abc_symptom, answer="My abc is asdfsd"
+        abc_response = models.Response(
+            symptom=abc_symptom, text_response="My abc is asdfsd"
         )
         abc_response.save()
-        person.response.add(abc_response)
+        answer_set = models.AnswerSet(person=person, response=abc_response)
+        answer_set.save()
         response = self.client.get(reverse("sleep_app:table"))
         self.assertContains(
             response,
@@ -368,17 +370,17 @@ class TableTest(TestCase):
         self.client.force_login(user)
         person = models.Person(id=123)
         person.save()
-        abc_symptom = models.Symptom(
+        cde_symptom = models.Symptom(
             name="abc symptom",
             question="How much abc do you have?",
-            answer_type="scale",
+            answer_type="int",
             symptom_type="MOP",
         )
-
-        abc_symptom.save()
-        abc_response = models.ScaleResponse(symptom=abc_symptom, answer=4)
-        abc_response.save()
-        person.response.add(abc_response)
+        cde_symptom.save()
+        cde_response = models.Response(symptom=cde_symptom, scale_response=4)
+        cde_response.save()
+        answer_set = models.AnswerSet(person=person, response=cde_response)
+        answer_set.save()
         response = self.client.get(reverse("sleep_app:table"))
         self.assertContains(
             response,
@@ -387,4 +389,5 @@ class TableTest(TestCase):
                                         </th>""",
             html=True,
         )
+        # print(response.content)
         self.assertContains(response, """<td >4</td>""", html=True)
