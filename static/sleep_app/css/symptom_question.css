@@ -1,0 +1,55 @@
+.symptom {
+    font-size: 20px;
+}
+
+.title {
+    background-color: #2f5aab;
+    color: white;
+    border-radius: 30px 30px 1px 1px;
+}
+
+h1 {
+    font-size: 30px;
+    margin-bottom: 3px;
+}
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
+textarea {
+    height: 36px;
+    width: auto;
+    font-size: 18px;
+    vertical-align: middle;
+    padding-left: 5px;
+}
+
+select {
+    font-size: 24px;
+    vertical-align: middle;
+}
+
+img {
+    border: 2px solid #2f5aab;
+}
+
+.btn {
+    margin-left: 5px;
+    font-size: 15px;
+    vertical-align: middle;
+}
+
+.cancel {
+    color: black;
+    border: 1px solid black;
+    margin-top: 50px;
+    margin-left: 0px;
+}
+
+input {
+    vertical-align: middle;
+    font-size: 20px;
+}

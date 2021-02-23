@@ -1,16 +1,16 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Registration</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="generator" content="Jekyll v3.8.5">
-    <link rel="stylesheet" type="text/css" href="style.css">
     <link href="https://getbootstrap.com/docs/4.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-
-    <!-- Custom styles for this template -->
     <link href="https://getbootstrap.com/docs/4.2/examples/dashboard/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/login.css' %}">
 </head>
 
 <body data-new-gr-c-s-check-loaded="14.996.0" data-gr-ext-installed="">
@@ -41,9 +41,9 @@
             <p class="navbar-text m-0 mr-2" style="font-size: 15px; color: #e8f3ff; font-weight: bold">Hello, {{ user.username }}</p>
             <a class="nav-link" href="{% url 'sleep_app:logout' %}">Logout<span class="sr-only"></span></a>
             {% else %}
-            <a class="nav-link" href="{% url 'sleep_app:login' %}">Log In<span class="sr-only"></span></a>
+            <a class="nav-link active" href="{% url 'sleep_app:login' %}">Log In<span class="sr-only"></span></a>
             {% endif %}
-            <a class="nav-link active" href="{% url 'sleep_app:register' %}">Register <span class="sr-only"></span></a>
+            <a class="nav-link" href="{% url 'sleep_app:register' %}">Register <span class="sr-only"></span></a>
             <ul class="navbar-nav mr-auto">
             </ul>
     </div>
@@ -57,7 +57,7 @@
         <input type="password" name="password" value="" id="password" class="form-control" placeholder="Password" required="">
 
 
-        <input class="btn btn-lg btn-block mb-3" style="border-color: #2f5aab" type="submit" value="Log In">
+        <input class="btn btn-lg btn-block mb-3" type="submit" value="Log In">
 
         <br>
         Not yet registered?
@@ -66,108 +66,7 @@
         <input type="hidden" name="next" value="">
     </form>
 
-
-
 </div>
-
 </body>
-<style>
-    .btn:hover {
-        color: #ffffff;
-        background-color: #007bff;
-    }
-
-    .btn{
-        background-color: #2f5aab;
-    }
-
-    .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-
-    .list-item {
-        font-size: 20px;
-    }
-
-    .text {
-        font-size: 23px;
-    }
-
-    .navbar {
-        background-color: #2f5aab;
-        color: black;
-    }
-
-    .btn {
-        color: #ffffff;
-        border: 1px solid black;
-        margin: 2.5px;
-    }
-
-    .title {
-        background-color: #2f5aab;
-        color: #000000;
-        border-radius: 30px 30px 1px 1px;
-    }
-
-    h1 {
-        font-size: 30px;
-        margin-bottom: 3px;
-    }
-
-    @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-            font-size: 3.5rem;
-        }
-    }
-
-    .nav-link {
-        color: #000000;
-    }
-
-    body {
-        height: 100%;
-    }
-
-
-    .form-signin {
-        width: 100%;
-        max-width: 330px;
-        padding: 15px;
-        margin: auto;
-    }
-    .form-signin .checkbox {
-        font-weight: 400;
-    }
-    .form-signin .form-control {
-        position: relative;
-        box-sizing: border-box;
-        height: auto;
-        padding: 10px;
-        font-size: 16px;
-    }
-    .form-signin .form-control:focus {
-        z-index: 2;
-    }
-    .form-signin input[type="email"] {
-        margin-bottom: -1px;
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-    }
-    .form-signin input[type="password"] {
-        margin-bottom: 10px;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-    }
-
-    .text-center{
-        color: #000000;
-    }
-</style>
 </html>
 

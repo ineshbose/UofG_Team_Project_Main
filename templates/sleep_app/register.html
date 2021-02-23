@@ -1,16 +1,16 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Registration</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="generator" content="Jekyll v3.8.5">
-    <link rel="stylesheet" type="text/css" href="style.css">
     <link href="https://getbootstrap.com/docs/4.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-
-    <!-- Custom styles for this template -->
     <link href="https://getbootstrap.com/docs/4.2/examples/dashboard/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/register.css' %}">
 </head>
 <body data-new-gr-c-s-check-loaded="14.984.0" data-gr-ext-installed>
 <nav class="navbar navbar-expand-md navbar-dark mb-4">
@@ -54,7 +54,7 @@
     </div>
     <div class="jumbotron pt-5 pb-5 pl-5">
         <form method="POST" , action="">
-            <ul class="p-0" style="list-style-type:none; font-size: 18px">
+            <ul class="fields p-0">
             {% csrf_token %}
             {% for field in form %}
                 <li class="m-2">
@@ -65,7 +65,7 @@
                 </span></span>
                     <ul class="mt-2">
                     {% for error in field.errors %}
-                        <li style="color: red">{{ error }}</li>
+                        <li class="fieldError">{{ error }}</li>
                     {% endfor %}
                     </ul>
                 </li>
@@ -76,54 +76,4 @@
     </div>
 </main>
 </body>
-<style>
-    .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-
-    .list-item {
-        font-size: 20px;
-    }
-
-    .text {
-        font-size: 23px;
-    }
-
-    .navbar {
-        background-color: #2f5aab;
-        color: black;
-    }
-
-    .btn {
-        color: black;
-        border: 1px solid black;
-        margin: 2.5px;
-    }
-
-    .title {
-        background-color: #2f5aab;
-        color: white;
-        border-radius: 30px 30px 1px 1px;
-    }
-
-    h1 {
-        font-size: 30px;
-        margin-bottom: 3px;
-    }
-
-    @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-            font-size: 3.5rem;
-        }
-    }
-
-    .nav-link {
-        color: white;
-    }
-</style>
 </html>

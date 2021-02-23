@@ -1,0 +1,16 @@
+thead {
+    background-color: #3895ef;
+}
+
+a {
+    color: white;
+}
+
+a:hover {
+    text-decoration-line: none;
+}
+
+td {
+    border: 1px lightgray solid;
+}
+
