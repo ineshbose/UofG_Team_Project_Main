@@ -1,0 +1,20 @@
+.fields {
+    list-style-type:none;
+    font-size: 18px
+}
+
+.fieldError {
+    color: red;
+}
+
+.list-item {
+    font-size: 20px;
+}
+
+.btn {
+    color: black;
+    border: 1px solid black;
+    margin: 2.5px;
+}
+
+
