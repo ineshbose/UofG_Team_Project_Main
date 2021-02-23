@@ -354,10 +354,9 @@ def register(request):
         else:
             print(form.cleaned_data)
             print(form.errors)
-            return redirect("sleep_app:register")
-    context = {"form": form}
+            return render(request, "sleep_app/register.html", {"form": form})
 
-    return render(request, "sleep_app/register.html", context)
+    return render(request, "sleep_app/register.html", {"form": form})
 
 
 def logout(request):
