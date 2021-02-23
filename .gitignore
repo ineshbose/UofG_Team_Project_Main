@@ -139,3 +139,11 @@ cython_debug/
 
 # migrations
 migrations
+
+# static
+static/*
+!static/sleep_app
+staticfiles
+
+# extra
+.idea/

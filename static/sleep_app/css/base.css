@@ -1,0 +1,24 @@
+.title {
+    background-color: #2f5aab;
+    color: white;
+    border-radius: 30px 30px 1px 1px;
+}
+
+h1 {
+    font-size: 30px;
+    margin-bottom: 3px;
+}
+
+.text {
+    font-size: 23px;
+}
+
+.navbar {
+    background-color: #2f5aab;
+    color: black;
+}
+
+.nav-link {
+    color: white;
+}
+

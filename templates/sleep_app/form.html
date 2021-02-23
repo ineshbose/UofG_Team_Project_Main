@@ -1,15 +1,15 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
     <title>Sleeping Sickness Surveillance Form</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="generator" content="Jekyll v3.8.5">
-    <link rel="stylesheet" type="text/css" href="style.css">
     <link href="https://getbootstrap.com/docs/4.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-
-    <!-- Custom styles for this template -->
     <link href="https://getbootstrap.com/docs/4.2/examples/dashboard/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/form.css' %}">
 </head>
 <body data-new-gr-c-s-check-loaded="14.984.0" data-gr-ext-installed>
 <nav class="navbar navbar-expand-md navbar-dark mb-4">
@@ -21,19 +21,26 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/form/">Home <span class="sr-only">(current)</span></a>
             </li>
+            {% if user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link" href="/table">Table</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/map">Map</a>
             </li>
+            {% endif %}
             {#            <li class="nav-item">#}
             {#                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>#}
             {#            </li>#}
         </ul>
         <ul class="navbar-nav md-0">
-            <a class="nav-link" href="#">Login<span class="sr-only"></span></a>
-            <a class="nav-link" href="#">Register <span class="sr-only"></span></a>
+            {% if user.is_authenticated %}
+                <p class="navbar-text m-0 mr-2" style="font-size: 15px; color: #e8f3ff; font-weight: bold">Hello, {{ user.username }}</p>
+                <a class="nav-link" href="{% url 'sleep_app:logout' %}">Logout<span class="sr-only"></span></a>
+            {% else %}
+                <a class="nav-link" href="{% url 'sleep_app:login' %}">Log In<span class="sr-only"></span></a>
+            {% endif %}
+            <a class="nav-link" href="{% url 'sleep_app:register' %}">Register <span class="sr-only"></span></a>
             <ul class="navbar-nav mr-auto">
             </ul>
     </div>
@@ -70,56 +77,10 @@
         {% else %}
         <p class="text">You have logged data for <b>{{ log_amount }}</b> people today.</p>
         {% endif %}
+        NOTE: At the end of the form you will be asked to share your location. You can do this by allowing your browser to access your location.
+        Alternatively you can manually enter your location (i.e. the name of your town or village).
+        You can exit the form at any time prior to this, and all the data you provided will be deleted.
     </div>
 </main>
 </body>
-<style>
-    .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-    .list-item {
-        font-size: 20px;
-    }
-
-    .text {
-        font-size: 23px;
-    }
-
-    .navbar {
-        background-color: #2f5aab;
-        color: black;
-    }
-
-    .btn {
-        color: black;
-        border: 1px solid black;
-        margin: 2.5px;
-    }
-
-    .title {
-        background-color: #2f5aab;
-        color: white;
-        border-radius: 30px 30px 1px 1px;
-    }
-
-    h1 {
-        font-size: 30px;
-        margin-bottom: 3px;
-    }
-
-    @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-            font-size: 3.5rem;
-        }
-    }
-
-    .nav-link {
-        color: white;
-    }
-</style>
 </html>

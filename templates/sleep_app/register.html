@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 {% load static %}
-<html>
+<html lang="en">
 <head>
-    <title>Sleeping Sickness Surveillance Form</title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <title>Registration</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="generator" content="Jekyll v3.8.5">
     <link href="https://getbootstrap.com/docs/4.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link href="https://getbootstrap.com/docs/4.2/examples/dashboard/dashboard.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/base.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/symptom_question.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/register.css' %}">
 </head>
 <body data-new-gr-c-s-check-loaded="14.984.0" data-gr-ext-installed>
 <nav class="navbar navbar-expand-md navbar-dark mb-4">
@@ -23,12 +23,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="/form/">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/table">Table</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/map">Map</a>
-            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/table">Table</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/map">Map</a>
+                </li>
+            {% endif %}
             {#            <li class="nav-item">#}
             {#                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>#}
             {#            </li>#}
@@ -40,51 +42,36 @@
             {% else %}
                 <a class="nav-link" href="{% url 'sleep_app:login' %}">Log In<span class="sr-only"></span></a>
             {% endif %}
-            <a class="nav-link" href="{% url 'sleep_app:register' %}">Register <span class="sr-only"></span></a>
+            <a class="nav-link active" href="{% url 'sleep_app:register' %}">Register <span class="sr-only"></span></a>
             <ul class="navbar-nav mr-auto">
             </ul>
     </div>
 </nav>
+
 <main role="main" class="container">
-
     <div class="jumbotron title p-0 pt-2 pb-2 mb-0 pl-5">
-        <h1 class="mb-2"> Sleeping Sickness Form</h1>
-
-{#        REMOVED TEMPORARILY FOR CUSTOMER DAY DEMONSTRATION#}
-{#        PROGRESS BAR -- IN PROGRESS#}
-{#        <div class="progress mb-2 mr-5" style="height: 10px; background-color: white;">#}
-{#            <div class="progress-bar" role="progressbar" style="width: 33%; background-color: #4c7edd" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>#}
-{#        </div>#}
-
+        <h1> Registration Form </h1>
     </div>
-    <div class="jumbotron pt-4 pb-5 pl-5">
-
-        {% if symptom %}
-        <h2>{{ symptom.name }}</h2>
-
-        {% if symptom.image %}
-        <img src={{ symptom.image.url }} height=300 width=450/>
-        {% endif %}
-        <p class="symptom mt-2">{{ symptom.question }}</p>
-        <form id="response_form" method="post" action="">
+    <div class="jumbotron pt-5 pb-5 pl-5">
+        <form method="POST" , action="">
+            <ul class="fields p-0">
             {% csrf_token %}
-            {% for hidden in response_form.hidden_fields %}
-            {{ hidden }}
+            {% for field in form %}
+                <li class="m-2">
+                <span>
+                {{ field.label }}
+                <span class="ml-2">
+                {{ field }}
+                </span></span>
+                    <ul class="mt-2">
+                    {% for error in field.errors %}
+                        <li class="fieldError">{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                </li>
             {% endfor %}
-
-            {% for field in response_form.visible_fields %}
-            {{ field.errors }}
-            {{ field.help_text }}
-            {{ field }}
-            {% endfor %}
-            <input class="btn btn-primary" type="submit" name="submit" value="Report"/>
-        </form>
-        {% else %}
-        <strong>This symptom does not exist!</strong>
-        {% endif %}
-        <form action="{% url 'sleep_app:main_form_page' %}" method="post">
-            {% csrf_token %}
-            <input class="btn btn-outline-primary cancel" type="submit" name="cancel" value="Cancel and go back to the main page"/>
+            </ul>
+            <input class="btn btn-outline-primary" type="submit", value="Register" name="Create User">
         </form>
     </div>
 </main>
