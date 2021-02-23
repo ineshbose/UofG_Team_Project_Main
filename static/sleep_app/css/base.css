@@ -1,0 +1,13 @@
+.text {
+    font-size: 23px;
+}
+
+.navbar {
+    background-color: #2f5aab;
+    color: black;
+}
+
+.nav-link {
+    color: white;
+}
+
