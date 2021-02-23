@@ -64,6 +64,7 @@ class Person(models.Model):
     id = models.IntegerField(primary_key=True)
     date = models.DateTimeField(auto_now_add=True, blank=True)
     location = PlainLocationField(based_fields=["city"], zoom=7)
+    location_text = models.CharField(max_length=256, default="", blank=True, null=True)
 
 
 class AnswerSet(models.Model):
