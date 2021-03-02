@@ -18,8 +18,6 @@ class PersonAdmin(admin.ModelAdmin):
         AnswerSetInline,
     ]
 
-#admin.site.register(models.Person)
 admin.site.register(models.Person, PersonAdmin)
 admin.site.register(models.Response)
-#admin.site.register(models.AnswerSet, AnswerSetInline)
 admin.site.register(models.Symptom, SymptomAdmin)
