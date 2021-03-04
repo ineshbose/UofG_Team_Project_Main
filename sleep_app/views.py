@@ -7,7 +7,7 @@ import pandas as pd
 
 from django.contrib import auth, messages
 from django.shortcuts import render, redirect, reverse
-from next_prev import next_in_order, prev_in_order
+from next_prev import next_in_order
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from sleep_app.decorators import staff_required
@@ -162,15 +162,6 @@ def symptom_question(request, symptom_name_slug):
         try:
             symptom = models.Symptom.objects.get(slug=symptom_name_slug)
             context_dict["symptom"] = symptom
-
-            #add a "go back one" button
-            if symptom == models.Symptom.objects.filter(symptom_type=symptom.symptom_type).first():
-                prev_symptom = None
-            else:
-                prev_symptom = prev_in_order(symptom)
-
-            context_dict["prev_symptom"] = prev_symptom
-
             # need to pass the proper type of response object to the template, depending on what type of response is needed
             if symptom.answer_type == "bool":
                 response_form = forms.YesNoResponseForm()
@@ -234,11 +225,6 @@ def symptom_question(request, symptom_name_slug):
 
             try:
                 current_person = models.Person.objects.get(id=request.session["person"])
-
-                #user has answered this question before (used the "previous" button). Delete the old answer
-                old_answer = current_person.answerset_set.filter(response__symptom=symptom)
-                if old_answer.count() != 0:
-                    old_answer[0].delete()
                 answer_set = models.AnswerSet(person=current_person, response=response)
                 answer_set.save()
 
