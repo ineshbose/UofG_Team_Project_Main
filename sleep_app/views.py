@@ -7,7 +7,7 @@ import pandas as pd
 
 from django.contrib import auth, messages
 from django.shortcuts import render, redirect, reverse
-from next_prev import next_in_order
+from next_prev import next_in_order, prev_in_order
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from sleep_app.decorators import staff_required
@@ -50,18 +50,18 @@ def map(request):
                 id.append(person.id)
     else:
         for person in models.Person.objects.all():
-            if person.response.exists():
-                print(person.id)
-                print(person.location.split(",")[0])
-                print(person.location.split(",")[1])
-                for response in person.response.all():
-                    if (
-                        str(response.symptom) == selected_symptom
-                        and response.answer == True
-                    ):
-                        latitude.append(person.location.split(",")[0])
-                        longitude.append(person.location.split(",")[1])
-                        id.append(person.id)
+            answers = person.answerset_set.all()
+            print(person.id)
+            print(person.location.split(",")[0])
+            print(person.location.split(",")[1])
+            for a in answers:
+                if (
+                    str(a.response.symptom) == selected_symptom
+                    and a.response.answer == True
+                ):
+                    latitude.append(person.location.split(",")[0])
+                    longitude.append(person.location.split(",")[1])
+                    id.append(person.id)
 
     fig = go.Figure(
         data=go.Scattergeo(
@@ -162,6 +162,15 @@ def symptom_question(request, symptom_name_slug):
         try:
             symptom = models.Symptom.objects.get(slug=symptom_name_slug)
             context_dict["symptom"] = symptom
+
+            #add a "go back one" button
+            if symptom == models.Symptom.objects.filter(symptom_type=symptom.symptom_type).first():
+                prev_symptom = None
+            else:
+                prev_symptom = prev_in_order(symptom)
+
+            context_dict["prev_symptom"] = prev_symptom
+
             # need to pass the proper type of response object to the template, depending on what type of response is needed
             if symptom.answer_type == "bool":
                 response_form = forms.YesNoResponseForm()
@@ -225,6 +234,11 @@ def symptom_question(request, symptom_name_slug):
 
             try:
                 current_person = models.Person.objects.get(id=request.session["person"])
+
+                #user has answered this question before (used the "previous" button). Delete the old answer
+                old_answer = current_person.answerset_set.filter(response__symptom=symptom)
+                if old_answer.count() != 0:
+                    old_answer[0].delete()
                 answer_set = models.AnswerSet(person=current_person, response=response)
                 answer_set.save()
 
@@ -282,12 +296,12 @@ def location(request):
                             str(x["features"][0]["geometry"]["coordinates"][0]),
                         ]
                     )
-                    context_dict["location"] = coords
+                    context_dict["lat"] = x["features"][0]["geometry"]["coordinates"][1]
+                    context_dict["long"] = x["features"][0]["geometry"]["coordinates"][0]
                     current_person.location = coords
-                    current_person.save()
                     increase_log_amount(request)
-                else:
-                    context_dict["failure"] = True
+                current_person.location_text = request.POST["location"]
+                current_person.save()
 
         except models.Person.DoesNotExist:
             print(
@@ -310,7 +324,7 @@ def location(request):
 def table(request):
     data = []
     for p in models.Person.objects.all():
-        info = {"id": p.id, "date": p.date, "location": p.location}
+        info = {"id": p.id, "date": p.date, "location": p.location, "location_text":p.location_text}
         answers = p.answerset_set.all()
         for a in answers:
             if a.response.symptom.answer_type == "bool":

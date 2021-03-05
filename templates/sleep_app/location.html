@@ -29,10 +29,9 @@ Alternatively, you can also enter your location into this search bar.
                 name="submit">Search
         </button>
     </form></br>
+ Your location has been recorded!
  {% if success %}
- Your location has been recorded! Your latitude is {{lat}} and your longitude is {{long}}.</br></br>
- {% elif failure %}
- Sorry, that did not work.</br></br>
+ Your latitude is {{lat}} and your longitude is {{long}}.</br></br>
  {% endif %}
 
 

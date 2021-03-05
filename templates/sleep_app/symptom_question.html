@@ -79,13 +79,20 @@
             {% endfor %}
             <input class="btn btn-primary" type="submit" name="submit" value="Report"/>
         </form>
-        {% else %}
-        <strong>This symptom does not exist!</strong>
-        {% endif %}
         <form action="{% url 'sleep_app:main_form_page' %}" method="post">
             {% csrf_token %}
-            <input class="btn btn-outline-primary cancel" type="submit" name="cancel" value="Cancel and go back to the main page"/>
+
+            {% if prev_symptom %}
+                <a class="btn btn-outline-primary cancel" href={% url 'sleep_app:symptom_form' symptom_name_slug=prev_symptom.slug %}>Previous</a>
+            {% endif %}
+            {% else %}
+                <strong>This symptom does not exist!</strong>
+            {% endif %}
+        <input class="btn btn-outline-primary cancel" type="submit" name="cancel" value="Cancel and go back to the main page"/>
         </form>
+
+
+
     </div>
 </main>
 </body>
