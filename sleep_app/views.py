@@ -30,7 +30,6 @@ def index(request):
 @staff_required
 def map(request):
     df = pd.read_csv("static/sleep_app/testing2.csv")
-    print(df)
     df["text"] = df["name"] + " - " + df["size"].astype(str) + " cases"
 
     selected_symptom = None
@@ -43,11 +42,15 @@ def map(request):
         selected_symptom = request.POST.get("dropdown")
 
     if selected_symptom == None:
-        for person in models.Person.objects.all():
-            if person.location != None:
-                latitude.append(person.location.split(",")[0])
-                longitude.append(person.location.split(",")[1])
-                id.append(person.id)
+        if(models.Person.objects.all() == True):
+            for person in models.Person.objects.all():
+                if person.location != None:
+                    print(person.location)
+                    latitude.append(person.location.split(",")[0])
+                    longitude.append(person.location.split(",")[1])
+                    id.append(person.id)
+        else:
+            print("no person in database")
     else:
         for person in models.Person.objects.all():
             answers = person.answerset_set.all()
@@ -296,7 +299,8 @@ def location(request):
                             str(x["features"][0]["geometry"]["coordinates"][0]),
                         ]
                     )
-
+                    context_dict["lat"] = x["features"][0]["geometry"]["coordinates"][1]
+                    context_dict["long"] = x["features"][0]["geometry"]["coordinates"][0]
                     current_person.location = coords
                     increase_log_amount(request)
                 current_person.location_text = request.POST["location"]
@@ -308,10 +312,8 @@ def location(request):
                     id=request.session["person"]
                 )
             )
-        return redirect("sleep_app:success")
 
-    else:
-        return render(request, "sleep_app/location.html", context=context_dict)
+    return render(request, "sleep_app/location.html", context=context_dict)
 
 
 # Normally it would be easier to just let the PersonTable class use Person.objects.all() (as shown in the django-tables2
@@ -378,6 +380,3 @@ def logout(request):
     auth.logout(request)
     print("logout success")
     return redirect("sleep_app:main_form_page")
-
-def success(request):
-    return render(request, "sleep_app/success.html", {})
