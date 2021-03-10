@@ -313,6 +313,8 @@ def location(request):
                 )
             )
 
+        return redirect("sleep_app:location")
+
     return render(request, "sleep_app/location.html", context=context_dict)
 
 
@@ -380,3 +382,6 @@ def logout(request):
     auth.logout(request)
     print("logout success")
     return redirect("sleep_app:main_form_page")
+
+def success(request):
+    return render(request, "sleep_app/success.html", {})
