@@ -290,7 +290,7 @@ def location(request):
         except models.Person.DoesNotExist:
             print(f"ERROR: Person with id {request.session['person']} does not exist")
 
-        return redirect("sleep_app:location")
+        return redirect("sleep_app:success")
 
     return render(request, "sleep_app/location.html", context=context_dict)
 
