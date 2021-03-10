@@ -5,12 +5,12 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sleep_surv.settings")
 import django
 
 django.setup()
-from sleep_app.models import Symptom
+from sleep_app import models
 
 
 def populate():
     symptom_list = [
-        #       Member of public symptoms
+        #   Member of public symptoms
         {
             "name": "Age",
             "question": "How old are you?",
@@ -174,11 +174,13 @@ def populate():
     ]
 
     for s in symptom_list:
-        Symptom.objects.get_or_create(**s)
+        models.Symptom.objects.get_or_create(**s)
 
     # Start execution here!
 
 
 if __name__ == "__main__":
     print("Starting sleep_app population script...")
-    populate()
+    if len(models.Symptom.objects.all()) < 1:
+        populate()
+    print("Done.")

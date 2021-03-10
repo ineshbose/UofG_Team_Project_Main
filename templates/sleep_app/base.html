@@ -27,12 +27,14 @@
                     <a class="nav-link" href="/form/">Home</a>
                 </li>
                 {% if user.is_authenticated %}
+                {% if user.is_staff %}
                 <li class="nav-item">
                     <a class="nav-link" href="/table">Table</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/map">Map</a>
                 </li>
+                {% endif %}
                 {% endif %}
                 {% if user.is_superuser %}
                 <li class="nav-item">
@@ -49,10 +51,8 @@
                 <a class="nav-link" href="{% url 'sleep_app:logout' %}">Logout<span class="sr-only"></span></a>
                 {% else %}
                 <a class="nav-link" href="{% url 'sleep_app:login' %}">Log In<span class="sr-only"></span></a>
-                {% endif %}
                 <a class="nav-link" href="{% url 'sleep_app:register' %}">Register <span class="sr-only"></span></a>
-                <ul class="navbar-nav mr-auto">
-                </ul>
+                {% endif %}
         </div>
     </nav>
     {% block body_block %}

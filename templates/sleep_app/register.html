@@ -12,7 +12,7 @@
         <h3 class="text-center font-weight-normal mb-3">Registration Form</h3>
         {% csrf_token %}
         {% for field in form %}
-            <input type="{{ field.field.widget.input_type }}" id="{{ field.label }}" name="{{ field.label }}" class="form-control" placeholder="{{ field.label }}" required="" autofocus="">
+            <input type="{{ field.field.widget.input_type }}" id="{{ field.html_name }}" name="{{ field.html_name }}" class="form-control" placeholder="{{ field.label }}" required="{{ field.field.required }}">
             <ul class="mt-2">
             {% for error in field.errors %}
                 <li class="fieldError">{{ error }}</li>
