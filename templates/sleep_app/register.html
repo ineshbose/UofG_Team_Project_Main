@@ -1,79 +1,30 @@
-<!DOCTYPE html>
+{% extends 'sleep_app/base.html' %}
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Registration</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="generator" content="Jekyll v3.8.5">
-    <link href="https://getbootstrap.com/docs/4.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link href="https://getbootstrap.com/docs/4.2/examples/dashboard/dashboard.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/base.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/register.css' %}">
-</head>
-<body data-new-gr-c-s-check-loaded="14.984.0" data-gr-ext-installed>
-<nav class="navbar navbar-expand-md navbar-dark mb-4">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/form/">Home <span class="sr-only">(current)</span></a>
-            </li>
-            {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/table">Table</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/map">Map</a>
-                </li>
-            {% endif %}
-            {#            <li class="nav-item">#}
-            {#                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>#}
-            {#            </li>#}
-        </ul>
-        <ul class="navbar-nav md-0">
-            {% if user.is_authenticated %}
-                <p class="navbar-text m-0 mr-2" style="font-size: 15px; color: #e8f3ff; font-weight: bold">Hello, {{ user.username }}</p>
-                <a class="nav-link" href="{% url 'sleep_app:logout' %}">Logout<span class="sr-only"></span></a>
-            {% else %}
-                <a class="nav-link" href="{% url 'sleep_app:login' %}">Log In<span class="sr-only"></span></a>
-            {% endif %}
-            <a class="nav-link active" href="{% url 'sleep_app:register' %}">Register <span class="sr-only"></span></a>
-            <ul class="navbar-nav mr-auto">
-            </ul>
-    </div>
-</nav>
 
-<main role="main" class="container">
-    <div class="jumbotron title p-0 pt-2 pb-2 mb-0 pl-5">
-        <h1> Registration Form </h1>
-    </div>
-    <div class="jumbotron pt-5 pb-5 pl-5">
-        <form method="POST" , action="">
-            <ul class="fields p-0">
-            {% csrf_token %}
-            {% for field in form %}
-                <li class="m-2">
-                <span>
-                {{ field.label }}
-                <span class="ml-2">
-                {{ field }}
-                </span></span>
-                    <ul class="mt-2">
-                    {% for error in field.errors %}
-                        <li class="fieldError">{{ error }}</li>
-                    {% endfor %}
-                    </ul>
-                </li>
+{% block head_block %}
+<link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/auth.css' %}">
+{% endblock %}
+
+{% block body_block %}
+<div class="container-fluid pr-0 pl-0 ml-0 pt-5 mt-5">
+
+    <form class="form-signin text-center" method="POST" action="">
+        <h3 class="text-center font-weight-normal mb-3">Registration Form</h3>
+        {% csrf_token %}
+        {% for field in form %}
+            <input type="{{ field.field.widget.input_type }}" id="{{ field.html_name }}" name="{{ field.html_name }}" class="form-control" placeholder="{{ field.label }}" required="{{ field.field.required }}">
+            <ul class="mt-2">
+            {% for error in field.errors %}
+                <li class="fieldError">{{ error }}</li>
             {% endfor %}
             </ul>
-            <input class="btn btn-outline-primary" type="submit", value="Register" name="Create User">
-        </form>
-    </div>
-</main>
-</body>
-</html>
+        {% endfor %}
+        <input class="btn btn-lg btn-block mb-3" type="submit", value="Register" name="Create User">
+
+        <br>
+        Already registered?
+        <a style="color: #2f5aab;" href="/login/">Login here!</a>
+
+    </form>
+
+{% endblock %}
