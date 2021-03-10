@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <title>TrypAdvisor{% block title_block %} - Sleeping Sickness Surveillance Form{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <link href="https://getbootstrap.com/docs/4.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.2/examples/dashboard/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/base.css' %}">
+    {% block head_block %}
+    {% endblock %}
+</head>
+
+<body data-new-gr-c-s-check-loaded="14.984.0" data-gr-ext-installed>
+    <nav class="navbar navbar-expand-md navbar-dark mb-4">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/form/">Home</a>
+                </li>
+                {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/table">Table</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/map">Map</a>
+                </li>
+                {% endif %}
+                {% endif %}
+                {% if user.is_superuser %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin">Admin</a>
+                </li>
+                {% endif %}
+                {# <li class="nav-item">#}
+                    {# <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>#}
+                    {# </li>#}
+            </ul>
+            <ul class="navbar-nav md-0">
+                {% if user.is_authenticated %}
+                <p class="navbar-text m-0 mr-2" style="font-size: 15px; color: #e8f3ff; font-weight: bold">Hello, {{ user.username }}</p>
+                <a class="nav-link" href="{% url 'sleep_app:logout' %}">Logout<span class="sr-only"></span></a>
+                {% else %}
+                <a class="nav-link" href="{% url 'sleep_app:login' %}">Log In<span class="sr-only"></span></a>
+                <a class="nav-link" href="{% url 'sleep_app:register' %}">Register <span class="sr-only"></span></a>
+                {% endif %}
+        </div>
+    </nav>
+    {% block body_block %}
+    <main role="main" class="container">
+        {% block body_main_block %}
+        {% endblock %}
+    </main>
+    {% endblock %}
+</body>
+
+</html>

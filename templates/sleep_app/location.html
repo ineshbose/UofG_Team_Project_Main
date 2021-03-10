@@ -1,48 +1,31 @@
-<!DOCTYPE html>
+{% extends 'sleep_app/base.html' %}
 {% load static %}
 
-
+{% block head_block %}
+<link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/location.css' %}">
 {% if browser_location %}
 {% csrf_token %}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
 <script src="{% static 'sleep_app/location.js' %}"></script>
 {% endif %}
+{% endblock %}
 
-<html lang="en">
+{% block body_main_block %}
+<div class="jumbotron title p-0 pt-2 pb-2 mb-0 pl-5">
+    <h1> Location Access Permission </h1>
+</div>
+<div class="jumbotron pt-5 pb-5 pl-5">
+    <p>Thank you for filling out the form! Please give this page <span style="font-weight: bold">location
+            permission</span> so that we can use your results. <br> Alternatively, you can also enter your location into
+        this search bar.</p>
+    <form class="mt-3" method="post" action="{% url 'sleep_app:location' %}">
+        {% csrf_token %}
+        <input name="location" class="textenter" type="text" />
 
-<head>
-    <meta charset="UTF-8">
-    <title>Location</title>
-</head>
-<body>
-<h1>Please give us location permission</h1>
-Thank you for filling out the form! Please give this page location permission so that we can use your results.</br></br>
-Alternatively, you can also enter your location into this search bar.
-<form method="post", action="{% url 'sleep_app:location' %}">
-{% csrf_token %}
-            <input class="form-control"
-                    name="location"
-                   type="text"/>
-
-        <button class="btn btn-primary"
-                type="submit"
-                name="submit">Search
+        <button class="btn btn-primary" type="submit" name="submit">Search
         </button>
-    </form></br>
- Your location has been recorded!
- {% if success %}
- Your latitude is {{lat}} and your longitude is {{long}}.</br></br>
- {% endif %}
+    </form>
 
-
-
-
-<a href={% url 'sleep_app:main_form_page' %}>Back to the main page</a>
-
-
-
-
-
-
-</body>
-</html>
+    <a class="btn btn-outline-primary mt-4" href="{% url 'sleep_app:main_form_page' %}">Back to the main page</a>
+</div>
+{% endblock %}

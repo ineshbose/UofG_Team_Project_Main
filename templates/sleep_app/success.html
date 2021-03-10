@@ -1,0 +1,14 @@
+{% extends 'sleep_app/base.html' %}
+{% load static %}
+
+{% block body_main_block %}
+<div class="jumbotron title p-0 pt-2 pb-2 mb-0 pl-5">
+    <h1>You have completed the survey!</h1>
+</div>
+<div class="jumbotron pt-5 pb-5 pl-5">
+    <p>Thank you for completing this survey. Your answers and your location have been stored.</p>
+    <p><br /><br />
+        <a href="{% url 'sleep_app:main_form_page' %}">Go back to the main page</a>
+    </p>
+</div>
+{% endblock %}
