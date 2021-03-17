@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
+import plotly.graph_objs as go
+
 from . import forms
 from . import models
 
@@ -391,3 +393,45 @@ class TableTest(TestCase):
         )
         # print(response.content)
         self.assertContains(response, """<td >4</td>""", html=True)
+
+class MapTest(TestCase):
+    def test_person_data_is_added_to_map(self):
+        print("testing the map")
+        user = User(username="test", password="123")
+        user.is_staff = True;
+        user.save()
+        self.client.force_login(user)
+
+        current_person = models.Person(id=123)
+        current_person.location = "50,50"
+        current_person.save()
+
+        session = self.client.session
+        session["person"] = current_person.id
+        session.save()
+
+        response = self.client.get(reverse("sleep_app:map"))
+        latitude = ['50']
+        longitude = ['50']
+        id = [123]
+
+        fig = go.Figure(
+            data=go.Scattergeo(
+                lon=latitude,
+                lat=longitude,
+                text=id,
+                mode="markers",
+                marker=dict(
+                    color="red",
+                    opacity=0.8,
+                    symbol="circle",
+                    line=dict(width=1, color="rgba(102, 102, 102)"),
+                    cmin=0,
+                    size=5,
+                    cmax=5,
+                ),
+            )
+        )
+
+        self.assertEqual(response.context['figure'].data[0],fig.data[0])
+
