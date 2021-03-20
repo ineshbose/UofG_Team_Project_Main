@@ -127,6 +127,7 @@ def form(request):
             current_person.delete()
             del request.session["person"]
 
+
     context_dict = {
         "first_symptom_mop": models.Symptom.objects.filter(symptom_type="MOP").first(),
         "first_symptom_hcw": models.Symptom.objects.filter(symptom_type="HCW").first(),

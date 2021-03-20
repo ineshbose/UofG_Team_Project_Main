@@ -396,7 +396,7 @@ class TableTest(TestCase):
 class MapTest(TestCase):
     def test_person_data_is_added_to_map(self):
         user = User(username="test", password="123")
-        user.is_staff = True;
+        user.is_staff = True
         user.save()
         self.client.force_login(user)
 
@@ -432,4 +432,47 @@ class MapTest(TestCase):
         )
 
         self.assertEqual(response.context['figure'].data[0],fig.data[0])
+
+
+class RegisterTest(TestCase):
+    def test_user_is_added_if_successful(self):
+        self.client.post(
+            reverse(
+                "sleep_app:register"
+            ),
+            {"username": "test",
+             "email": "test@testmail.com",
+             "password1": "myVerySecurePassworddsagretgahwrt4235132454231r5",
+             "password2": "myVerySecurePassworddsagretgahwrt4235132454231r5"},
+        )
+        self.assertEqual(User.objects.filter(username="test").count(), 1)
+
+    def test_failure_if_password_is_common(self):
+        response = self.client.post(
+            reverse(
+                "sleep_app:register"
+            ),
+            {"username":"test",
+             "email":"test@testmail.com",
+             "password1":"password",
+             "password2":"password"},
+        )
+
+        self.assertContains(response, "This password is too common.", html=True)
+
+    def test_failure_if_user_exists(self):
+        testuser = User(username="test", email="test@test.com", password="rfdgadfgearger")
+        testuser.save()
+
+        response = self.client.post(
+            reverse(
+                "sleep_app:register"
+            ),
+            {"username":"test",
+             "email":"test@test.com",
+             "password1":"rtgqergehwty5jhw5yhr",
+             "password2":"rtgqergehwty5jhw5yhr"},
+        )
+
+        self.assertContains(response, "A user with that username already exists.", html=True)
 
