@@ -391,12 +391,10 @@ class TableTest(TestCase):
                                         </th>""",
             html=True,
         )
-        # print(response.content)
         self.assertContains(response, """<td >4</td>""", html=True)
 
 class MapTest(TestCase):
     def test_person_data_is_added_to_map(self):
-        print("testing the map")
         user = User(username="test", password="123")
         user.is_staff = True;
         user.save()
