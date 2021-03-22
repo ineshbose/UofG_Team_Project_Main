@@ -21,3 +21,8 @@ h1 {
 .nav-link {
    color: white;
 } */
+
+.container {
+    padding-left: 0;
+    padding-right: 0;
+}
