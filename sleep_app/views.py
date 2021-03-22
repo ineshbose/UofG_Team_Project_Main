@@ -29,9 +29,6 @@ def map(request):
 
 @decorators.staff_required
 def map(request):
-    df = pd.read_csv("static/sleep_app/testing2.csv")
-    df["text"] = df["name"] + " - " + df["size"].astype(str) + " cases"
-
     selected_symptom = None
     latitude = []
     longitude = []
@@ -130,13 +127,11 @@ def form(request):
             current_person.delete()
             del request.session["person"]
 
-    first_symptom_mop = models.Symptom.objects.filter(symptom_type="MOP").first()
-    first_symptom_hcw = models.Symptom.objects.filter(symptom_type="HCW").first()
-    first_symptom_eov = models.Symptom.objects.filter(symptom_type="EOV").first()
+
     context_dict = {
-        "first_symptom_mop": first_symptom_mop,
-        "first_symptom_hcw": first_symptom_hcw,
-        "first_symptom_eov": first_symptom_eov,
+        "first_symptom_mop": models.Symptom.objects.filter(symptom_type="MOP").first(),
+        "first_symptom_hcw": models.Symptom.objects.filter(symptom_type="HCW").first(),
+        "first_symptom_eov": models.Symptom.objects.filter(symptom_type="EOV").first(),
     }
 
     #   this means that that the session will expire in *24h*, not at the beginning of the next day
@@ -147,6 +142,14 @@ def form(request):
     context_dict["log_amount"] = request.session.get("log_amount", 0)
     return render(request, "sleep_app/form.html", context_dict)
 
+#helper function, returns the response form for a given answer type
+def get_response_form(type):
+    return {
+        "bool": forms.YesNoResponseForm,
+        "text": forms.TextResponseForm,
+        "int": forms.ScaleResponseForm,
+    }.get(type)
+
 
 def symptom_question(request, symptom_name_slug):
     if request.method == "GET":
@@ -154,22 +157,9 @@ def symptom_question(request, symptom_name_slug):
         try:
             symptom = models.Symptom.objects.get(slug=symptom_name_slug)
             context_dict["symptom"] = symptom
-
-            prev_symptom = (
-                None
-                if symptom
-                == models.Symptom.objects.filter(
-                    symptom_type=symptom.symptom_type
-                ).first()
-                else prev_in_order(symptom)
-            )
-            context_dict["prev_symptom"] = prev_symptom
-
-            context_dict["response_form"] = {
-                "bool": forms.YesNoResponseForm(),
-                "text": forms.TextResponseForm(),
-                "int": forms.ScaleResponseForm(),
-            }.get(symptom.answer_type)
+            context_dict["prev_symptom"] = (None if symptom == models.Symptom.objects.filter(symptom_type=symptom.symptom_type).first()
+                else prev_in_order(symptom))
+            context_dict["response_form"] = get_response_form(symptom.answer_type)()
 
         except models.Symptom.DoesNotExist:
             context_dict["symptom"] = context_dict["response_form"] = None
@@ -179,43 +169,21 @@ def symptom_question(request, symptom_name_slug):
     elif request.method == "POST":
         # clicking on the link to the form sends a POST request to this page. That causes a new person object to be generated
         if "first" in request.POST:
-            try:
-                create_person_and_id(request)
-                return redirect(
-                    reverse(
-                        "sleep_app:symptom_form",
-                        kwargs={"symptom_name_slug": symptom_name_slug},
-                    )
-                )
-            except models.Person.DoesNotExist:
-                print("Error: could not find symptom")
+            create_person_and_id(request)
+            return redirect(reverse("sleep_app:symptom_form", kwargs={"symptom_name_slug": symptom_name_slug},))
         else:
             try:
                 symptom = models.Symptom.objects.get(slug=symptom_name_slug)
-                if symptom.answer_type == "bool":
-                    response_form = forms.YesNoResponseForm(request.POST)
-                    if response_form.is_valid():
-                        response = models.Response(
-                            symptom=symptom,
-                            bool_response=response_form.cleaned_data["bool_response"],
-                        )
-                        response.save()
-                elif symptom.answer_type == "text":
-                    response_form = forms.TextResponseForm(request.POST)
-                    if response_form.is_valid():
-                        response = models.Response(
-                            symptom=symptom,
-                            text_response=response_form.cleaned_data["text_response"],
-                        )
-                        response.save()
-                else:
-                    response_form = forms.ScaleResponseForm(request.POST)
-                    if response_form.is_valid():
-                        response = models.Response(
-                            symptom=symptom,
-                            scale_response=response_form.cleaned_data["scale_response"],
-                        )
-                        response.save()
+                response_form = get_response_form(symptom.answer_type)(request.POST)
+
+                if response_form.is_valid():
+                    if symptom.answer_type == "bool":
+                        response = models.Response(symptom=symptom, bool_response=response_form.cleaned_data["bool_response"],)
+                    elif symptom.answer_type == "text":
+                        response = models.Response(symptom=symptom,text_response=response_form.cleaned_data["text_response"],)
+                    else:
+                        response = models.Response(symptom=symptom,scale_response=response_form.cleaned_data["scale_response"],)
+                response.save()
 
             # for some reason we got here through a page with an invalid symptom slug. Should never happen.
             except models.Symptom.DoesNotExist:
@@ -224,24 +192,18 @@ def symptom_question(request, symptom_name_slug):
 
             try:
                 current_person = models.Person.objects.get(id=request.session["person"])
-
                 # user has answered this question before (used the "previous" button). Delete the old answer
-                old_answer = current_person.answerset_set.filter(
-                    response__symptom=symptom
-                )
-                if len(old_answer) > 0:
+                old_answer = current_person.answerset_set.filter(response__symptom=symptom)
+                if old_answer.count() > 0:
                     old_answer.first().delete()
                 answer_set = models.AnswerSet(person=current_person, response=response)
                 answer_set.save()
 
             except models.Person.DoesNotExist:
-                print(
-                    f"ERROR: Person with id {request.session['person']} does not exist"
-                )
+                print(f"ERROR: Person with id {request.session['person']} does not exist")
                 return redirect("sleep_app:main_form_page")
 
-            return redirect(
-                "sleep_app:location"
+            return redirect("sleep_app:location"
                 if symptom
                 == models.Symptom.objects.filter(
                     symptom_type=symptom.symptom_type
@@ -254,11 +216,10 @@ def symptom_question(request, symptom_name_slug):
 
 
 def location(request):
-    context_dict = {"browser_location": True}
     if request.method == "POST":
         try:
-            current_person = models.Person.objects.get(id=request.session["person"]) if "person" in request.session else None
-            if current_person and "lat" in request.POST:
+            current_person = models.Person.objects.get(id=request.session["person"])
+            if "lat" in request.POST:
                 if request.POST["lat"] != "no-permission":
                     current_person.location = ",".join(
                         [request.POST["lat"], request.POST["long"]]
@@ -266,8 +227,7 @@ def location(request):
                     current_person.save()
                     increase_log_amount(request)
 
-            elif current_person and "location" in request.POST:
-                context_dict = {"browser_location": False}
+            elif "location" in request.POST:
                 x = json.loads(
                     urllib.request.urlopen(
                         'https://nominatim.openstreetmap.org/search?'
@@ -277,12 +237,9 @@ def location(request):
                     .decode()
                 )
                 if len(x["features"]) > 0:
-                    context_dict["success"] = True
-                    context_dict["long"], context_dict["lat"] = x["features"][0][
-                        "geometry"
-                    ]["coordinates"][:2]
+                    long, lat = x["features"][0]["geometry"]["coordinates"][:2]
                     current_person.location = (
-                        f'{context_dict["lat"]},{context_dict["long"]}'
+                        f'{lat},{long}'
                     )
                     increase_log_amount(request)
                 current_person.location_text = request.POST["location"]
@@ -293,7 +250,7 @@ def location(request):
 
         return redirect("sleep_app:success")
 
-    return render(request, "sleep_app/location.html", context=context_dict)
+    return render(request, "sleep_app/location.html", context={})
 
 
 # Normally it would be easier to just let the PersonTable class use Person.objects.all() (as shown in the django-tables2

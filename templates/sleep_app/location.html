@@ -3,11 +3,9 @@
 
 {% block head_block %}
 <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/location.css' %}">
-{% if browser_location %}
 {% csrf_token %}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
 <script src="{% static 'sleep_app/location.js' %}"></script>
-{% endif %}
 {% endblock %}
 
 {% block body_main_block %}
