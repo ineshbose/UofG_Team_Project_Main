@@ -1,14 +1,16 @@
-import random
+import csv
 import json
+import random
 import urllib
 
-import plotly.graph_objs as go
 import pandas as pd
+import plotly.graph_objs as go
 
+from django.http import HttpResponse
 from django.contrib import auth, messages
-from django.shortcuts import render, redirect, reverse
-from next_prev import next_in_order, prev_in_order
 from django.contrib.auth import authenticate
+from next_prev import next_in_order, prev_in_order
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.forms import AuthenticationForm
 
 from . import models
@@ -323,3 +325,23 @@ def logout(request):
 
 def success(request):
     return render(request, "sleep_app/success.html")
+
+
+@decorators.staff_required
+def export_csv(request):
+    queryset = models.AnswerSet.objects.all().order_by('id')
+    headers = ['Person ID', 'Date', 'Coordinates', 'Location Text', 'Response']
+    filename, content_type = "responses.csv", "text/csv"
+    response = HttpResponse(content_type=content_type)
+    writer = csv.writer(response)
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    writer.writerow(headers)
+    for data in queryset:
+        writer.writerow([
+            data.person.id,
+            data.person.date,
+            data.person.location,
+            data.person.location_text,
+            data.response
+        ])
+    return response
