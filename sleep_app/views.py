@@ -328,20 +328,30 @@ def success(request):
 
 
 @decorators.staff_required
-def export_csv(request):
-    queryset = models.AnswerSet.objects.all().order_by('id')
-    headers = ['Person ID', 'Date', 'Coordinates', 'Location Text', 'Response']
+def export_csv(request, stype="MOP"):
+    type_mapping = lambda a: {
+        "bool": a.response.bool_response,
+        "text": a.response.text_response,
+        "int": a.response.scale_response,
+    }.get(a.response.symptom.answer_type, "")
+
     filename, content_type = "responses.csv", "text/csv"
     response = HttpResponse(content_type=content_type)
-    writer = csv.writer(response)
+
+    writer = csv.DictWriter(response, fieldnames=['Person ID', 'Date', 'Location', *[symptom.name for symptom in models.Symptom.objects.filter(symptom_type__iexact=stype)]])
+    writer.writeheader()
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
-    writer.writerow(headers)
-    for data in queryset:
-        writer.writerow([
-            data.person.id,
-            data.person.date,
-            data.person.location,
-            data.person.location_text,
-            data.response
-        ])
+
+    writer.writerows([{
+        "Person ID": person.id,
+        "Date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
+        "Location": f"{person.location_text if person.location_text else ''} ({person.location})",
+        **{
+            symptom.name : "" for symptom in models.Symptom.objects.filter(symptom_type__iexact=stype)
+        },
+        **{
+            a.response.symptom.name: type_mapping(a) for a in person.answerset_set.all()
+        },
+    } for person in models.Person.objects.all().order_by('date')])
+
     return response
