@@ -11,10 +11,10 @@ from . import models
 
 
 class PersonTable(tables.Table):
-    id = tables.Column()
-    date = tables.Column()
-    location = tables.Column()
-    location_text = tables.Column()
+    id = tables.Column(verbose_name="Person ID")
+    date = tables.Column(verbose_name="Date")
+    location_text = tables.Column(verbose_name="Location")
+    location = tables.Column(verbose_name="Coordinates")
 
     class Meta:
         template_name = "django_tables2/bootstrap.html"
