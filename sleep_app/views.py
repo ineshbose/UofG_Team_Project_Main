@@ -154,13 +154,28 @@ def form(request):
     return render(request, "sleep_app/form.html", context_dict)
 
 
-# helper function, returns the response form for a given answer type
-def get_response_form(type):
+def get_response_form(resp_type):
+    """
+    [Helper Function]
+    Returns the response form for a given answer type.
+    """
     return {
         "bool": forms.YesNoResponseForm,
         "text": forms.TextResponseForm,
         "int": forms.ScaleResponseForm,
-    }.get(type)
+    }.get(resp_type)
+
+
+def get_response_answer(resp_type):
+    """
+    [Helper Function]
+    Returns the response answer for a given answer type.
+    """
+    return {
+        "bool": resp_type.response.bool_response,
+        "text": resp_type.response.text_response,
+        "int": resp_type.response.scale_response,
+    }.get(resp_type.response.symptom.answer_type, "")
 
 
 def symptom_question(request, symptom_name_slug):
@@ -288,37 +303,31 @@ def location(request):
     return render(request, "sleep_app/location.html", context={})
 
 
-# Normally it would be easier to just let the PersonTable class use Person.objects.all() (as shown in the django-tables2
-# tutorial). However django-tables2 does not make it possible to put the items in the response many to many field into the
-# appropriate symptom columns. So this generates a list of dicts, where each dict represents one person's data in the proper
-# format. The disadvantage of doing it this way is that it is rather slow (when using the cloud database)
-# so a better solution might be needed later.
-
-
 @decorators.staff_required
 def table(request):
-    data = []
-    type_mapping = lambda a: {
-        "bool": a.response.bool_response,
-        "text": a.response.text_response,
-        "int": a.response.scale_response,
-    }.get(a.response.symptom.answer_type)
+    return render(
+        request,
+        "sleep_app/table.html",
+        {
+            "table": tables.PersonTable(
+                [
+                    {
+                        "id": person.id,
+                        "date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
+                        "location_text": person.location_text,
+                        "gps_location": person.gps_location,
+                        "db_location": person.db_location,
 
-    for p in models.Person.objects.all():
-        info = {
-            "id": p.id,
-            "date": p.date,
-            "gps_location": p.gps_location,
-            "db_location": p.db_location,
-            "location_text": p.location_text,
-        }
-        answers = p.answerset_set.all()
-        for a in answers:
-            info[a.response.symptom.name] = type_mapping(a)
-        data.append(info)
-
-    person_table = tables.PersonTable(data)
-    return render(request, "sleep_app/table.html", {"table": person_table})
+                        **{
+                            a.response.symptom.name: get_response_answer(a)
+                            for a in person.answerset_set.all()
+                        },
+                    }
+                    for person in models.Person.objects.all()
+                ]
+            )
+        },
+    )
 
 
 @decorators.login_not_required
@@ -365,33 +374,18 @@ def success(request):
 
 
 @decorators.staff_required
-def export(request):
-    return export_csv(request)
-
-
-@decorators.staff_required
-def export_csv(request, stype="MOP"):
-    type_mapping = lambda a: {
-        "bool": a.response.bool_response,
-        "text": a.response.text_response,
-        "int": a.response.scale_response,
-    }.get(a.response.symptom.answer_type, "")
-
-    filename, content_type = f"responses_{stype}.csv", "text/csv"
+def export_csv(request):
+    filename, content_type = f"responses.csv", "text/csv"
     response = HttpResponse(content_type=content_type)
+    headers = [
+        "Person ID",
+        "Date",
+        "Location",
+        "Coordinates",
+        *list(dict.fromkeys(symptom.name for symptom in models.Symptom.objects.all())),
+    ]
 
-    writer = csv.DictWriter(
-        response,
-        fieldnames=[
-            "Person ID",
-            "Date",
-            "Location",
-            *[
-                symptom.name
-                for symptom in models.Symptom.objects.filter(symptom_type__iexact=stype)
-            ],
-        ],
-    )
+    writer = csv.DictWriter(response, fieldnames=headers)
     writer.writeheader()
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
 
@@ -400,16 +394,17 @@ def export_csv(request, stype="MOP"):
             {
                 "Person ID": person.id,
                 "Date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
-                "Location": f"{person.location_text if person.location_text else ''} ({person.location})",
+                "Location": person.location_text,
+                "Coordinates": person.location,
                 **{
                     symptom.name: ""
-                    for symptom in models.Symptom.objects.filter(
-                        symptom_type__iexact=stype
-                    )
+                    for symptom in models.Symptom.objects.filter(name__in=headers)
                 },
                 **{
-                    a.response.symptom.name: type_mapping(a)
-                    for a in person.answerset_set.all()
+                    a.response.symptom.name: get_response_answer(a)
+                    for a in person.answerset_set.filter(
+                        response__symptom__name__in=headers
+                    )
                 },
             }
             for person in models.Person.objects.all().order_by("date")

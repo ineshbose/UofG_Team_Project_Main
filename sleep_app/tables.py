@@ -11,11 +11,12 @@ from . import models
 
 
 class PersonTable(tables.Table):
-    id = tables.Column()
-    date = tables.Column()
-    db_location = tables.Column()
-    gps_location = tables.Column()
-    location_text = tables.Column()
+
+    id = tables.Column(verbose_name="Person ID")
+    date = tables.Column(verbose_name="Date")
+    location_text = tables.Column(verbose_name="Location")
+    db_location = tables.Column(verbose_name="Map Database Coordinates")
+    gps_location = tables.Column(verbose_name="GPS Coordinates")
 
     class Meta:
         template_name = "django_tables2/bootstrap.html"
