@@ -301,7 +301,7 @@ class LocationViewTests(TestCase):
 
             #       need to get the object from the database again to access the latest changes
             current_person = models.Person.objects.get(id=456)
-            self.assertEqual(current_person.location, "49.748235,6.658348")
+            self.assertEqual(current_person.gps_location, "49.748235,6.658348")
 
 
 class TableTest(TestCase):
@@ -402,7 +402,7 @@ class MapTest(TestCase):
         self.client.force_login(user)
 
         current_person = models.Person(id=123)
-        current_person.location = "50,50"
+        current_person.gps_location = "50,50"
         current_person.save()
 
         session = self.client.session

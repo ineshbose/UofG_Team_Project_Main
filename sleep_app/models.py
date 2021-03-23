@@ -63,7 +63,8 @@ class Response(models.Model):
 class Person(models.Model):
     id = models.IntegerField(primary_key=True)
     date = models.DateTimeField(auto_now_add=True, blank=True)
-    location = PlainLocationField(based_fields=["city"], zoom=7)
+    gps_location = PlainLocationField(based_fields=["city"], zoom=7, null=True)
+    db_location = PlainLocationField(based_fields=["city"], zoom=7, null=True)
     location_text = models.CharField(max_length=256, blank=True, null=True)
 
 
