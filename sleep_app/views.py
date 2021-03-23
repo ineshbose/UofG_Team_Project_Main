@@ -332,6 +332,40 @@ def table(request):
         },
     )
 
+@decorators.staff_required
+def raw_table(request):
+    headers = [
+        "Person ID",
+        "Date",
+        "Location",
+        "Map Database Coordinates",
+        "GPS Coordinates",
+        *list(dict.fromkeys(symptom.name for symptom in models.Symptom.objects.all())),
+    ]
+
+    data = [
+            {
+                "Person ID": person.id,
+                "Date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
+                "Location": person.location_text,
+                "Map Database Coordinates": person.db_location,
+                "GPS Coordinates": person.gps_location,
+                **{
+                    symptom.name: ""
+                    for symptom in models.Symptom.objects.filter(name__in=headers)
+                },
+                **{
+                    a.response.symptom.name: get_response_answer(a)
+                    for a in person.answerset_set.filter(
+                        response__symptom__name__in=headers
+                    )
+                },
+            }
+            for person in models.Person.objects.all().order_by("date")
+        ]
+
+    return render(request, "sleep_app/raw_table.html", {"headers": headers, "data": data})
+
 
 @decorators.login_not_required
 def login(request):
