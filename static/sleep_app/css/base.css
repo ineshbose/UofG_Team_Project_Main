@@ -1,27 +1,3 @@
-/* .title {
-   background-color: #2f5aab;
-   color: white;
-   border-radius: 5px 5px 0px 0px;
-}
-
-h1 {
-   font-size: 30px;
-   margin-bottom: 3px;
-}
-
-.text {
-   font-size: 23px;
-}
-
-.navbar {
-   background-color: #2f5aab;
-   color: black;
-}
-
-.nav-link {
-   color: white;
-} */
-
 .container {
     padding-left: 0;
     padding-right: 0;
@@ -41,4 +17,8 @@ h1 {
 
 .jumbotron {
     margin-top: 15px;
+}
+
+.navbar {
+    border-radius: 0rem;
 }
