@@ -1,14 +1,16 @@
-import random
+import csv
 import json
+import random
 import urllib
 
-import plotly.graph_objs as go
 import pandas as pd
+import plotly.graph_objs as go
 
+from django.http import HttpResponse
 from django.contrib import auth, messages
-from django.shortcuts import render, redirect, reverse
-from next_prev import next_in_order, prev_in_order
 from django.contrib.auth import authenticate
+from next_prev import next_in_order, prev_in_order
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.forms import AuthenticationForm
 
 from . import models
@@ -127,7 +129,6 @@ def form(request):
             current_person.delete()
             del request.session["person"]
 
-
     context_dict = {
         "first_symptom_mop": models.Symptom.objects.filter(symptom_type="MOP").first(),
         "first_symptom_hcw": models.Symptom.objects.filter(symptom_type="HCW").first(),
@@ -142,7 +143,8 @@ def form(request):
     context_dict["log_amount"] = request.session.get("log_amount", 0)
     return render(request, "sleep_app/form.html", context_dict)
 
-#helper function, returns the response form for a given answer type
+
+# helper function, returns the response form for a given answer type
 def get_response_form(type):
     return {
         "bool": forms.YesNoResponseForm,
@@ -157,8 +159,14 @@ def symptom_question(request, symptom_name_slug):
         try:
             symptom = models.Symptom.objects.get(slug=symptom_name_slug)
             context_dict["symptom"] = symptom
-            context_dict["prev_symptom"] = (None if symptom == models.Symptom.objects.filter(symptom_type=symptom.symptom_type).first()
-                else prev_in_order(symptom))
+            context_dict["prev_symptom"] = (
+                None
+                if symptom
+                == models.Symptom.objects.filter(
+                    symptom_type=symptom.symptom_type
+                ).first()
+                else prev_in_order(symptom)
+            )
             context_dict["response_form"] = get_response_form(symptom.answer_type)()
 
         except models.Symptom.DoesNotExist:
@@ -170,7 +178,12 @@ def symptom_question(request, symptom_name_slug):
         # clicking on the link to the form sends a POST request to this page. That causes a new person object to be generated
         if "first" in request.POST:
             create_person_and_id(request)
-            return redirect(reverse("sleep_app:symptom_form", kwargs={"symptom_name_slug": symptom_name_slug},))
+            return redirect(
+                reverse(
+                    "sleep_app:symptom_form",
+                    kwargs={"symptom_name_slug": symptom_name_slug},
+                )
+            )
         else:
             try:
                 symptom = models.Symptom.objects.get(slug=symptom_name_slug)
@@ -178,11 +191,20 @@ def symptom_question(request, symptom_name_slug):
 
                 if response_form.is_valid():
                     if symptom.answer_type == "bool":
-                        response = models.Response(symptom=symptom, bool_response=response_form.cleaned_data["bool_response"],)
+                        response = models.Response(
+                            symptom=symptom,
+                            bool_response=response_form.cleaned_data["bool_response"],
+                        )
                     elif symptom.answer_type == "text":
-                        response = models.Response(symptom=symptom,text_response=response_form.cleaned_data["text_response"],)
+                        response = models.Response(
+                            symptom=symptom,
+                            text_response=response_form.cleaned_data["text_response"],
+                        )
                     else:
-                        response = models.Response(symptom=symptom,scale_response=response_form.cleaned_data["scale_response"],)
+                        response = models.Response(
+                            symptom=symptom,
+                            scale_response=response_form.cleaned_data["scale_response"],
+                        )
                 response.save()
 
             # for some reason we got here through a page with an invalid symptom slug. Should never happen.
@@ -193,17 +215,22 @@ def symptom_question(request, symptom_name_slug):
             try:
                 current_person = models.Person.objects.get(id=request.session["person"])
                 # user has answered this question before (used the "previous" button). Delete the old answer
-                old_answer = current_person.answerset_set.filter(response__symptom=symptom)
+                old_answer = current_person.answerset_set.filter(
+                    response__symptom=symptom
+                )
                 if old_answer.count() > 0:
                     old_answer.first().delete()
                 answer_set = models.AnswerSet(person=current_person, response=response)
                 answer_set.save()
 
             except models.Person.DoesNotExist:
-                print(f"ERROR: Person with id {request.session['person']} does not exist")
+                print(
+                    f"ERROR: Person with id {request.session['person']} does not exist"
+                )
                 return redirect("sleep_app:main_form_page")
 
-            return redirect("sleep_app:location"
+            return redirect(
+                "sleep_app:location"
                 if symptom
                 == models.Symptom.objects.filter(
                     symptom_type=symptom.symptom_type
@@ -230,7 +257,7 @@ def location(request):
             elif "location" in request.POST:
                 x = json.loads(
                     urllib.request.urlopen(
-                        'https://nominatim.openstreetmap.org/search?'
+                        "https://nominatim.openstreetmap.org/search?"
                         f'{urllib.parse.urlencode({"q": request.POST["location"], "format": "geojson"})}'
                     )
                     .read()
@@ -238,9 +265,7 @@ def location(request):
                 )
                 if len(x["features"]) > 0:
                     long, lat = x["features"][0]["geometry"]["coordinates"][:2]
-                    current_person.location = (
-                        f'{lat},{long}'
-                    )
+                    current_person.location = f"{lat},{long}"
                     increase_log_amount(request)
                 current_person.location_text = request.POST["location"]
                 current_person.save()
@@ -323,3 +348,58 @@ def logout(request):
 
 def success(request):
     return render(request, "sleep_app/success.html")
+
+
+@decorators.staff_required
+def export(request):
+    return export_csv(request)
+
+
+@decorators.staff_required
+def export_csv(request, stype="MOP"):
+    type_mapping = lambda a: {
+        "bool": a.response.bool_response,
+        "text": a.response.text_response,
+        "int": a.response.scale_response,
+    }.get(a.response.symptom.answer_type, "")
+
+    filename, content_type = f"responses_{stype}.csv", "text/csv"
+    response = HttpResponse(content_type=content_type)
+
+    writer = csv.DictWriter(
+        response,
+        fieldnames=[
+            "Person ID",
+            "Date",
+            "Location",
+            *[
+                symptom.name
+                for symptom in models.Symptom.objects.filter(symptom_type__iexact=stype)
+            ],
+        ],
+    )
+    writer.writeheader()
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+    writer.writerows(
+        [
+            {
+                "Person ID": person.id,
+                "Date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
+                "Location": f"{person.location_text if person.location_text else ''} ({person.location})",
+                **{
+                    symptom.name: ""
+                    for symptom in models.Symptom.objects.filter(
+                        symptom_type__iexact=stype
+                    )
+                },
+                **{
+                    a.response.symptom.name: type_mapping(a)
+                    for a in person.answerset_set.all()
+                },
+            }
+            for person in models.Person.objects.all().order_by("date")
+        ]
+    )
+
+    return response

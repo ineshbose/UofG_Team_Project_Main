@@ -17,4 +17,6 @@ urlpatterns = [
     path("login/", views.login, name="login"),
     path("logout", views.logout, name="logout"),
     path("success/", views.success, name="success"),
+    path("export/", views.export, name="export"),
+    path("export/<str:stype>", views.export_csv, name="export_type"),
 ]
