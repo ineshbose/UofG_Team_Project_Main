@@ -381,7 +381,8 @@ def export_csv(request):
         "Person ID",
         "Date",
         "Location",
-        "Coordinates",
+        "Map Database Coordinates",
+        "GPS Coordinates",
         *list(dict.fromkeys(symptom.name for symptom in models.Symptom.objects.all())),
     ]
 
@@ -395,7 +396,8 @@ def export_csv(request):
                 "Person ID": person.id,
                 "Date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
                 "Location": person.location_text,
-                "Coordinates": person.location,
+                "Map Database Coordinates": person.db_location,
+                "GPS Coordinates": person.gps_location,
                 **{
                     symptom.name: ""
                     for symptom in models.Symptom.objects.filter(name__in=headers)
