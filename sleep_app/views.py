@@ -351,33 +351,28 @@ def success(request):
 
 
 @decorators.staff_required
-def export(request):
-    return export_csv(request)
-
-
-@decorators.staff_required
-def export_csv(request, stype="MOP"):
+def export_csv(request):
     type_mapping = lambda a: {
         "bool": a.response.bool_response,
         "text": a.response.text_response,
         "int": a.response.scale_response,
     }.get(a.response.symptom.answer_type, "")
 
-    filename, content_type = f"responses_{stype}.csv", "text/csv"
+    filename, content_type = f"responses.csv", "text/csv"
     response = HttpResponse(content_type=content_type)
 
-    writer = csv.DictWriter(
-        response,
-        fieldnames=[
-            "Person ID",
-            "Date",
-            "Location",
-            *[
-                symptom.name
-                for symptom in models.Symptom.objects.filter(symptom_type__iexact=stype)
-            ],
-        ],
-    )
+    headers = [
+        "Person ID",
+        "Date",
+        "Location",
+        "Coordinates",
+        *list(dict.fromkeys(
+            symptom.name
+            for symptom in models.Symptom.objects.all()
+        )),
+    ]
+
+    writer = csv.DictWriter(response, fieldnames=headers)
     writer.writeheader()
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
 
@@ -386,16 +381,15 @@ def export_csv(request, stype="MOP"):
             {
                 "Person ID": person.id,
                 "Date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
-                "Location": f"{person.location_text if person.location_text else ''} ({person.location})",
+                "Location": person.location_text,
+                "Coordinates": person.location,
                 **{
                     symptom.name: ""
-                    for symptom in models.Symptom.objects.filter(
-                        symptom_type__iexact=stype
-                    )
+                    for symptom in models.Symptom.objects.filter(name__in=headers)
                 },
                 **{
                     a.response.symptom.name: type_mapping(a)
-                    for a in person.answerset_set.all()
+                    for a in person.answerset_set.filter(response__symptom__name__in=headers)
                 },
             }
             for person in models.Person.objects.all().order_by("date")
