@@ -20,8 +20,8 @@
     {% block head_block %}{% endblock %}
 </head>
 
-<body>
-    <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-primary">
+<body class="">
+    <nav class="navbar sticky-top navbar-expand-md navbar-dark bg-primary">
         <div class="container-fluid">
           <a class="navbar-brand" href="{% url 'sleep_app:index' %}"><i class="bi-alarm"></i> TrypAdvisor</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,10 +70,10 @@
       </nav>
 
     {% block body_block %}
-    <main role="main" class="container" style="margin-top: 50px;">
+    <div class="pt-5 container">
         {% block body_main_block %}
         {% endblock %}
-    </main>
+    </div>
     {% endblock %}
 </body>
 
