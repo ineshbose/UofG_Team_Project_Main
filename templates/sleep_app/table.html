@@ -9,6 +9,9 @@
 
 {% block body_block %}
     <main role="main" class="container bodyblock" style="margin-top: 50px;"></main>
+        <div class='exportField'>
+            <a class="btn btn-outline-primary export" href="#">Export as CSV</a>
+        </div>
         {% render_table table %}
     </main>
 {% endblock %}
