@@ -46,3 +46,7 @@ body {
 .text-center{
     color: #000000;
 }
+
+.errormsg {
+    color: red;
+}

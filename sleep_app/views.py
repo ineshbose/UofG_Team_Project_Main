@@ -312,6 +312,7 @@ def table(request):
 
 @decorators.login_not_required
 def login(request):
+    errormsg = " "
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -319,9 +320,11 @@ def login(request):
             authenticate(username=user.username, password=user.password)
             auth.login(request, user)
             return redirect("sleep_app:main_form_page")
+        else:
+            errormsg = "Wrong username or password"
     else:
         form = AuthenticationForm()
-    context = {"form": form}
+    context = {"form": form, "errormsg": errormsg}
     return render(request, "sleep_app/login.html", context)
 
 
