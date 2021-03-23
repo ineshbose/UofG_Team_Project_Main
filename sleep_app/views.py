@@ -25,19 +25,22 @@ def index(request):
 
 @decorators.staff_required
 def map(request):
-    context_dict = {}
-    return render(request, "sleep_app/map.html", context_dict)
-
-
-@decorators.staff_required
-def map(request):
     selected_symptom = None
     latitude = []
     longitude = []
-    id = []
-    s = models.Symptom.objects.all()
+    popup = []
+    temp = models.Symptom.objects.all()
+    s = []
+
+    for symptom in temp:
+        if len(s) != 0:
+            if symptom not in s:
+                s.append(symptom)
+        else:
+            s.append(symptom)
+
     if request.method == "POST":
-        selected_symptom = request.POST.get("dropdown")
+        selected_symptom = request.POST.get("dropdown1")
 
     if selected_symptom is None:
         if models.Person.objects.all():
@@ -45,11 +48,11 @@ def map(request):
                 if person.gps_location:
                     latitude.append(person.gps_location.split(",")[0])
                     longitude.append(person.gps_location.split(",")[1])
-                    id.append(person.id)
+                    popup.append(person.id)
                 elif person.db_location:
                     latitude.append(person.db_location.split(",")[0])
                     longitude.append(person.db_location.split(",")[1])
-                    id.append(person.id)
+                    popup.append(person.id)
 
     else:
         for person in models.Person.objects.all():
@@ -59,17 +62,17 @@ def map(request):
                     if person.gps_location:
                         latitude.append(person.gps_location.split(",")[0])
                         longitude.append(person.gps_location.split(",")[1])
-                        id.append(person.id)
+                        popup.append(str(a.response) + "  ID:" + str(person.id))
                     elif person.db_location:
                         latitude.append(person.db_location.split(",")[0])
                         longitude.append(person.db_location.split(",")[1])
-                        id.append(person.id)
+                        popup.append(str(a.response) + "  ID:" + str(person.id))
 
     fig = go.Figure(
         data=go.Scattergeo(
             lon=longitude,
             lat=latitude,
-            text=id,
+            text=popup,
             mode="markers",
             marker=dict(
                 color="red",
@@ -87,7 +90,7 @@ def map(request):
         data=go.Scattergeo(
             lon=longitude,
             lat=latitude,
-            text=id,
+            text=popup,
             mode="markers",
             marker=dict(
                 color="red",
