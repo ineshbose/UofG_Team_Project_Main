@@ -5,7 +5,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/map.css' %}">
 <div class='filterField'>
   <form action="." method="post">{% csrf_token %}
-    <select name='dropdown' class='dropdown'>
+    <select name='dropdown1' class='dropdown'>
       <option selected="selected" disabled>Symptom to select</option>
       {% for symptom in all_symptoms %}
       {% if selected_symptom == symptom.name %}
@@ -13,7 +13,7 @@
         {% else %}
       <option value="{{ symptom.name }}">
         {% endif %}
-        {{ symptom.name }}  
+        {{ symptom.name }}
       </option>
       {% endfor %}
     </select>

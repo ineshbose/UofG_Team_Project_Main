@@ -25,19 +25,24 @@ def index(request):
 
 @decorators.staff_required
 def map(request):
-    context_dict = {}
-    return render(request, "sleep_app/map.html", context_dict)
-
-
-@decorators.staff_required
-def map(request):
     selected_symptom = None
     latitude = []
     longitude = []
-    id = []
-    s = models.Symptom.objects.all()
+    popup = []
+    temp = models.Symptom.objects.all()
+    s = []
+
+    for symptom in temp:
+        if len(s) != 0:
+            if symptom not in s:
+                s.append(symptom)
+        else:
+            s.append(symptom)
+
+    print(s)
+
     if request.method == "POST":
-        selected_symptom = request.POST.get("dropdown")
+        selected_symptom = request.POST.get("dropdown1")
 
     if selected_symptom is None:
         if models.Person.objects.all():
@@ -45,21 +50,33 @@ def map(request):
                 if person.location:
                     latitude.append(person.location.split(",")[0])
                     longitude.append(person.location.split(",")[1])
-                    id.append(person.id)
+                    popup.append(person.id)
     else:
         for person in models.Person.objects.all():
             answers = person.answerset_set.all()
             for a in answers:
-                if str(a.response.symptom) == selected_symptom and a.response.answer:
-                    latitude.append(person.location.split(",")[0])
-                    longitude.append(person.location.split(",")[1])
-                    id.append(person.id)
+                if a.response.symptom.name == selected_symptom:
+                    if a.response.bool_response:
+                        latitude.append(person.location.split(",")[0])
+                        longitude.append(person.location.split(",")[1])
+                        popup.append(str(a.response) + "  ID:" + str(person.id))
+
+                    elif a.response.scale_response:
+                        latitude.append(person.location.split(",")[0])
+                        longitude.append(person.location.split(",")[1])
+                        popup.append(str(a.response) + "  ID:" + str(person.id))
+
+                    elif a.response.text_response:
+                        latitude.append(person.location.split(",")[0])
+                        longitude.append(person.location.split(",")[1])
+                        popup.append(str(a.response) + "  ID:" + str(person.id))
+
 
     fig = go.Figure(
         data=go.Scattergeo(
             lon=longitude,
             lat=latitude,
-            text=id,
+            text=popup,
             mode="markers",
             marker=dict(
                 color="red",
@@ -77,7 +94,7 @@ def map(request):
         data=go.Scattergeo(
             lon=longitude,
             lat=latitude,
-            text=id,
+            text=popup,
             mode="markers",
             marker=dict(
                 color="red",
