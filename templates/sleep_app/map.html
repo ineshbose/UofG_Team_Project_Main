@@ -3,8 +3,12 @@
 
 {% block head_block %}
 <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/map.css' %}">
-<div class='filterField'>
-  <form action="." method="post">{% csrf_token %}
+{% endblock %}
+
+{% block body_block %}
+<ul class="nav p-2">
+  <form action="." method="post">
+    {% csrf_token %}
     <select name='dropdown1' class='dropdown'>
       <option selected="selected" disabled>Symptom to select</option>
       {% for symptom in all_symptoms %}
@@ -17,17 +21,14 @@
       </option>
       {% endfor %}
     </select>
-    <input type="submit" class="btn btn-outline-primary export select" value="Select">
-    <a class="btn btn-outline-primary export" href="#">Export as CSV</a>
+    <input type="submit" class="btn btn-success" value="Select">
+    <a class="btn btn-primary" href="{% url 'sleep_app:export' %}">Export as CSV</a>
   </form>
-  
-</div>
-{% endblock %}
 
-{% block body_main_block %}
+</ul>
 
 
-<div class="worldMap">
+<div class="worldMap" style="overflow: auto;">
   {% autoescape off %}
       {{ plot_div }}
       {% endautoescape %}

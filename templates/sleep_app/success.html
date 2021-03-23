@@ -2,13 +2,15 @@
 {% load static %}
 
 {% block body_main_block %}
-<div class="jumbotron title p-0 pt-2 pb-2 mb-0 pl-5">
-    <h1>You have completed the survey!</h1>
-</div>
-<div class="jumbotron pt-5 pb-5 pl-5">
-    <p>Thank you for completing this survey. Your answers and your location have been stored.</p>
-    <p><br /><br />
-        <a href="{% url 'sleep_app:main_form_page' %}">Go back to the main page</a>
-    </p>
-</div>
+
+<div class="card bg-light">
+    <h2 class="card-header p-4 text-center bg-primary text-light"><i class="bi bi-stars"></i> Completed!</h2>
+    <div class="card-body p-4">
+        Thank you for completing this survey. Your answers and your location have been stored.
+        <div class="pt-4 d-grid gap-2 col-6 mx-auto">
+        <a class="text-center btn btn-primary" href="{% url 'sleep_app:main_form_page' %}">Go back to the main page</a>
+        </div>
+    </div>
+    </div>
+  </div>
 {% endblock %}

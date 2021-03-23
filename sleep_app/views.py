@@ -271,7 +271,7 @@ def symptom_question(request, symptom_name_slug):
 
 
 def location(request):
-    if request.method == "POST":
+    if request.method == "POST" and "person" in request.session:
         try:
             current_person = models.Person.objects.get(id=request.session["person"])
             if "lat" in request.POST:

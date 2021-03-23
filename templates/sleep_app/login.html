@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body_main_block %}
-<div class="container-fluid pr-0 pl-0 ml-0 pt-5 mt-5">
+<div class="card bg-light">
 
     <form class="form-signin text-center" method="POST" action="{% url 'sleep_app:login' %}">
         <h3 class="text-center font-weight-normal mb-3">Please Sign In</h3>
@@ -20,7 +20,6 @@
         <br>
         Not yet registered?
         <a style="color: #2f5aab;" href="/register/">Register here!</a>
-        
         <input type="hidden" name="next" value="">
     </form>
 
