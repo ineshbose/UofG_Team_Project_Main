@@ -295,16 +295,27 @@ def location(request):
 
 @decorators.staff_required
 def table(request):
-    return render(request, "sleep_app/table.html", {"table": tables.PersonTable([{
-        "id": person.id,
-        "date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
-        "location_text": person.location_text,
-        "location": person.location,
-        **{
-            a.response.symptom.name: get_response_answer(a)
-            for a in person.answerset_set.all()
+    return render(
+        request,
+        "sleep_app/table.html",
+        {
+            "table": tables.PersonTable(
+                [
+                    {
+                        "id": person.id,
+                        "date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
+                        "location_text": person.location_text,
+                        "location": person.location,
+                        **{
+                            a.response.symptom.name: get_response_answer(a)
+                            for a in person.answerset_set.all()
+                        },
+                    }
+                    for person in models.Person.objects.all()
+                ]
+            )
         },
-    } for person in models.Person.objects.all()])})
+    )
 
 
 @decorators.login_not_required
@@ -356,10 +367,7 @@ def export_csv(request):
         "Date",
         "Location",
         "Coordinates",
-        *list(dict.fromkeys(
-            symptom.name
-            for symptom in models.Symptom.objects.all()
-        )),
+        *list(dict.fromkeys(symptom.name for symptom in models.Symptom.objects.all())),
     ]
 
     writer = csv.DictWriter(response, fieldnames=headers)
@@ -379,7 +387,9 @@ def export_csv(request):
                 },
                 **{
                     a.response.symptom.name: get_response_answer(a)
-                    for a in person.answerset_set.filter(response__symptom__name__in=headers)
+                    for a in person.answerset_set.filter(
+                        response__symptom__name__in=headers
+                    )
                 },
             }
             for person in models.Person.objects.all().order_by("date")
