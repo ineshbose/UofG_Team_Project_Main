@@ -13,7 +13,8 @@ from . import models
 class PersonTable(tables.Table):
     id = tables.Column()
     date = tables.Column()
-    location = tables.Column()
+    db_location = tables.Column()
+    gps_location = tables.Column()
     location_text = tables.Column()
 
     class Meta:

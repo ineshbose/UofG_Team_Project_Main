@@ -42,18 +42,28 @@ def map(request):
     if selected_symptom is None:
         if models.Person.objects.all():
             for person in models.Person.objects.all():
-                if person.location:
-                    latitude.append(person.location.split(",")[0])
-                    longitude.append(person.location.split(",")[1])
+                if person.gps_location:
+                    latitude.append(person.gps_location.split(",")[0])
+                    longitude.append(person.gps_location.split(",")[1])
                     id.append(person.id)
+                elif person.db_location:
+                    latitude.append(person.db_location.split(",")[0])
+                    longitude.append(person.db_location.split(",")[1])
+                    id.append(person.id)
+
     else:
         for person in models.Person.objects.all():
             answers = person.answerset_set.all()
             for a in answers:
                 if str(a.response.symptom) == selected_symptom and a.response.answer:
-                    latitude.append(person.location.split(",")[0])
-                    longitude.append(person.location.split(",")[1])
-                    id.append(person.id)
+                    if person.gps_location:
+                        latitude.append(person.gps_location.split(",")[0])
+                        longitude.append(person.gps_location.split(",")[1])
+                        id.append(person.id)
+                    elif person.db_location:
+                        latitude.append(person.db_location.split(",")[0])
+                        longitude.append(person.db_location.split(",")[1])
+                        id.append(person.id)
 
     fig = go.Figure(
         data=go.Scattergeo(
@@ -248,7 +258,7 @@ def location(request):
             current_person = models.Person.objects.get(id=request.session["person"])
             if "lat" in request.POST:
                 if request.POST["lat"] != "no-permission":
-                    current_person.location = ",".join(
+                    current_person.gps_location = ",".join(
                         [request.POST["lat"], request.POST["long"]]
                     )
                     current_person.save()
@@ -265,7 +275,7 @@ def location(request):
                 )
                 if len(x["features"]) > 0:
                     long, lat = x["features"][0]["geometry"]["coordinates"][:2]
-                    current_person.location = f"{lat},{long}"
+                    current_person.db_location = f"{lat},{long}"
                     increase_log_amount(request)
                 current_person.location_text = request.POST["location"]
                 current_person.save()
@@ -298,7 +308,8 @@ def table(request):
         info = {
             "id": p.id,
             "date": p.date,
-            "location": p.location,
+            "gps_location": p.gps_location,
+            "db_location": p.db_location,
             "location_text": p.location_text,
         }
         answers = p.answerset_set.all()
