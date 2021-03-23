@@ -1,5 +1,6 @@
 .symptom {
     font-size: 20px;
+    padding-top: 5px;
 }
 
 h1 {
@@ -31,7 +32,6 @@ img {
 }
 
 .btn {
-    margin-left: 5px;
     font-size: 15px;
     vertical-align: middle;
 }
@@ -39,11 +39,43 @@ img {
 .cancel {
     color: black;
     border: 1px solid black;
-    margin-top: 50px;
     margin-left: 0px;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 2px;
 }
 
 input {
     vertical-align: middle;
     font-size: 20px;
+}
+
+#id_scale_response {
+    width: 73%;
+}
+
+#id_text_response {
+    width: 73%;
+}
+
+#id_bool_response {
+    width: 73%;
+}
+
+#response_form {
+    max-width: 400px;
+}
+
+.buttonSection {
+    margin-top: 25px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.report {
+    width: 25.7%;
+}
+
+.formQ {
+    padding-top: 10px;
 }

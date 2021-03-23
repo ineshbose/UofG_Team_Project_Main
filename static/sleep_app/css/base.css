@@ -26,3 +26,19 @@ h1 {
     padding-left: 0;
     padding-right: 0;
 }
+
+.marginSides {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.title {
+    padding: 7px;
+    margin-bottom: 5px;
+    color: white;
+    background-color: rgb(61, 97, 151);
+}
+
+.jumbotron {
+    margin-top: 15px;
+}
