@@ -58,7 +58,9 @@ def map(request):
         for person in models.Person.objects.all():
             answers = person.answerset_set.all()
             for a in answers:
-                if str(a.response.symptom) == selected_symptom and a.response.answer:
+                if str(a.response.symptom) == selected_symptom and ((a.response.text_response) or
+                                                                    (a.response.bool_response == True) or
+                                                                    (a.response.scale_response)):
                     if person.gps_location:
                         latitude.append(person.gps_location.split(",")[0])
                         longitude.append(person.gps_location.split(",")[1])
