@@ -39,8 +39,6 @@ def map(request):
         else:
             s.append(symptom)
 
-    print(s)
-
     if request.method == "POST":
         selected_symptom = request.POST.get("dropdown1")
 
