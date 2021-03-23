@@ -33,6 +33,7 @@ window.onload = function() {
 
 
   var geoSuccess = function(position) {
+    alert("Your GPS location has been recorded. You can navigate away from this page, or manually enter the location as well.");
     var startPos;
     startPos = position;
 
