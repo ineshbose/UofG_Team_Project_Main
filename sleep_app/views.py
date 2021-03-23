@@ -93,7 +93,7 @@ def map(request):
 
     fig.update_geos(showcountries=True)
     fig2.update_geos(showcountries=True, scope="africa")
-    plot_div = fig.to_html(full_html=False, default_height=700, default_width=1000)
+    plot_div = fig.to_html(full_html=False, default_height=600, default_width=1200)
     plot_div2 = fig2.to_html(full_html=False, default_height=700, default_width=1000)
     context = {
         "figure": fig,
