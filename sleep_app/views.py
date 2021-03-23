@@ -45,48 +45,28 @@ def map(request):
     if selected_symptom is None:
         if models.Person.objects.all():
             for person in models.Person.objects.all():
-                if person.location:
-                    latitude.append(person.location.split(",")[0])
-                    longitude.append(person.location.split(",")[1])
-                    popup.append(person.id)
                 if person.gps_location:
                     latitude.append(person.gps_location.split(",")[0])
                     longitude.append(person.gps_location.split(",")[1])
-                    id.append(person.id)
+                    popup.append(person.id)
                 elif person.db_location:
                     latitude.append(person.db_location.split(",")[0])
                     longitude.append(person.db_location.split(",")[1])
-                    id.append(person.id)
+                    popup.append(person.id)
 
     else:
         for person in models.Person.objects.all():
             answers = person.answerset_set.all()
             for a in answers:
-                if a.response.symptom.name == selected_symptom:
-                    if a.response.bool_response:
-                        latitude.append(person.location.split(",")[0])
-                        longitude.append(person.location.split(",")[1])
-                        popup.append(str(a.response) + "  ID:" + str(person.id))
-
-                    elif a.response.scale_response:
-                        latitude.append(person.location.split(",")[0])
-                        longitude.append(person.location.split(",")[1])
-                        popup.append(str(a.response) + "  ID:" + str(person.id))
-
-                    elif a.response.text_response:
-                        latitude.append(person.location.split(",")[0])
-                        longitude.append(person.location.split(",")[1])
-                        popup.append(str(a.response) + "  ID:" + str(person.id))
-
                 if str(a.response.symptom) == selected_symptom and a.response.answer:
                     if person.gps_location:
                         latitude.append(person.gps_location.split(",")[0])
                         longitude.append(person.gps_location.split(",")[1])
-                        id.append(person.id)
+                        popup.append(str(a.response) + "  ID:" + str(person.id))
                     elif person.db_location:
                         latitude.append(person.db_location.split(",")[0])
                         longitude.append(person.db_location.split(",")[1])
-                        id.append(person.id)
+                        popup.append(str(a.response) + "  ID:" + str(person.id))
 
     fig = go.Figure(
         data=go.Scattergeo(
