@@ -4,5 +4,12 @@
     margin: 2.5px;
 }
 
+.btn:hover {
+    background-color: rgb(61, 97, 151);
+    color: white;
+}
+
+
+
 
 

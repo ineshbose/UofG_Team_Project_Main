@@ -6,25 +6,24 @@
 {% endblock %}
 
 {% block body_main_block %}
-<div class="jumbotron title p-0 pt-2 pb-2 mb-0 pl-5">
-    <h1 class="mb-2"> Sleeping Sickness Form</h1>
 
-    {# REMOVED TEMPORARILY FOR CUSTOMER DAY DEMONSTRATION#}
-    {# PROGRESS BAR -- IN PROGRESS#}
+<div class="jumbotron title marginSides">
+    <h2> Sleeping Sickness Form </h2>
+
     {# <div class="progress mb-2 mr-5" style="height: 10px; background-color: white;">#}
         {# <div class="progress-bar" role="progressbar" style="width: 33%; background-color: #4c7edd" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>#}
         {# </div>#}
 
 </div>
-<div class="jumbotron pt-4 pb-5 pl-5">
+<div class="jumbotron formQ marginSides pt-4 pb-5 pl-5">
 
     {% if symptom %}
     <h2>{{ symptom.name }}</h2>
 
     {% if symptom.image %}
-    <img src="{{ symptom.image.url }}" height="300" width="450" />
+    <img src="{{ symptom.image.url }}" width="100%" style="max-width: 400px;"/>
     {% endif %}
-    <p class="symptom mt-2">{{ symptom.question }}</p>
+    <p class="symptom mt-2 sympQuestion">{{ symptom.question }}</p>
     <form id="response_form" method="post" action="">
         {% csrf_token %}
         {% for hidden in response_form.hidden_fields %}
@@ -36,19 +35,21 @@
         {{ field.help_text }}
         {{ field }}
         {% endfor %}
-        <input class="btn btn-primary" type="submit" name="submit" value="Report" />
+        <input class="btn btn-primary report" type="submit" name="submit" value="Report" />
     </form>
     <form action="{% url 'sleep_app:main_form_page' %}" method="post">
         {% csrf_token %}
 
-        {% if prev_symptom %}
-        <a class="btn btn-outline-primary cancel" href="{% url 'sleep_app:symptom_form' symptom_name_slug=prev_symptom.slug %}">Previous</a>
-        {% endif %}
-        {% else %}
-        <strong>This symptom does not exist!</strong>
-        {% endif %}
-        <input class="btn btn-outline-primary cancel" type="submit" name="cancel"
-            value="Cancel and go back to the main page" />
+        <div class="buttonSection">
+            {% if prev_symptom %}
+            <a class="btn btn-outline-primary cancel" href="{% url 'sleep_app:symptom_form' symptom_name_slug=prev_symptom.slug %}">Previous</a>
+            {% endif %}
+            {% else %}
+            <strong>This symptom does not exist!</strong>
+            {% endif %}
+            <input class="btn btn-outline-primary cancel" type="submit" name="cancel"
+                value="Cancel and go back to the main page" />
+        </div>
     </form>
 
 </div>

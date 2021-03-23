@@ -12,5 +12,8 @@ a:hover {
 
 td {
     border: 1px lightgray solid;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 

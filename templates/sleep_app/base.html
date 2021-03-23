@@ -7,60 +7,60 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="generator" content="Jekyll v3.8.5">
-    <link href="https://getbootstrap.com/docs/4.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link href="https://getbootstrap.com/docs/4.2/examples/dashboard/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/base.css' %}">
     {% block head_block %}
     {% endblock %}
 </head>
 
-<body data-new-gr-c-s-check-loaded="14.984.0" data-gr-ext-installed>
-    <nav class="navbar navbar-expand-md navbar-dark mb-4">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/form/">Home</a>
-                </li>
+<body data-new-gr-c-s-check-loaded="14.1000.0" data-gr-ext-installed="">
+<nav class="navbar navbar-inverse" style="position: fixed; top: 0; width: 100%;">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#myNavbar" aria-expanded="false">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/form/">TrypAdvisor</a>
+        </div>
+        <div class="navbar-collapse collapse" id="myNavbar" aria-expanded="false" style="height: 1px;">
+            <ul class="nav navbar-nav">
+                <li><a href="/form/">Home</a></li>
                 {% if user.is_authenticated %}
                 {% if user.is_staff %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/table">Table</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/map">Map</a>
-                </li>
+                <li><a href="/table">Table</a></li>
+                <li><a href="/map">Map</a></li>
                 {% endif %}
                 {% endif %}
                 {% if user.is_superuser %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin">Admin</a>
-                </li>
+                <li><a href="/admin">Admin</a></li>
                 {% endif %}
-                {# <li class="nav-item">#}
-                    {# <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>#}
-                    {# </li>#}
             </ul>
-            <ul class="navbar-nav md-0">
+            <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
-                <p class="navbar-text m-0 mr-2" style="font-size: 15px; color: #e8f3ff; font-weight: bold">Hello, {{ user.username }}</p>
-                <a class="nav-link" href="{% url 'sleep_app:logout' %}">Logout<span class="sr-only"></span></a>
+                <li><a class="disabled">Hello, {{ user.username }}</a></li>
+                <li><a href="{% url 'sleep_app:logout' %}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                 {% else %}
-                <a class="nav-link" href="{% url 'sleep_app:login' %}">Log In<span class="sr-only"></span></a>
-                <a class="nav-link" href="{% url 'sleep_app:register' %}">Register <span class="sr-only"></span></a>
+                <li><a href="{% url 'sleep_app:register' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="{% url 'sleep_app:login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 {% endif %}
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
+
     {% block body_block %}
-    <main role="main" class="container">
+    <main role="main" class="container" style="margin-top: 50px;">
         {% block body_main_block %}
         {% endblock %}
     </main>
     {% endblock %}
 </body>
+
+<script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-157cd5b220a5c80d4ff8e0e70ac069bffd87a61252088146915e8726e5d9f147.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdpn.io/cp/internal/boomboom/pen.js?key=pen.js-704c88a1-c75d-da14-879b-e6d20018820a" crossorigin=""></script>
 
 </html>

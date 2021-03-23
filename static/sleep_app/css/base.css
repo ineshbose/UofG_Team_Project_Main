@@ -1,24 +1,24 @@
+.container {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.marginSides {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 .title {
-    background-color: #2f5aab;
+    padding: 7px;
+    margin-bottom: 5px;
     color: white;
-    border-radius: 5px 5px 0px 0px;
+    background-color: rgb(61, 97, 151);
 }
 
-h1 {
-    font-size: 30px;
-    margin-bottom: 3px;
-}
-
-.text {
-    font-size: 23px;
+.jumbotron {
+    margin-top: 15px;
 }
 
 .navbar {
-    background-color: #2f5aab;
-    color: black;
+    border-radius: 0rem;
 }
-
-.nav-link {
-    color: white;
-}
-
