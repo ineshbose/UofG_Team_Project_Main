@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="generator" content="Jekyll v3.8.5">
-    <link rel="icon" href="">
+    <link rel="icon" href="{% static 'sleep_app/img/logo.png' %}">
     <title>
         TrypAdvisor{% block title_block %} - Sleeping Sickness Surveillance Form{% endblock %}
     </title>
@@ -23,7 +23,7 @@
 <body class="">
     <nav class="navbar sticky-top navbar-expand-md navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'sleep_app:index' %}"><i class="bi-alarm"></i> TrypAdvisor</a>
+            <a class="navbar-brand" href="{% url 'sleep_app:index' %}"><i class="bi bi-moon-stars"></i> TrypAdvisor</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
