@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-24 14:41+0000\n"
+"POT-Creation-Date: 2021-03-24 18:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -111,35 +111,33 @@ msgstr ""
 "Suchen Sie die Formulare für Mitarbeiter im Gesundheitswesen, Entomologen "
 "oder Tierärzte? Vergewissern Sie sich, dass Sie angemeldet sind."
 
-#: templates/sleep_app/location.html:15
+#: templates/sleep_app/location.html:16
 msgid "Location Access Permission"
 msgstr "Zugriff auf Standortdaten"
 
-#: templates/sleep_app/location.html:18
+#: templates/sleep_app/location.html:19
 msgid "Thank you for filling out the form! Please give this page"
 msgstr ""
 "Vielen Dank, dass Sie dieses Formular ausgefüllt haben. Bitte geben Sie der "
 "Seite"
 
-#: templates/sleep_app/location.html:19
-#, fuzzy
-#| msgid "Location Access Permission"
+#: templates/sleep_app/location.html:20
 msgid "location permission"
 msgstr "Zugriff auf Standortdaten"
 
-#: templates/sleep_app/location.html:19
+#: templates/sleep_app/location.html:20
 msgid "so that we can use your results."
 msgstr "sodass wir Ihre Ergebnisse nutzen können."
 
-#: templates/sleep_app/location.html:19
+#: templates/sleep_app/location.html:20
 msgid "Alternatively, you can also enter your location into this search bar."
 msgstr "Alternativ können Sie Ihren Standort in diese Suchzeile eingeben."
 
-#: templates/sleep_app/location.html:26
+#: templates/sleep_app/location.html:28
 msgid "Search"
 msgstr "Suchen"
 
-#: templates/sleep_app/location.html:33
+#: templates/sleep_app/location.html:35
 msgid "Back to the main page"
 msgstr "Zurück zur Startseite"
 
