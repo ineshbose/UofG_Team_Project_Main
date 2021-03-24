@@ -11,7 +11,7 @@
         <thead class="table-primary">
             <tr>
                 {% for h in headers %}
-                <th class="tg-0lax">{{ h }}</th>
+                <th>{{ h }}</th>
                 {% endfor %}
             </tr>
         </thead>
@@ -19,7 +19,7 @@
             {% for d in data %}
             <tr>
                 {% for k, v in d.items %}
-                <td class="tg-0lax">{{ v }}</td>
+                <td>{{ v }}</td>
                 {% endfor %}
             </tr>
             {% endfor %}
