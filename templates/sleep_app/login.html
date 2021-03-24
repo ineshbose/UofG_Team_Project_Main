@@ -2,25 +2,28 @@
 {% load static %}
 {% load i18n %}
 
+{% block head_block %}
+<link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/auth.css' %}">
+{% endblock %}
 
 {% block body_main_block %}
-<div class="card bg-light p-5">
+<div class="card bg-light py-5">
 
     <form class="form-signin text-center" method="POST" action="{% url 'sleep_app:login' %}">
         <h3 class="text-center font-weight-normal mb-3">{% trans "Please Sign In" %}</h3>
         <p class="errormsg">{{ errormsg }}</p>
         {% csrf_token %}
 
-        <input type="text" id="username" name="username" class="form-control mw-50 mx-auto" placeholder="{% trans "Username" %}" required=""
+        <input type="text" id="username" name="username" class="form-control" placeholder="{% trans "Username" %}" required=""
             autofocus="">
-        <input type="password" name="password" value="" id="password" class="mt-2 form-control mw-50 mx-auto" placeholder="{% trans "Password" %}"
+        <input type="password" name="password" value="" id="password" class="form-control" placeholder="{% trans "Password" %}"
             required="">
 
-        <input class="btn btn-primary my-4" type="submit" value="{% trans "Log In" %}">
+        <input class="btn btn-primary" id="signIn" type="submit" value="{% trans "Log In" %}">
 
         <br>
         {% trans "Not yet registered?" %}<br/>
-        <a class="btn btn-link" href="{% url 'sleep_app:register' %}">{% trans "Register here!" %}</a>
+        <a class="" href="{% url 'sleep_app:register' %}">{% trans "Register here!" %}</a>
         <input type="hidden" name="next" value="">
     </form>
 
