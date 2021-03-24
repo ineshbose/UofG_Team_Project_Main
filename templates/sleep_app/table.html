@@ -1,5 +1,6 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block head_block %}
 <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/table.css' %}">
@@ -7,7 +8,7 @@
 
 {% block body_block %}
 <div class="exportField">
-    <a class="m-2 btn btn-primary export" href="{% url 'sleep_app:export' %}">Export as CSV</a>
+    <a class="m-2 btn btn-primary export" href="{% url 'sleep_app:export' %}">{% trans "Export as CSV" %}</a>
 </div>
 <div class="table-responsive">
     <table class="table table-hover table-striped">

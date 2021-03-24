@@ -1,5 +1,6 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block head_block %}
 <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/form.css' %}">
@@ -9,10 +10,10 @@
 <div class="card bg-light">
     <h2 class="card-header p-4 text-center bg-primary text-light">
         <i class="bi bi-cloud-moon-fill"></i>
-        Sleeping Sickness Form
+        {% trans "Sleeping Sickness Form" %}
     </h2>
     <div class="card-body p-4">
-        <p class="text">Fill out the sleeping sickness form!</p>
+        <p class="text">{% trans "Fill out the sleeping sickness form!" %}</p>
         <ul class="pl-4">
             {% if first_symptom_mop %}
             <li class="list-item ">
@@ -20,7 +21,7 @@
                     method="post">
                     {% csrf_token %}
                     <input class="btn btn-outline-primary" type="submit" name="first"
-                        value="Form for members of the public" />
+                        value="{% trans "Form for members of the public" %}" />
                 </form>
             </li>
             {% endif %}
@@ -32,7 +33,7 @@
                     method="post">
                     {% csrf_token %}
                     <input class="btn btn-outline-primary" type="submit" name="first"
-                        value="Form for healthcare workers" />
+                        value="{% trans "Form for healthcare workers" %}" />
                 </form>
             </li>
             {% endif %}
@@ -43,7 +44,7 @@
                     method="post">
                     {% csrf_token %}
                     <input class="btn btn-outline-primary" type="submit" name="first"
-                        value="Form for entomologists and vets" />
+                        value="{% trans "Form for entomologists and vets" %}" />
                 </form>
             </li>
             {% endif %}
@@ -51,19 +52,16 @@
         </ul>
 
         {% if log_amount == 1 %}
-        <p class="text">You have logged data for <b>1</b> person today.</p>
+        <p class="text">{%trans "You have logged data for <b>1</b> person today." %}</p>
         {% else %}
-        <p class="text">You have logged data for <b>{{ log_amount }}</b> people today.</p>
+        <p class="text">{% blocktrans with amount=log_amount %}You have logged data for <b>{{ amount }}</b> people today.{% endblocktrans %}</p>
         {% endif %}
     </div>
     <div class="card-footer text-muted text-justify">
-        At the end of the form you will be asked to share your location. You can do this by allowing your
-        browser to access your location.
-        Alternatively you can manually enter your location (i.e. the name of your town or village).
-        You can exit the form at any time prior to this, and all the data you provided will be deleted.
-        <br>
-        If you are a healthcare worker, entomologist or a vet, and you cannot see a form specific to you, please log
-        in.
+        {% trans "NOTE: At the end of the form you will be asked to share your location. You can do this by allowing your browser to access your location.  Alternatively you can manually enter your location (i.e. the name of your town or village). You can exit the form at any time prior to this, and all the data you provided will be deleted." %}
+         <br>
+        {% trans "If you are a healthcare worker, entomologist or a vet, and you cannot see a form specific to you, please log in." %}
+
     </div>
 </div>
 </div>

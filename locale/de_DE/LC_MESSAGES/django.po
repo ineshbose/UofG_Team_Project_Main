@@ -1,0 +1,235 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-03-24 14:41+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/sleep_app/base.html:15 templates/sleep_app/base.html:29
+msgid "TrypAdvisor"
+msgstr "TrypAdvisor"
+
+#: templates/sleep_app/base.html:15
+msgid "Sleeping Sickness Surveillance Form"
+msgstr "Formular zur Untersuchung von Schlafkrankheit"
+
+#: templates/sleep_app/base.html:38
+#: templates/sleep_app/symptom_question.html:12
+msgid "Form"
+msgstr "Formular"
+
+#: templates/sleep_app/base.html:43
+msgid "Table"
+msgstr "Tabelle"
+
+#: templates/sleep_app/base.html:46
+msgid "Map"
+msgstr "Karte"
+
+#: templates/sleep_app/base.html:51
+msgid "Admin"
+msgstr "Administrator"
+
+#. Translators: this is "Hello," username
+#: templates/sleep_app/base.html:60
+msgid "Hello,"
+msgstr "Hallo,"
+
+#: templates/sleep_app/base.html:64
+msgid "Logout"
+msgstr "Abmelden"
+
+#: templates/sleep_app/base.html:70
+msgid "Sign Up"
+msgstr "Registrieren"
+
+#: templates/sleep_app/base.html:75
+msgid "Login"
+msgstr "Anmelden"
+
+#: templates/sleep_app/form.html:13
+#: templates/sleep_app/symptom_question.html:17
+msgid "Sleeping Sickness Form"
+msgstr "Formular zur Schlafkrankheit"
+
+#: templates/sleep_app/form.html:16
+msgid "Fill out the sleeping sickness form!"
+msgstr "Füllen Sie das Formular aus!"
+
+#: templates/sleep_app/form.html:24
+msgid "Form for members of the public"
+msgstr "Formular für Mitglieder der Öffentlichkeit"
+
+#: templates/sleep_app/form.html:36
+msgid "Form for healthcare workers"
+msgstr "Formular für Mitarbeiter im Gesundheitswesen"
+
+#: templates/sleep_app/form.html:47
+msgid "Form for entomologists and vets"
+msgstr "Formular für Entomologe und Tierärzte"
+
+#: templates/sleep_app/form.html:55
+msgid "You have logged data for <b>1</b> person today."
+msgstr "Sie haben heute Daten für <b>1</b> Person eingegeben."
+
+#: templates/sleep_app/form.html:57
+#, python-format
+msgid "You have logged data for <b>%(amount)s</b> people today."
+msgstr "Sie haben heute Daten für <b>%(amount)s</b> Personen eingegeben."
+
+#: templates/sleep_app/form.html:61
+msgid ""
+"NOTE: At the end of the form you will be asked to share your location. You "
+"can do this by allowing your browser to access your location.  Alternatively "
+"you can manually enter your location (i.e. the name of your town or "
+"village). You can exit the form at any time prior to this, and all the data "
+"you provided will be deleted."
+msgstr ""
+"ANMERKUNG: Am Ende dieses Formulars werden Sie darum gebeten, Ihren Standort "
+"zu teilen. Sie können dies tun,indem Sie Ihrem Browser Zugriff auf Ihre "
+"Standortdaten geben. Alternativ können Sie Ihren Standort (z.B. den Namen "
+"Ihrer Stadt oder Ihres Dorfes) manuell eingeben. Sie können das Formular "
+"davor jederzeit verlassen, in diesen Fall werden all Ihre Daten gelöscht."
+
+#: templates/sleep_app/form.html:63
+msgid ""
+"If you are a healthcare worker, entomologist or a vet, and you cannot see a "
+"form specific to you, please log in."
+msgstr ""
+"Suchen Sie die Formulare für Mitarbeiter im Gesundheitswesen, Entomologen "
+"oder Tierärzte? Vergewissern Sie sich, dass Sie angemeldet sind."
+
+#: templates/sleep_app/location.html:15
+msgid "Location Access Permission"
+msgstr "Zugriff auf Standortdaten"
+
+#: templates/sleep_app/location.html:18
+msgid "Thank you for filling out the form! Please give this page"
+msgstr ""
+"Vielen Dank, dass Sie dieses Formular ausgefüllt haben. Bitte geben Sie der "
+"Seite"
+
+#: templates/sleep_app/location.html:19
+#, fuzzy
+#| msgid "Location Access Permission"
+msgid "location permission"
+msgstr "Zugriff auf Standortdaten"
+
+#: templates/sleep_app/location.html:19
+msgid "so that we can use your results."
+msgstr "sodass wir Ihre Ergebnisse nutzen können."
+
+#: templates/sleep_app/location.html:19
+msgid "Alternatively, you can also enter your location into this search bar."
+msgstr "Alternativ können Sie Ihren Standort in diese Suchzeile eingeben."
+
+#: templates/sleep_app/location.html:26
+msgid "Search"
+msgstr "Suchen"
+
+#: templates/sleep_app/location.html:33
+msgid "Back to the main page"
+msgstr "Zurück zur Startseite"
+
+#: templates/sleep_app/login.html:10
+msgid "Please Sign In"
+msgstr "Anmeldung"
+
+#: templates/sleep_app/login.html:14
+msgid "Username"
+msgstr "Benutzername"
+
+#: templates/sleep_app/login.html:16
+msgid "Password"
+msgstr "Passwort"
+
+#: templates/sleep_app/login.html:19
+msgid "Log In"
+msgstr "Anmelden"
+
+#: templates/sleep_app/login.html:22
+msgid "Not yet registered?"
+msgstr "Noch nicht registriert?"
+
+#: templates/sleep_app/login.html:23
+msgid "Register here!"
+msgstr "Registrieren Sie sich hier!"
+
+#: templates/sleep_app/map.html:16
+msgid "Symptom to select"
+msgstr "Symptom auswählen"
+
+#: templates/sleep_app/map.html:28 templates/sleep_app/table.html:11
+msgid "Export as CSV"
+msgstr "Also CSV exportieren"
+
+#: templates/sleep_app/register.html:10
+msgid "Registration Form"
+msgstr "Registrierungsformular"
+
+#: templates/sleep_app/register.html:25
+msgid "Already registered?"
+msgstr "Bereits registriert?"
+
+#: templates/sleep_app/success.html:10
+msgid "Thank you for completing this survey. Your information has been stored."
+msgstr ""
+"Vielen Dank, dass Sie das Formular ausgefüllt haben. Ihre Informationen "
+"wurden gespeichert."
+
+#: templates/sleep_app/success.html:13
+msgid "You have entered the location"
+msgstr "Sie haben diesen Standort eingegeben:"
+
+#: templates/sleep_app/success.html:16
+msgid "Your GPS location has been recorded as"
+msgstr "Ihre GPS-Koordinaten wurden gespeichert als:"
+
+#: templates/sleep_app/success.html:19
+msgid "Your location entry has been converted to coordinates and stored as"
+msgstr ""
+"Die Koordinaten des eingegebenen Standorts wurden ermittelt und gespeichert "
+"als:"
+
+#: templates/sleep_app/symptom_question.html:35
+msgid "Report"
+msgstr "Speichern"
+
+#: templates/sleep_app/symptom_question.html:42
+msgid "Previous"
+msgstr "Zurück"
+
+#: templates/sleep_app/symptom_question.html:45
+msgid "This symptom does not exist!"
+msgstr "Dieses Symptom existiert nicht!"
+
+#: templates/sleep_app/symptom_question.html:48
+msgid "Cancel and go back to the main page"
+msgstr "Abbrechen und zur Startseite zurückkehren"
+
+#~ msgid "Home"
+#~ msgstr "Start"
+
+#~ msgid "Login here!"
+#~ msgstr "Melden Sie sich hier an!"
+
+#~ msgid "You have completed the survey!"
+#~ msgstr "Sie haben das Formular beendet!"
+
+#~ msgid "person today."
+#~ msgstr "Person eingegeben."
+
+#~ msgid "people today."
+#~ msgstr "Personen eingegeben."

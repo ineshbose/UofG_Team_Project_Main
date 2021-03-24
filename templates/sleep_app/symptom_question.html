@@ -1,5 +1,6 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block head_block %}
 <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/symptom_question.css' %}">
@@ -8,13 +9,12 @@
 {% block body_main_block %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'sleep_app:main_form_page' %}">Form</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'sleep_app:main_form_page' %}">{% trans "Form" %}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{{ symptom.name }}</li>
     </ol>
 </nav>
 <div class="card bg-light">
-    <h2 class="card-header p-4 text-center bg-primary text-light"><i class="bi bi-moon-stars-fill"></i> Sleeping
-        Sickness Form</h2>
+    <h2 class="card-header p-4 text-center bg-primary text-light"><i class="bi bi-moon-stars-fill"></i> {% trans "Sleeping Sickness Form" %}</h2>
     <div class="card-body p-4">
         {% if symptom %}
         <h2>{{ symptom.name }}</h2>
@@ -32,20 +32,20 @@
             {{ field.help_text }}
             {{ field }}
             {% endfor %}
-            <input class="btn btn-primary report" type="submit" name="submit" value="Report" />
+            <input class="btn btn-primary report" type="submit" name="submit" value="{% trans "Report" %}" />
         </form>
         <form action="{% url 'sleep_app:main_form_page' %}" method="post">
             {% csrf_token %}
             <div class="btn-group-vertical pt-4">
                 {% if prev_symptom %}
                 <a class="btn btn-outline-warning cancel"
-                    href="{% url 'sleep_app:symptom_form' symptom_name_slug=prev_symptom.slug %}">Previous</a>
+                    href="{% url 'sleep_app:symptom_form' symptom_name_slug=prev_symptom.slug %}">{% trans "Previous" %}</a>
                 {% endif %}
                 {% else %}
-                <strong>This symptom does not exist!</strong>
+                <strong>{% trans "This symptom does not exist!" %}</strong>
                 {% endif %}
                 <input class="btn btn-outline-dark cancel" type="submit" name="cancel"
-                    value="Cancel and go back to the main page" />
+                    value="{% trans "Cancel and go back to the main page" %}" />
             </div>
         </form>
     </div>

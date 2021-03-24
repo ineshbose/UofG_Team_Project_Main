@@ -1,12 +1,24 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
+{% load i18n %}
+
 
 {% block body_main_block %}
-
 <div class="card bg-light">
     <h2 class="card-header p-4 text-center bg-primary text-light"><i class="bi bi-stars"></i> Completed!</h2>
     <div class="card-body p-4">
-        Thank you for completing this survey. Your answers and your location have been stored.
+    <p>{% trans "Thank you for completing this survey. Your information has been stored." %}</p>
+        {% if person %}
+        {% if person.location_text %}
+        {% trans "You have entered the location" %} "{{ person.location_text }}".<br>
+        {% endif %}
+        {% if person.gps_location %}
+        {% trans "Your GPS location has been recorded as" %} {{ person.gps_location }}. <br>
+        {% endif %}
+        {% if person.db_location %}
+        {% trans "Your location entry has been converted to coordinates and stored as" %} {{ person.db_location}}.
+        {% endif %}
+        {% endif %}
         <div class="pt-4 d-grid gap-2 col-6 mx-auto">
             <a class="text-center btn btn-primary" href="{% url 'sleep_app:main_form_page' %}">Go back to the main
                 page</a>

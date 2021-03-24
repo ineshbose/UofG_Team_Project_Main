@@ -127,6 +127,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOCALE_PATHS = [os.path.join(BASE_DIR, "locale")]
+
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 ASGI_APPLICATION = "sleep_surv.routing.application"
@@ -190,3 +192,4 @@ if os.environ.get("SERVER"):
     import django_heroku
 
     django_heroku.settings(locals())
+

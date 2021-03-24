@@ -1,5 +1,6 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block head_block %}
 <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/map.css' %}">
@@ -12,7 +13,7 @@
         <form action="." method="post">
             {% csrf_token %}
             <select name='dropdown1' class='dropdown'>
-                <option selected="selected" disabled>Symptom to select</option>
+                <option selected="selected" disabled>{% trans "Symptom to select" %}</option>
                 {% for symptom in all_symptoms %}
                 {% if selected_symptom == symptom.name %}
                 <option value="{{ symptom.name }}" selected="selected">
@@ -24,7 +25,7 @@
                 {% endfor %}
             </select>
             <input type="submit" class="btn btn-success" value="Select">
-            <a class="btn btn-primary" href="{% url 'sleep_app:export' %}">Export as CSV</a>
+            <a class="btn btn-primary" href="{% url 'sleep_app:export' %}">{% trans "Export as CSV" %}</a>
         </form>
 
     </ul>

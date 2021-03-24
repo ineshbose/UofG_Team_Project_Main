@@ -1,12 +1,13 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
+{% load i18n %}
 
 
 {% block body_main_block %}
 <div class="card bg-light p-5">
 
     <form class="form-signin text-center" method="POST" action="">
-        <h3 class="text-center font-weight-normal mb-3">Registration Form</h3>
+        <h3 class="text-center font-weight-normal mb-3">{% trans "Registration Form" %}</h3>
         {% csrf_token %}
         {% for field in form %}
         <input type="{{ field.field.widget.input_type }}" id="{{ field.html_name }}" name="{{ field.html_name }}"
@@ -20,7 +21,8 @@
         <input class="btn btn-primary my-4" type="submit" , value="Register" name="Create User">
 
         <br>
-        Already registered?<br/>
+
+        {% trans "Already registered?" %}<br/>
         <a style="btn btn-link" href="{% url 'sleep_app:login' %}">Login here!</a>
 
     </form>

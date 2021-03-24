@@ -384,7 +384,11 @@ def logout(request):
 
 
 def success(request):
-    return render(request, "sleep_app/success.html")
+    try:
+        person = models.Person.objects.get(id=request.session["person"])
+    except models.Person.DoesNotExist:
+        person = None
+    return render(request, "sleep_app/success.html", {"person":person})
 
 
 @decorators.staff_required
