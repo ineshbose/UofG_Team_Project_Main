@@ -2,13 +2,20 @@
 {% load static %}
 {% load i18n %}
 
+{% block head_block %}
+{% csrf_token %}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="{% static 'sleep_app/location.js' %}"></script>
+{% endblock %}
+
+
 
 {% block body_main_block %}
 <div class="card bg-light">
     <h2 class="card-header p-4 text-center bg-primary text-light"><i class="bi bi-geo-alt-fill"></i> {% trans "Location Access Permission" %}
     </h2>
     <div class="card-body p-4">
-        <p{% trans "Thank you for filling out the form! Please give this page" %} <span style="font-weight: bold">
+        <p>{% trans "Thank you for filling out the form! Please give this page" %} <span style="font-weight: bold">
         {% trans "location permission" %}</span> {% trans "so that we can use your results." %} <br> {% trans "Alternatively, you can also enter your location into this search bar." %}</p>
         <form class="mt-3" method="post" action="{% url 'sleep_app:location' %}">
             {% csrf_token %}
