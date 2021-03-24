@@ -8,8 +8,8 @@
 {% endblock %}
 
 {% block body_block %}
-<a class="m-2 btn btn-primary export" href="#">Export as CSV</a>
-<div style="overflow: auto;">
+<a class="m-2 btn btn-primary export" href="{% url 'sleep_app:export' %}">Export as CSV</a>
+<div class="overflow-auto">
     {% render_table table %}
 </div>
 {% endblock %}
