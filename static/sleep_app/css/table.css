@@ -1,38 +1,11 @@
-thead {
-    background-color: rgb(61, 97, 151);
+.exportField {
+    background-color: #79aeff;
 }
 
-
-a {
-    color: white;
-}
-
-a:hover {
-    text-decoration-line: none;
+.table-primary {
+    --bs-table-bg: #bbd6ff;
 }
 
 td {
-    border: 1px lightgray solid;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.exportField {
-    background-color: #0e345a;
-    width: 100%;
-    position: fixed;
-    top: 50px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-}
-
-.export {
-    color: white;
-}
-
-.export:hover {
-    border: 1px solid rgba(255, 255, 255, 0.164);
-    color: white;
+    border: 1px solid rgb(212, 212, 212);
 }

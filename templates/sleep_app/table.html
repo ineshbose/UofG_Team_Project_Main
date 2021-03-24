@@ -1,17 +1,33 @@
 {% extends 'sleep_app/base.html' %}
-{% load render_table from django_tables2 %}
 {% load static %}
-
 
 {% block head_block %}
 <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/table.css' %}">
 {% endblock %}
 
 {% block body_block %}
-    <main role="main" class="bodyblock" style="margin-top: 93px;">
-        <div class='exportField'>
-            <a class="btn btn-outline-primary export" href="#">Export as CSV</a>
-        </div>
-        {% render_table table %}
-    </main>
+<div class="exportField">
+    <a class="m-2 btn btn-primary export" href="{% url 'sleep_app:export' %}">{% trans "Export as CSV" %}</a>
+</div>
+<div class="table-responsive">
+    <table class="table table-hover table-striped">
+        <thead class="table-primary">
+            <tr>
+                {% for h in headers %}
+                <th>{{ h }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in data %}
+            <tr>
+                {% for k, v in d.items %}
+                <td>{{ v }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            <tr>
+        </tbody>
+    </table>
+</div>
 {% endblock %}

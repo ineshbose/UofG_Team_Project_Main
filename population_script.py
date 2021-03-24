@@ -19,7 +19,7 @@ def populate():
         },
         {
             "name": "Gender",
-            "question": "'What is your gender identity?",
+            "question": "What is your gender identity?",
             "answer_type": "text",
             "symptom_type": "MOP",
         },
@@ -103,7 +103,7 @@ def populate():
         },
         {
             "name": "Gender",
-            "question": "'What is the patient's gender identity?",
+            "question": "What is the patient's gender identity?",
             "answer_type": "text",
             "symptom_type": "HCW",
         },

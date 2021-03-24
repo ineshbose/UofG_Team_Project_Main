@@ -2,28 +2,31 @@
 {% load static %}
 {% load i18n %}
 
-{% block head_block %}
-<link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/location.css' %}">
-{% csrf_token %}
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
-<script src="{% static 'sleep_app/location.js' %}"></script>
-{% endblock %}
 
 {% block body_main_block %}
-<div class="jumbotron title p-0 pt-2 pb-2 mb-0 pl-5">
-    <h1> {% trans "Location Access Permission" %} </h1>
+<div class="card bg-light">
+    <h2 class="card-header p-4 text-center bg-primary text-light"><i class="bi bi-geo-alt-fill"></i> {% trans "Location Access Permission" %}
+    </h2>
+    <div class="card-body p-4">
+        <p{% trans "Thank you for filling out the form! Please give this page" %} <span style="font-weight: bold">
+        {% trans "location permission" %}</span> {% trans "so that we can use your results." %} <br> {% trans "Alternatively, you can also enter your location into this search bar." %}</p>
+        <form class="mt-3" method="post" action="{% url 'sleep_app:location' %}">
+            {% csrf_token %}
+            <div class="float-start">
+            <input name="location" class="form-control" type="text" />
+            </div>
+            <div class="col-auto">
+            <button class="btn btn-primary" type="submit" name="submit">{% trans "Search" %}
+            </button>
+            </div>
+        </form>
+
+        <div class="pt-4 d-grid gap-2 col-6 mx-auto">
+            <a class="text-center btn btn-primary" href="{% url 'sleep_app:main_form_page' %}">
+                {% trans "Back to the main page" %}
+            </a>
+        </div>
+    </div>
 </div>
-<div class="jumbotron pt-5 pb-5 pl-5">
-    <p>{% trans "Thank you for filling out the form! Please give this page" %} <span style="font-weight: bold">{% trans "location permission" %}</span>
-        {% trans "so that we can use your results." %} <br> {% trans "Alternatively, you can also enter your location into this search bar." %}</p>
-    <form class="mt-3" method="post" action="{% url 'sleep_app:location' %}">
-        {% csrf_token %}
-        <input name="location" class="textenter" type="text" />
-
-        <button class="btn btn-primary" type="submit" name="submit">"{% trans "Search" %}
-        </button>
-    </form>
-
-    <a class="btn btn-outline-primary mt-4" href="{% url 'sleep_app:main_form_page' %}">{% trans "Back to the main page" %}</a>
 </div>
 {% endblock %}

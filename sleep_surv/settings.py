@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "location_field.apps.DefaultConfig",
-    "django_tables2",
     "rest_framework",
     "channels",
     "sleep_app",
