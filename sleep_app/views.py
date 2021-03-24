@@ -58,9 +58,11 @@ def map(request):
         for person in models.Person.objects.all():
             answers = person.answerset_set.all()
             for a in answers:
-                if str(a.response.symptom) == selected_symptom and ((a.response.text_response) or
-                                                                    (a.response.bool_response == True) or
-                                                                    (a.response.scale_response)):
+                if str(a.response.symptom) == selected_symptom and (
+                    (a.response.text_response)
+                    or (a.response.bool_response == True)
+                    or (a.response.scale_response)
+                ):
                     if person.gps_location:
                         latitude.append(person.gps_location.split(",")[0])
                         longitude.append(person.gps_location.split(",")[1])
@@ -77,7 +79,6 @@ def map(request):
             text=popup,
             mode="markers",
             marker=dict(
-                
                 color="red",
                 opacity=0.8,
                 symbol="circle",
@@ -321,25 +322,25 @@ def table(request):
     ]
 
     data = [
-            {
-                "Person ID": person.id,
-                "Date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
-                "Location": person.location_text,
-                "Map Database Coordinates": person.db_location,
-                "GPS Coordinates": person.gps_location,
-                **{
-                    symptom.name: ""
-                    for symptom in models.Symptom.objects.filter(name__in=headers)
-                },
-                **{
-                    a.response.symptom.name: get_response_answer(a)
-                    for a in person.answerset_set.filter(
-                        response__symptom__name__in=headers
-                    )
-                },
-            }
-            for person in models.Person.objects.all().order_by("date")
-        ]
+        {
+            "Person ID": person.id,
+            "Date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
+            "Location": person.location_text,
+            "Map Database Coordinates": person.db_location,
+            "GPS Coordinates": person.gps_location,
+            **{
+                symptom.name: ""
+                for symptom in models.Symptom.objects.filter(name__in=headers)
+            },
+            **{
+                a.response.symptom.name: get_response_answer(a)
+                for a in person.answerset_set.filter(
+                    response__symptom__name__in=headers
+                )
+            },
+        }
+        for person in models.Person.objects.all().order_by("date")
+    ]
 
     return render(request, "sleep_app/table.html", {"headers": headers, "data": data})
 
