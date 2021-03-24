@@ -1,5 +1,6 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block head_block %}
 <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/auth.css' %}">
@@ -9,7 +10,7 @@
 <div class="container-fluid pr-0 pl-0 ml-0 pt-5 mt-5">
 
     <form class="form-signin text-center" method="POST" action="">
-        <h3 class="text-center font-weight-normal mb-3">Registration Form</h3>
+        <h3 class="text-center font-weight-normal mb-3">{% trans "Registration Form" %}</h3>
         {% csrf_token %}
         {% for field in form %}
             <input type="{{ field.field.widget.input_type }}" id="{{ field.html_name }}" name="{{ field.html_name }}" class="form-control" placeholder="{{ field.label }}" required="{{ field.field.required }}">
@@ -22,8 +23,8 @@
         <input class="btn btn-lg btn-block mb-3" type="submit", value="Register" name="Create User">
 
         <br>
-        Already registered?
-        <a style="color: #2f5aab;" href="/login/">Login here!</a>
+        {% trans "Already registered?" %}
+        <a style="color: #2f5aab;" href="/login/">{% trans "Login here!" %}</a>
 
     </form>
 

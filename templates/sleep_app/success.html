@@ -1,21 +1,23 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
+{% load i18n %}
+
 
 {% block body_main_block %}
 <div class="jumbotron title p-0 pt-2 pb-2 mb-0 pl-5">
-    <h1>You have completed the survey!</h1>
+    <h1>{% trans "You have completed the survey!" %}</h1>
 </div>
 <div class="jumbotron pt-5 pb-5 pl-5">
-    <p>Thank you for completing this survey. Your information has been stored.</p>
+    <p>{% trans "Thank you for completing this survey. Your information has been stored." %}</p>
     {% if person %}
     {% if person.location_text %}
-    You have entered the location "{{ person.location_text }}".<br>
+    {% trans "You have entered the location" %} "{{ person.location_text }}".<br>
     {% endif %}
     {% if person.gps_location %}
-    Your GPS location has been recorded as {{ person.gps_location }}. <br>
+    {% trans "Your GPS location has been recorded as" %} {{ person.gps_location }}. <br>
     {% endif %}
     {% if person.db_location %}
-    Your location entry has been converted to coordinates and stored as {{ person.db_location}}.
+    {% trans "Your location entry has been converted to coordinates and stored as" %} {{ person.db_location}}.
     {% endif %}
     {% endif %}
     <p><br /><br />
