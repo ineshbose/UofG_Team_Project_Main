@@ -15,7 +15,6 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from . import models
 from . import forms
-from . import tables
 from . import decorators
 
 
@@ -58,9 +57,11 @@ def map(request):
         for person in models.Person.objects.all():
             answers = person.answerset_set.all()
             for a in answers:
-                if str(a.response.symptom) == selected_symptom and ((a.response.text_response) or
-                                                                    (a.response.bool_response == True) or
-                                                                    (a.response.scale_response)):
+                if str(a.response.symptom) == selected_symptom and (
+                    (a.response.text_response)
+                    or (a.response.bool_response == True)
+                    or (a.response.scale_response)
+                ):
                     if person.gps_location:
                         latitude.append(person.gps_location.split(",")[0])
                         longitude.append(person.gps_location.split(",")[1])
@@ -109,7 +110,7 @@ def map(request):
     fig.update_geos(showcountries=True)
     fig2.update_geos(showcountries=True, scope="africa")
     plot_div = fig.to_html(full_html=False, default_height=600, default_width=1200)
-    plot_div2 = fig2.to_html(full_html=False, default_height=700, default_width=1000)
+    plot_div2 = fig2.to_html(full_html=False, default_height=700, default_width=1200)
     context = {
         "figure": fig,
         "plot_div": plot_div,
@@ -273,7 +274,7 @@ def symptom_question(request, symptom_name_slug):
 
 
 def location(request):
-    if request.method == "POST":
+    if request.method == "POST" and "person" in request.session:
         try:
             current_person = models.Person.objects.get(id=request.session["person"])
             if "lat" in request.POST:
@@ -310,29 +311,37 @@ def location(request):
 
 @decorators.staff_required
 def table(request):
-    return render(
-        request,
-        "sleep_app/table.html",
-        {
-            "table": tables.PersonTable(
-                [
-                    {
-                        "id": person.id,
-                        "date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
-                        "location_text": person.location_text,
-                        "gps_location": person.gps_location,
-                        "db_location": person.db_location,
+    headers = [
+        "Person ID",
+        "Date",
+        "Location",
+        "Map Database Coordinates",
+        "GPS Coordinates",
+        *list(dict.fromkeys(symptom.name for symptom in models.Symptom.objects.all())),
+    ]
 
-                        **{
-                            a.response.symptom.name: get_response_answer(a)
-                            for a in person.answerset_set.all()
-                        },
-                    }
-                    for person in models.Person.objects.all()
-                ]
-            )
-        },
-    )
+    data = [
+        {
+            "Person ID": person.id,
+            "Date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
+            "Location": person.location_text,
+            "Map Database Coordinates": person.db_location,
+            "GPS Coordinates": person.gps_location,
+            **{
+                symptom.name: ""
+                for symptom in models.Symptom.objects.filter(name__in=headers)
+            },
+            **{
+                a.response.symptom.name: get_response_answer(a)
+                for a in person.answerset_set.filter(
+                    response__symptom__name__in=headers
+                )
+            },
+        }
+        for person in models.Person.objects.all().order_by("date")
+    ]
+
+    return render(request, "sleep_app/table.html", {"headers": headers, "data": data})
 
 
 @decorators.login_not_required

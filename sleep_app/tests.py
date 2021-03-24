@@ -327,12 +327,10 @@ class TableTest(TestCase):
         response = self.client.get(reverse("sleep_app:table"))
         self.assertContains(
             response,
-            """<th class="orderable">
-                                        <a href="?sort=xyz+symptom">Xyz symptom</a>
-                                        </th>""",
+            "<th>xyz symptom</th>",
             html=True,
         )
-        self.assertContains(response, """<td >True</td>""", html=True)
+        self.assertContains(response, "<td>True</td>", html=True)
 
     def test_text_data_is_added_to_table(self):
         user = User(username="test", password="123")
@@ -358,12 +356,10 @@ class TableTest(TestCase):
         response = self.client.get(reverse("sleep_app:table"))
         self.assertContains(
             response,
-            """<th class="orderable">
-                                        <a href="?sort=abc+symptom">Abc symptom</a>
-                                        </th>""",
+            "<th>abc symptom</th>",
             html=True,
         )
-        self.assertContains(response, """<td >My abc is asdfsd</td>""", html=True)
+        self.assertContains(response, "<td>My abc is asdfsd</td>", html=True)
 
     def test_scale_data_is_added_to_table(self):
         user = User(username="test", password="123")
@@ -386,12 +382,10 @@ class TableTest(TestCase):
         response = self.client.get(reverse("sleep_app:table"))
         self.assertContains(
             response,
-            """<th class="orderable">
-                                        <a href="?sort=abc+symptom">Abc symptom</a>
-                                        </th>""",
+            "<th>abc symptom</th>",
             html=True,
         )
-        self.assertContains(response, """<td >4</td>""", html=True)
+        self.assertContains(response, "<td>4</td>", html=True)
 
 
 class MapTest(TestCase):

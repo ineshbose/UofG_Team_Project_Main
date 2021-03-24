@@ -29,6 +29,7 @@ select {
 
 img {
     border: 2px solid #2f5aab;
+    max-width: 400px;
 }
 
 .btn {
@@ -52,18 +53,22 @@ input {
 
 #id_scale_response {
     width: 73%;
+    margin-top: 3px;
 }
 
 #id_text_response {
     width: 73%;
+    margin-top: 3px;
 }
 
 #id_bool_response {
     width: 73%;
+    margin-top: 3px;
 }
 
 #response_form {
     max-width: 400px;
+    margin-top: 3px;
 }
 
 .buttonSection {
@@ -73,9 +78,21 @@ input {
 }
 
 .report {
-    width: 25.7%;
+    width: 25.5%;
+    margin-top: 3px;
 }
 
 .formQ {
     padding-top: 10px;
 }
+
+.btn-group-vertical {
+    max-width: 400px;
+    width: 100%;
+}
+
+.breadcrumb {
+    padding-left: 5px;
+    margin-bottom: 5px;
+}
+

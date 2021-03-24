@@ -1,30 +1,28 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
 
-{% block head_block %}
-<link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/auth.css' %}">
-{% endblock %}
 
 {% block body_main_block %}
-<div class="container-fluid pr-0 pl-0 ml-0 pt-5 mt-5">
+<div class="card bg-light p-5">
 
     <form class="form-signin text-center" method="POST" action="">
         <h3 class="text-center font-weight-normal mb-3">Registration Form</h3>
         {% csrf_token %}
         {% for field in form %}
-            <input type="{{ field.field.widget.input_type }}" id="{{ field.html_name }}" name="{{ field.html_name }}" class="form-control" placeholder="{{ field.label }}" required="{{ field.field.required }}">
-            <ul class="mt-2">
+        <input type="{{ field.field.widget.input_type }}" id="{{ field.html_name }}" name="{{ field.html_name }}"
+            class="form-control mx-auto mw-50" placeholder="{{ field.label }}" required="{{ field.field.required }}">
+        <ul class="mt-2">
             {% for error in field.errors %}
-                <li class="fieldError">{{ error }}</li>
+            <li class="fieldError">{{ error }}</li>
             {% endfor %}
-            </ul>
+        </ul>
         {% endfor %}
-        <input class="btn btn-lg btn-block mb-3" type="submit", value="Register" name="Create User">
+        <input class="btn btn-primary my-4" type="submit" , value="Register" name="Create User">
 
         <br>
-        Already registered?
-        <a style="color: #2f5aab;" href="/login/">Login here!</a>
+        Already registered?<br/>
+        <a style="btn btn-link" href="{% url 'sleep_app:login' %}">Login here!</a>
 
     </form>
 
-{% endblock %}
+    {% endblock %}
