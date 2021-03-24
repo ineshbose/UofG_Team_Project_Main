@@ -6,38 +6,42 @@
 {% endblock %}
 
 {% block body_block %}
-<ul class="nav p-2">
-    <form action="." method="post">
-        {% csrf_token %}
-        <select name='dropdown1' class='dropdown'>
-            <option selected="selected" disabled>Symptom to select</option>
-            {% for symptom in all_symptoms %}
-            {% if selected_symptom == symptom.name %}
-            <option value="{{ symptom.name }}" selected="selected">
-                {% else %}
-            <option value="{{ symptom.name }}">
-                {% endif %}
-                {{ symptom.name }}
-            </option>
-            {% endfor %}
-        </select>
-        <input type="submit" class="btn btn-success" value="Select">
-        <a class="btn btn-primary" href="{% url 'sleep_app:export' %}">Export as CSV</a>
-    </form>
+<div class="container">
+    <div class="card bg-light">
+    <ul class="nav p-2">
+        <form action="." method="post">
+            {% csrf_token %}
+            <select name='dropdown1' class='dropdown'>
+                <option selected="selected" disabled>Symptom to select</option>
+                {% for symptom in all_symptoms %}
+                {% if selected_symptom == symptom.name %}
+                <option value="{{ symptom.name }}" selected="selected">
+                    {% else %}
+                <option value="{{ symptom.name }}">
+                    {% endif %}
+                    {{ symptom.name }}
+                </option>
+                {% endfor %}
+            </select>
+            <input type="submit" class="btn btn-success" value="Select">
+            <a class="btn btn-primary" href="{% url 'sleep_app:export' %}">Export as CSV</a>
+        </form>
 
-</ul>
+    </ul>
 
 
-<div class="worldMap overflow-auto">
-    {% autoescape off %}
-    {{ plot_div }}
-    {% endautoescape %}
+    <div class="worldMap overflow-auto">
+        {% autoescape off %}
+        {{ plot_div }}
+        {% endautoescape %}
+    </div>
+
+    <div class="worldMap overflow-auto">
+        {% autoescape off %}
+        {{ plot_div2 }}
+        {% endautoescape %}
+    </div>
+    </div>
 </div>
-
-
-<!-- <p style="font-family: 'Arial Black'; padding-left: 80px; font-size: 30px; margin: 0">Africa view</p>
-      {% autoescape off %}
-      {{ plot_div2 }}
-      {% endautoescape %} -->
 
 {% endblock %}

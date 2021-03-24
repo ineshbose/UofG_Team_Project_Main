@@ -1,6 +1,9 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
 
+{% block head_block %}
+<link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/form.css' %}">
+{% endblock %}
 
 {% block body_main_block %}
 <div class="card bg-light">

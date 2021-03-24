@@ -19,7 +19,7 @@
         {% if symptom %}
         <h2>{{ symptom.name }}</h2>
         {% if symptom.image %}
-        <img src="{{ symptom.image.url }}" class="card-img rounded border-primary w-50">
+        <img src="{{ symptom.image.url }}" class="card-img rounded border-primary">
         {% endif %}
         <p class="symptom mt-2 sympQuestion">{{ symptom.question }}</p>
         <form id="response_form" method="post" action="">
