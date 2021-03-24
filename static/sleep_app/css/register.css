@@ -1,20 +1,19 @@
-.fields {
-    list-style-type:none;
-    font-size: 18px
+.form-signin {
+    width: 85%;
+    max-width: 300px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+ul {
+    margin: 0;
 }
 
 .fieldError {
-    color: red;
+    color: rgb(192, 0, 0);
 }
 
-.list-item {
-    font-size: 20px;
+#register {
+    max-width: 300px;
+    width: 100%;
 }
-
-.btn {
-    color: black;
-    border: 1px solid black;
-    margin: 2.5px;
-}
-
-
