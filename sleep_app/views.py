@@ -308,32 +308,6 @@ def location(request):
 
 @decorators.staff_required
 def table(request):
-    return render(
-        request,
-        "sleep_app/table.html",
-        {
-            "table": tables.PersonTable(
-                [
-                    {
-                        "id": person.id,
-                        "date": person.date.strftime("%d/%m/%Y, %H:%M:%S"),
-                        "location_text": person.location_text,
-                        "gps_location": person.gps_location,
-                        "db_location": person.db_location,
-
-                        **{
-                            a.response.symptom.name: get_response_answer(a)
-                            for a in person.answerset_set.all()
-                        },
-                    }
-                    for person in models.Person.objects.all()
-                ]
-            )
-        },
-    )
-
-@decorators.staff_required
-def raw_table(request):
     headers = [
         "Person ID",
         "Date",
@@ -364,7 +338,7 @@ def raw_table(request):
             for person in models.Person.objects.all().order_by("date")
         ]
 
-    return render(request, "sleep_app/raw_table.html", {"headers": headers, "data": data})
+    return render(request, "sleep_app/table.html", {"headers": headers, "data": data})
 
 
 @decorators.login_not_required
