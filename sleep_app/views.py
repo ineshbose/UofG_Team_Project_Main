@@ -15,7 +15,6 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from . import models
 from . import forms
-from . import tables
 from . import decorators
 
 
