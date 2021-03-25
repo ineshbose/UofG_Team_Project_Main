@@ -1,5 +1,6 @@
 <!-- PROJECT LOGO -->
 <br />
+<div align="center">
 <p align="center">
   <img src="static/sleep_app/img/logo.png" alt="Logo" width="80" height="80">
 
@@ -18,6 +19,7 @@
     <img alt="coverage report" src="https://stgit.dcs.gla.ac.uk/tp3-2020-CS04/cs04-main/badges/master/coverage.svg" />
   </p>
 </p>
+</div>
 
 
 
