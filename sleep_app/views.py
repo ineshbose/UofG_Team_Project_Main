@@ -51,7 +51,7 @@ def map(request):
         for person in models.Person.objects.all():
             answers = person.answerset_set.all()
             for a in answers:
-                if a.response.symptom.name == selected_symptom and (
+                if str(a.response.symptom) == selected_symptom and (
                     (a.response.text_response)
                     or (a.response.bool_response == True)
                     or (a.response.scale_response)
