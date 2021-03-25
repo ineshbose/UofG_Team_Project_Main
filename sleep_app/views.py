@@ -39,9 +39,10 @@ def map(request):
             s.append(symptom)
 
     if request.method == "POST":
-        selected_symptom = request.POST.get("dropdown1")
+        if "Select" in request.POST:
+            selected_symptom = request.POST.get("dropdown1")
 
-    if selected_symptom is None:
+    if selected_symptom is None or selected_symptom == "All":
         if models.Person.objects.all():
             for person in models.Person.objects.all():
                 if person.gps_location:
@@ -57,16 +58,18 @@ def map(request):
         for person in models.Person.objects.all():
             answers = person.answerset_set.all()
             for a in answers:
-                if str(a.response.symptom) == selected_symptom and (
+                if a.response.symptom.name == selected_symptom and (
                     (a.response.text_response)
                     or (a.response.bool_response == True)
                     or (a.response.scale_response)
                 ):
                     if person.gps_location:
+                        request.POST.get("Select")
                         latitude.append(person.gps_location.split(",")[0])
                         longitude.append(person.gps_location.split(",")[1])
                         popup.append(str(a.response) + "  ID:" + str(person.id))
                     elif person.db_location:
+                        request.POST.get("Select")
                         latitude.append(person.db_location.split(",")[0])
                         longitude.append(person.db_location.split(",")[1])
                         popup.append(str(a.response) + "  ID:" + str(person.id))
@@ -112,7 +115,8 @@ def map(request):
     plot_div = fig.to_html(full_html=False, default_height=600, default_width=1200)
     plot_div2 = fig2.to_html(full_html=False, default_height=700, default_width=1200)
     context = {
-        "figure": fig,
+        "figure1": fig,
+        "figure2": fig2,
         "plot_div": plot_div,
         "plot_div2": plot_div2,
         "all_symptoms": s,
