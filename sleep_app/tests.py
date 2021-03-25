@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.utils.translation import gettext
 
 import plotly.graph_objs as go
 
@@ -59,7 +59,7 @@ class SymptomQuestionViewTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "This symptom does not exist!")
+        self.assertContains(response, gettext("This symptom does not exist!"))
         self.assertIsNone(response.context["symptom"])
         self.assertIsNone(response.context["response_form"])
 
@@ -453,7 +453,7 @@ class RegisterTest(TestCase):
             },
         )
 
-        self.assertContains(response, "This password is too common.", html=True)
+        self.assertContains(response, gettext("This password is too common."), html=True)
 
     def test_failure_if_user_exists(self):
         testuser = User(
@@ -472,5 +472,5 @@ class RegisterTest(TestCase):
         )
 
         self.assertContains(
-            response, "A user with that username already exists.", html=True
+            response, gettext("A user with that username already exists."), html=True
         )
