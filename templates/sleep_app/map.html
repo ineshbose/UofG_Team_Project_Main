@@ -16,9 +16,9 @@
                 <option selected="selected" disabled>{% trans "Symptom to select" %}</option>
                 {% for symptom in all_symptoms %}
                 {% if selected_symptom == symptom.name %}
-                <option value="{{ symptom.name }}" selected="selected">
+                <option value="{{ symptom }}" selected="selected">
                     {% else %}
-                <option value="{{ symptom.name }}">
+                <option value="{{ symptom }}">
                     {% endif %}
                     {{ symptom }}
                 </option>

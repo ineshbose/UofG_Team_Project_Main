@@ -28,30 +28,21 @@ def map(request):
     latitude = []
     longitude = []
     popup = []
-    temp = models.Symptom.objects.all()
-    s = []
 
-    for symptom in temp:
-        if len(s) != 0:
-            if symptom not in s:
-                s.append(symptom)
-        else:
-            s.append(symptom)
-
+    s = list(models.Symptom.objects.all())
     if request.method == "POST":
         selected_symptom = request.POST.get("dropdown1")
 
     if selected_symptom is None:
-        if models.Person.objects.all():
-            for person in models.Person.objects.all():
-                if person.gps_location:
-                    latitude.append(person.gps_location.split(",")[0])
-                    longitude.append(person.gps_location.split(",")[1])
-                    popup.append(person.id)
-                elif person.db_location:
-                    latitude.append(person.db_location.split(",")[0])
-                    longitude.append(person.db_location.split(",")[1])
-                    popup.append(person.id)
+        for person in models.Person.objects.all():
+            if person.gps_location:
+                latitude.append(person.gps_location.split(",")[0])
+                longitude.append(person.gps_location.split(",")[1])
+                popup.append(person.id)
+            elif person.db_location:
+                latitude.append(person.db_location.split(",")[0])
+                longitude.append(person.db_location.split(",")[1])
+                popup.append(person.id)
 
     else:
         for person in models.Person.objects.all():
@@ -205,7 +196,7 @@ def symptom_question(request, symptom_name_slug):
 
         return render(request, "sleep_app/symptom_question.html", context=context_dict)
 
-    elif request.method == "POST":
+    else:
         # clicking on the link to the form sends a POST request to this page. That causes a new person object to be generated
         if "first" in request.POST:
             create_person_and_id(request)
