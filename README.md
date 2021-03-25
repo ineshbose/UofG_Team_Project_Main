@@ -31,6 +31,7 @@
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Running](#running)
+  * [Testing](#testing)
 * [Contributing](#contributing)
 * [License](#license)
 * [Contact](#contact)
@@ -102,6 +103,13 @@ python3 population_script.py
 python3 manage.py runserver
 ```
 Navigate to 127.0.0.1:8000 on a browser to view the application!
+
+### Testing
+
+Unit tests are in sleep_app/tests.py. Run them with
+```sh
+python3 manage.py test
+```
 
 
 
