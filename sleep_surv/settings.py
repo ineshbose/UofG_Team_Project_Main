@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     "channels",
     "sleep_app",
     "rest",
-    "django_mutpy"
 ]
 
 MIDDLEWARE = [
