@@ -40,7 +40,7 @@ class Symptom(models.Model):
         super(Symptom, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return self.name + " - " + self.symptom_type
 
 
 class Response(models.Model):
