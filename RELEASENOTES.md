@@ -7,7 +7,7 @@ This is version 1.0 of TrypAdvisor.
 - An account system which enables researchers, entomologists and vets to view the users' data, and which lets admins perform administrative tasks. Admins need to verify other accounts. Members of the public do not have an account.
 - A table to view the data that users have entered (only accessible to logged-in users).
 - The table data can be exported as a CSV file (only accessible to logged-in users).
-- A map to view user's locations (only accessible to logged-in users).
+- A map to view answered forms location markers (only accessible to logged-in users).
 - A REST API for automated access to the web-app's functionality.
 - Site content can be translated.
 
@@ -15,4 +15,7 @@ For an in-depth description of features refer to our [wiki](https://stgit.dcs.gl
 
 ## Known bugs:
 ?
+
+## Disclaimer?:
+- If the page is closed while answering the form, the entry will still be added to the database with remaining questions answered as blank. If a user wishes to close the form without submitting, they have to use the designated button.
 
