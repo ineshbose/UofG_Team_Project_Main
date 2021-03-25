@@ -389,11 +389,19 @@ class TableTest(TestCase):
 
 
 class MapTest(TestCase):
-    def test_person_data_is_added_to_map(self):
+    def setUp(self):
         user = User(username="test", password="123")
         user.is_staff = True
         user.save()
         self.client.force_login(user)
+
+        xyz_symptom = models.Symptom(
+            name="xyz symptom",
+            question="Is this a test question?",
+            answer_type="bool",
+            symptom_type="MOP",
+        )
+        xyz_symptom.save()
 
         current_person = models.Person(id=123)
         current_person.gps_location = "50,50"
@@ -403,30 +411,34 @@ class MapTest(TestCase):
         session["person"] = current_person.id
         session.save()
 
-        response = self.client.get(reverse("sleep_app:map"))
-        latitude = ["50"]
-        longitude = ["50"]
-        id = [123]
-
-        fig = go.Figure(
-            data=go.Scattergeo(
-                lon=latitude,
-                lat=longitude,
-                text=id,
-                mode="markers",
-                marker=dict(
-                    color="red",
-                    opacity=0.8,
-                    symbol="circle",
-                    line=dict(width=1, color="rgba(102, 102, 102)"),
-                    cmin=0,
-                    size=5,
-                    cmax=5,
-                ),
-            )
+        self.client.post(
+            reverse(
+                "sleep_app:symptom_form", kwargs={"symptom_name_slug": xyz_symptom.slug}
+            ),
+            {"bool_response": True},
         )
 
-        self.assertEqual(response.context["figure"].data[0], fig.data[0])
+    def test_person_data_is_added_to_map1(self):
+        response = self.client.get(reverse("sleep_app:map"))
+
+        self.assertEqual(response.context["figure1"].data[0].__getattribute__('lon')[0], '50')
+        self.assertEqual(response.context["figure1"].data[0].__getattribute__('lat')[0], '50')
+
+    def test_person_data_is_added_to_map2(self):
+        response = self.client.get(reverse("sleep_app:map"))
+
+        self.assertEqual(response.context["figure2"].data[0].__getattribute__('lon')[0], '50')
+        self.assertEqual(response.context["figure2"].data[0].__getattribute__('lat')[0], '50')
+
+    def test_all_symptom_on_dropdown(self):
+        response = self.client.get(reverse("sleep_app:map"))
+        self.assertEqual(response.context["all_symptoms"][0].name, 'xyz symptom')
+        self.assertEqual(response.context["all_symptoms"][0].symptom_type, 'MOP')
+        self.assertEqual(response.context["all_symptoms"][0].slug, 'xyz-symptom-mop')
+
+    def test_selected_symptom_on_dropdown(self):
+        response = self.client.get(reverse("sleep_app:map"))
+        self.assertEqual(response.context["selected_symptom"], None)
 
 
 class RegisterTest(TestCase):

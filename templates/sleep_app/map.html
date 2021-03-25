@@ -14,6 +14,9 @@
             {% csrf_token %}
             <select name='dropdown1' class='dropdown'>
                 <option selected="selected" disabled>{% trans "Symptom to select" %}</option>
+                <option value="All" selected="selected">
+                    All
+                </option>
                 {% for symptom in all_symptoms %}
                 {% if selected_symptom == symptom.name %}
                 <option value="{{ symptom }}" selected="selected">
@@ -24,7 +27,7 @@
                 </option>
                 {% endfor %}
             </select>
-            <input type="submit" class="btn btn-success" value="Select">
+            <input type="submit" class="btn btn-success" value="Select" name="Select">
             <a class="btn btn-primary" href="{% url 'sleep_app:export' %}">{% trans "Export as CSV" %}</a>
         </form>
 

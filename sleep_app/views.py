@@ -31,18 +31,21 @@ def map(request):
 
     s = list(models.Symptom.objects.all())
     if request.method == "POST":
-        selected_symptom = request.POST.get("dropdown1")
+        if "Select" in request.POST:
+            selected_symptom = request.POST.get("dropdown1")
 
-    if selected_symptom is None:
-        for person in models.Person.objects.all():
-            if person.gps_location:
-                latitude.append(person.gps_location.split(",")[0])
-                longitude.append(person.gps_location.split(",")[1])
-                popup.append(person.id)
-            elif person.db_location:
-                latitude.append(person.db_location.split(",")[0])
-                longitude.append(person.db_location.split(",")[1])
-                popup.append(person.id)
+
+    if selected_symptom is None or selected_symptom == "All":
+        if models.Person.objects.all():
+            for person in models.Person.objects.all():
+                if person.gps_location:
+                    latitude.append(person.gps_location.split(",")[0])
+                    longitude.append(person.gps_location.split(",")[1])
+                    popup.append(person.id)
+                elif person.db_location:
+                    latitude.append(person.db_location.split(",")[0])
+                    longitude.append(person.db_location.split(",")[1])
+                    popup.append(person.id)
 
     else:
         for person in models.Person.objects.all():
@@ -54,10 +57,12 @@ def map(request):
                     or (a.response.scale_response)
                 ):
                     if person.gps_location:
+                        request.POST.get("Select")
                         latitude.append(person.gps_location.split(",")[0])
                         longitude.append(person.gps_location.split(",")[1])
                         popup.append(str(a.response) + "  ID:" + str(person.id))
                     elif person.db_location:
+                        request.POST.get("Select")
                         latitude.append(person.db_location.split(",")[0])
                         longitude.append(person.db_location.split(",")[1])
                         popup.append(str(a.response) + "  ID:" + str(person.id))
@@ -100,10 +105,12 @@ def map(request):
 
     fig.update_geos(showcountries=True)
     fig2.update_geos(showcountries=True, scope="africa")
+    fig2.layout.update(dragmode=False)
     plot_div = fig.to_html(full_html=False, default_height=600, default_width=1200)
     plot_div2 = fig2.to_html(full_html=False, default_height=700, default_width=1200)
     context = {
-        "figure": fig,
+        "figure1": fig,
+        "figure2": fig2,
         "plot_div": plot_div,
         "plot_div2": plot_div2,
         "all_symptoms": s,
