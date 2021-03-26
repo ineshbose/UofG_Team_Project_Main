@@ -29,7 +29,8 @@ def map(request):
     longitude_gps = []
     latitude_db = []
     longitude_db = []
-    popup = []
+    popup_gps = []
+    popup_db = []
 
     s = list(models.Symptom.objects.all())
     if request.method == "POST":
@@ -43,11 +44,11 @@ def map(request):
                 if person.gps_location:
                     latitude_gps.append(person.gps_location.split(",")[0])
                     longitude_gps.append(person.gps_location.split(",")[1])
-                    popup.append("(GPS data) "  + str(person.id))
+                    popup_gps.append("(GPS data) "  + str(person.id))
                 if person.db_location:
                     latitude_db.append(person.db_location.split(",")[0])
                     longitude_db.append(person.db_location.split(",")[1])
-                    popup.append("(DB data) " + str(person.id))
+                    popup_db.append("(DB data) " + str(person.id))
 
     else:
         for person in models.Person.objects.all():
@@ -62,18 +63,18 @@ def map(request):
                         request.POST.get("Select")
                         latitude_gps.append(person.gps_location.split(",")[0])
                         longitude_gps.append(person.gps_location.split(",")[1])
-                        popup.append("(GPS data) " + str(a.response) + "  ID:" + str(person.id))
+                        popup_gps.append("(GPS data) " + str(a.response) + "  ID:" + str(person.id))
                     if person.db_location:
                         request.POST.get("Select")
                         latitude_db.append(person.db_location.split(",")[0])
                         longitude_db.append(person.db_location.split(",")[1])
-                        popup.append("(DB data) " + str(a.response) + "  ID:" + str(person.id))
+                        popup_db.append("(DB data) " + str(a.response) + "  ID:" + str(person.id))
 
     fig = go.Figure(
         data=[go.Scattergeo(
             lon=longitude_gps,
             lat=latitude_gps,
-            text=popup,
+            text=popup_gps,
             mode="markers",
             marker=dict(
                 color="red",
@@ -87,7 +88,7 @@ def map(request):
             go.Scattergeo(
                 lon=longitude_db,
                 lat=latitude_db,
-                text=popup,
+                text=popup_db,
                 mode="markers",
                 marker=dict(
                     color="blue",
@@ -105,7 +106,7 @@ def map(request):
         data=[go.Scattergeo(
             lon=longitude_gps,
             lat=latitude_gps,
-            text=popup,
+            text=popup_gps,
             mode="markers",
             marker=dict(
                 color="red",
@@ -119,7 +120,7 @@ def map(request):
             go.Scattergeo(
                 lon=longitude_db,
                 lat=latitude_db,
-                text=popup,
+                text=popup_db,
                 mode="markers",
                 marker=dict(
                     color="blue",
