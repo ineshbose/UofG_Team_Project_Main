@@ -25,8 +25,10 @@ def index(request):
 @decorators.staff_required
 def map(request):
     selected_symptom = None
-    latitude = []
-    longitude = []
+    latitude_gps = []
+    longitude_gps = []
+    latitude_db = []
+    longitude_db = []
     popup = []
 
     s = list(models.Symptom.objects.all())
@@ -39,12 +41,12 @@ def map(request):
         if models.Person.objects.all():
             for person in models.Person.objects.all():
                 if person.gps_location:
-                    latitude.append(person.gps_location.split(",")[0])
-                    longitude.append(person.gps_location.split(",")[1])
+                    latitude_gps.append(person.gps_location.split(",")[0])
+                    longitude_gps.append(person.gps_location.split(",")[1])
                     popup.append(person.id)
-                elif person.db_location:
-                    latitude.append(person.db_location.split(",")[0])
-                    longitude.append(person.db_location.split(",")[1])
+                if person.db_location:
+                    latitude_db.append(person.db_location.split(",")[0])
+                    longitude_db.append(person.db_location.split(",")[1])
                     popup.append(person.id)
 
     else:
@@ -58,19 +60,19 @@ def map(request):
                 ):
                     if person.gps_location:
                         request.POST.get("Select")
-                        latitude.append(person.gps_location.split(",")[0])
-                        longitude.append(person.gps_location.split(",")[1])
+                        latitude_gps.append(person.gps_location.split(",")[0])
+                        longitude_gps.append(person.gps_location.split(",")[1])
                         popup.append(str(a.response) + "  ID:" + str(person.id))
-                    elif person.db_location:
+                    if person.db_location:
                         request.POST.get("Select")
-                        latitude.append(person.db_location.split(",")[0])
-                        longitude.append(person.db_location.split(",")[1])
+                        latitude_db.append(person.db_location.split(",")[0])
+                        longitude_db.append(person.db_location.split(",")[1])
                         popup.append(str(a.response) + "  ID:" + str(person.id))
 
     fig = go.Figure(
-        data=go.Scattergeo(
-            lon=longitude,
-            lat=latitude,
+        data=[go.Scattergeo(
+            lon=longitude_gps,
+            lat=latitude_gps,
             text=popup,
             mode="markers",
             marker=dict(
@@ -81,14 +83,28 @@ def map(request):
                 cmin=0,
                 size=5,
                 cmax=5,
-            ),
+            ),),
+            go.Scattergeo(
+                lon=longitude_db,
+                lat=latitude_db,
+                text=popup,
+                mode="markers",
+                marker=dict(
+                    color="blue",
+                    opacity=0.8,
+                    symbol="circle",
+                    line=dict(width=1, color="rgba(102, 102, 102)"),
+                    cmin=0,
+                    size=5,
+                    cmax=5,
+                ))
+                ]
         )
-    )
 
     fig2 = go.Figure(
-        data=go.Scattergeo(
-            lon=longitude,
-            lat=latitude,
+        data=[go.Scattergeo(
+            lon=longitude_gps,
+            lat=latitude_gps,
             text=popup,
             mode="markers",
             marker=dict(
@@ -99,8 +115,22 @@ def map(request):
                 cmin=0,
                 size=5,
                 cmax=5,
-            ),
-        )
+            ), ),
+            go.Scattergeo(
+                lon=longitude_db,
+                lat=latitude_db,
+                text=popup,
+                mode="markers",
+                marker=dict(
+                    color="blue",
+                    opacity=0.8,
+                    symbol="circle",
+                    line=dict(width=1, color="rgba(102, 102, 102)"),
+                    cmin=0,
+                    size=5,
+                    cmax=5,
+                ))
+        ]
     )
 
     fig.update_geos(showcountries=True)
