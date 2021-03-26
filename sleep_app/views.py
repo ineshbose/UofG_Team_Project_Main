@@ -43,11 +43,11 @@ def map(request):
                 if person.gps_location:
                     latitude_gps.append(person.gps_location.split(",")[0])
                     longitude_gps.append(person.gps_location.split(",")[1])
-                    popup.append(person.id)
+                    popup.append("(GPS data) "  + str(person.id))
                 if person.db_location:
                     latitude_db.append(person.db_location.split(",")[0])
                     longitude_db.append(person.db_location.split(",")[1])
-                    popup.append(person.id)
+                    popup.append("(DB data) " + str(person.id))
 
     else:
         for person in models.Person.objects.all():
@@ -62,12 +62,12 @@ def map(request):
                         request.POST.get("Select")
                         latitude_gps.append(person.gps_location.split(",")[0])
                         longitude_gps.append(person.gps_location.split(",")[1])
-                        popup.append(str(a.response) + "  ID:" + str(person.id))
+                        popup.append("(GPS data) " + str(a.response) + "  ID:" + str(person.id))
                     if person.db_location:
                         request.POST.get("Select")
                         latitude_db.append(person.db_location.split(",")[0])
                         longitude_db.append(person.db_location.split(",")[1])
-                        popup.append(str(a.response) + "  ID:" + str(person.id))
+                        popup.append("(DB data) " + str(a.response) + "  ID:" + str(person.id))
 
     fig = go.Figure(
         data=[go.Scattergeo(
