@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "location_field.apps.DefaultConfig",
-    "django_tables2",
     "rest_framework",
     "channels",
     "sleep_app",
@@ -128,6 +127,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOCALE_PATHS = [os.path.join(BASE_DIR, "locale"), os.path.join(STATIC_DIR, "locale")]
+
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 ASGI_APPLICATION = "sleep_surv.routing.application"
@@ -191,3 +192,4 @@ if os.environ.get("SERVER"):
     import django_heroku
 
     django_heroku.settings(locals())
+

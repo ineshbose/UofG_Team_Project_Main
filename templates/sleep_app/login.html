@@ -1,25 +1,29 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block head_block %}
 <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/auth.css' %}">
 {% endblock %}
 
-{% block body_block %}
-<div class="container-fluid pr-0 pl-0 ml-0 pt-5 mt-5">
+{% block body_main_block %}
+<div class="card bg-light py-5">
 
     <form class="form-signin text-center" method="POST" action="{% url 'sleep_app:login' %}">
-        <h3 class="text-center font-weight-normal mb-3">Please Sign In</h3>
+        <h3 class="text-center font-weight-normal mb-3">{% trans "Please Sign In" %}</h3>
+        <p class="errormsg">{{ errormsg }}</p>
         {% csrf_token %}
-        <input type="text" id="username" name="username" class="form-control" placeholder="Username" required="" autofocus="">
-        <input type="password" name="password" value="" id="password" class="mt-2 form-control" placeholder="Password" required="">
 
-        <input class="btn btn-lg btn-block mb-3" type="submit" value="Log In">
+        <input type="text" id="username" name="username" class="form-control" placeholder="{% trans "Username" %}" required=""
+            autofocus="">
+        <input type="password" name="password" value="" id="password" class="form-control" placeholder="{% trans "Password" %}"
+            required="">
+
+        <input class="btn btn-primary" id="signIn" type="submit" value="{% trans "Log In" %}">
 
         <br>
-        Not yet registered?
-        <a style="color: #2f5aab;" href="/register/">Register here!</a>
-
+        {% trans "Not yet registered?" %}<br/>
+        <a class="" href="{% url 'sleep_app:register' %}">{% trans "Register here!" %}</a>
         <input type="hidden" name="next" value="">
     </form>
 

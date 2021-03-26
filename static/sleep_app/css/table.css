@@ -1,16 +1,11 @@
-thead {
-    background-color: #3895ef;
+.exportField {
+    background-color: #79aeff;
 }
 
-a {
-    color: white;
-}
-
-a:hover {
-    text-decoration-line: none;
+.table-primary {
+    --bs-table-bg: #bbd6ff;
 }
 
 td {
-    border: 1px lightgray solid;
+    border: 1px solid rgb(212, 212, 212);
 }
-

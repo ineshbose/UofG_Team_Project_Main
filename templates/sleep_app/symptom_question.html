@@ -1,55 +1,55 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block head_block %}
 <link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/symptom_question.css' %}">
 {% endblock %}
 
 {% block body_main_block %}
-<div class="jumbotron title p-0 pt-2 pb-2 mb-0 pl-5">
-    <h1 class="mb-2"> Sleeping Sickness Form</h1>
-
-    {# REMOVED TEMPORARILY FOR CUSTOMER DAY DEMONSTRATION#}
-    {# PROGRESS BAR -- IN PROGRESS#}
-    {# <div class="progress mb-2 mr-5" style="height: 10px; background-color: white;">#}
-        {# <div class="progress-bar" role="progressbar" style="width: 33%; background-color: #4c7edd" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>#}
-        {# </div>#}
-
-</div>
-<div class="jumbotron pt-4 pb-5 pl-5">
-
-    {% if symptom %}
-    <h2>{{ symptom.name }}</h2>
-
-    {% if symptom.image %}
-    <img src="{{ symptom.image.url }}" height="300" width="450" />
-    {% endif %}
-    <p class="symptom mt-2">{{ symptom.question }}</p>
-    <form id="response_form" method="post" action="">
-        {% csrf_token %}
-        {% for hidden in response_form.hidden_fields %}
-        {{ hidden }}
-        {% endfor %}
-
-        {% for field in response_form.visible_fields %}
-        {{ field.errors }}
-        {{ field.help_text }}
-        {{ field }}
-        {% endfor %}
-        <input class="btn btn-primary" type="submit" name="submit" value="Report" />
-    </form>
-    <form action="{% url 'sleep_app:main_form_page' %}" method="post">
-        {% csrf_token %}
-
-        {% if prev_symptom %}
-        <a class="btn btn-outline-primary cancel" href="{% url 'sleep_app:symptom_form' symptom_name_slug=prev_symptom.slug %}">Previous</a>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'sleep_app:main_form_page' %}">{% trans "Form" %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ symptom.name }}</li>
+    </ol>
+</nav>
+<div class="card bg-light">
+    <h2 class="card-header p-4 text-center bg-primary text-light"><i class="bi bi-moon-stars-fill"></i> {% trans "Sleeping Sickness Form" %}</h2>
+    <div class="card-body p-4">
+        {% if symptom %}
+        <h2>{{ symptom.name }}</h2>
+        {% if symptom.image %}
+        <img src="{{ symptom.image.url }}" class="card-img rounded border-primary">
         {% endif %}
-        {% else %}
-        <strong>This symptom does not exist!</strong>
-        {% endif %}
-        <input class="btn btn-outline-primary cancel" type="submit" name="cancel"
-            value="Cancel and go back to the main page" />
-    </form>
-
+        <p class="symptom mt-2 sympQuestion">{{ symptom.question }}</p>
+        <form id="response_form" method="post" action="">
+            {% csrf_token %}
+            {% for hidden in response_form.hidden_fields %}
+            {{ hidden }}
+            {% endfor %}
+            {% for field in response_form.visible_fields %}
+            {{ field.errors }}
+            {{ field.help_text }}
+            {{ field }}
+            {% endfor %}
+            <input class="btn btn-primary report" type="submit" name="submit" value="{% trans "Report" %}" />
+        </form>
+        <form action="{% url 'sleep_app:main_form_page' %}" method="post">
+            {% csrf_token %}
+            <div class="btn-group-vertical pt-4">
+                {% if prev_symptom %}
+                <a class="btn btn-outline-warning cancel"
+                    href="{% url 'sleep_app:symptom_form' symptom_name_slug=prev_symptom.slug %}">{% trans "Previous" %}</a>
+                {% endif %}
+                {% else %}
+                <strong>{% trans "This symptom does not exist!" %}</strong>
+                {% endif %}
+                <input class="btn btn-outline-dark cancel" type="submit" name="cancel"
+                    value="{% trans "Cancel and go back to the main page" %}" />
+            </div>
+        </form>
+    </div>
 </div>
+</div>
+
 {% endblock %}

@@ -1,38 +1,51 @@
 {% extends 'sleep_app/base.html' %}
 {% load static %}
+{% load i18n %}
+
+{% block head_block %}
+<link rel="stylesheet" type="text/css" href="{% static 'sleep_app/css/map.css' %}">
+{% endblock %}
 
 {% block body_block %}
-<form action="." method="post">{% csrf_token %}
-  <select name='dropdown'>
-    <option selected="selected" disabled>Symptom to select</option>
-    {% for symptom in all_symptoms %}
-    {% if selected_symptom == symptom.name %}
-    <option value="{{ symptom.name }}" selected="selected">
-      {% else %}
-    <option value="{{ symptom.name }}">
-      {% endif %}
-      {{ symptom.name }}
-    </option>
-    {% endfor %}
-  </select>
-  <input type="submit" value="Select">
-</form>
+<div class="container">
+    <div class="card bg-light">
+    <ul class="nav p-2">
+        <form action="." method="post">
+            {% csrf_token %}
+            <select name='dropdown1' class='dropdown'>
+                <option selected="selected" disabled>{% trans "Symptom to select" %}</option>
+                <option value="All" selected="selected">
+                    All
+                </option>
+                {% for symptom in all_symptoms %}
+                {% if selected_symptom == symptom.name %}
+                <option value="{{ symptom }}" selected="selected">
+                    {% else %}
+                <option value="{{ symptom }}">
+                    {% endif %}
+                    {{ symptom }}
+                </option>
+                {% endfor %}
+            </select>
+            <input type="submit" class="btn btn-success" value="Select" name="Select">
+            <a class="btn btn-primary" href="{% url 'sleep_app:export' %}">{% trans "Export as CSV" %}</a>
+        </form>
 
-<table>
-  <tr>
-    <th>
-      <p style="font-family: 'Arial Black'; padding-left: 80px; font-size: 30px; margin: 0">Whole map view</p>
-      {% autoescape off %}
-      {{ plot_div }}
-      {% endautoescape %}
-    </th>
-    <th>
-      <p style="font-family: 'Arial Black'; padding-left: 80px; font-size: 30px; margin: 0">Africa view</p>
-      {% autoescape off %}
-      {{ plot_div2 }}
-      {% endautoescape %}
+    </ul>
 
-    </th>
-  </tr>
-</table>
+
+    <div class="worldMap overflow-auto">
+        {% autoescape off %}
+        {{ plot_div }}
+        {% endautoescape %}
+    </div>
+
+    <div class="worldMap overflow-auto">
+        {% autoescape off %}
+        {{ plot_div2 }}
+        {% endautoescape %}
+    </div>
+    </div>
+</div>
+
 {% endblock %}

@@ -1,5 +1,6 @@
 .symptom {
     font-size: 20px;
+    padding-top: 5px;
 }
 
 h1 {
@@ -28,10 +29,10 @@ select {
 
 img {
     border: 2px solid #2f5aab;
+    max-width: 400px;
 }
 
 .btn {
-    margin-left: 5px;
     font-size: 15px;
     vertical-align: middle;
 }
@@ -39,11 +40,59 @@ img {
 .cancel {
     color: black;
     border: 1px solid black;
-    margin-top: 50px;
     margin-left: 0px;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 2px;
 }
 
 input {
     vertical-align: middle;
     font-size: 20px;
 }
+
+#id_scale_response {
+    width: 73%;
+    margin-top: 3px;
+}
+
+#id_text_response {
+    width: 73%;
+    margin-top: 3px;
+}
+
+#id_bool_response {
+    width: 73%;
+    margin-top: 3px;
+}
+
+#response_form {
+    max-width: 400px;
+    margin-top: 3px;
+}
+
+.buttonSection {
+    margin-top: 25px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.report {
+    width: 25.5%;
+    margin-top: 3px;
+}
+
+.formQ {
+    padding-top: 10px;
+}
+
+.btn-group-vertical {
+    max-width: 400px;
+    width: 100%;
+}
+
+.breadcrumb {
+    padding-left: 5px;
+    margin-bottom: 5px;
+}
+

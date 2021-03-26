@@ -23,6 +23,7 @@ develop:
     - docker
   script:
     - apt-get update -qy
+    - update-ca-certificates
     - apt-get install -y ruby-dev
     - gem install dpl
     - dpl --provider=heroku --app=sleepsurv-dev --api-key=$HEROKU_API_KEY

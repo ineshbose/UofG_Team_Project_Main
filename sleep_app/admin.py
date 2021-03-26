@@ -19,7 +19,7 @@ class PersonAdmin(admin.ModelAdmin):
     inlines = [
         AnswerSetInline,
     ]
-    list_display = ("id", "date", "location", "location_text")
+    list_display = ("id", "date", "gps_location", "db_location", "location_text")
 
 
 admin.site.register(models.Person, PersonAdmin)

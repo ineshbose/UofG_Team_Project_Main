@@ -1,0 +1,45 @@
+.worldMap {
+    margin-top: 55px;
+    width: 100%;
+    z-index: 1;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.js-plotly-plot {
+    z-index: 1;
+}
+
+.filterField {
+    background-color: #0e345a;
+    width: 100%;
+    position: fixed;
+    top: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    z-index: 5;
+}
+
+.filter {
+    color: white;
+}
+
+.filter:hover {
+    border: 1px solid rgba(255, 255, 255, 0.164);
+    color: white;
+}
+
+.dropdown {
+    font-size: 1.5rem;
+    vertical-align: middle;
+    margin-left: 5px;
+
+}
+
+svg[style]{
+    background: rgba(255, 0, 0, 0)!important;
+    margin-left:auto;
+    margin-right:auto;
+}
+
