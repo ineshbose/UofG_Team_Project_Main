@@ -13,9 +13,7 @@ This is version 1.0 of TrypAdvisor.
 
 For an in-depth description of features refer to our [wiki](https://stgit.dcs.gla.ac.uk/tp3-2020-CS04/cs04-main/-/wikis/home). The [user guide](https://stgit.dcs.gla.ac.uk/tp3-2020-CS04/cs04-main/-/wikis/User-instructions/General-User-Guide) describes the features relevant to admin users.
 
-## Known bugs:
-?
-
-## Disclaimer?:
+## Known Bugs and Issues:
 - If the page is closed while answering the form, the entry will still be added to the database with remaining questions answered as blank. If a user wishes to close the form without submitting, they have to use the designated button.
+
 
