@@ -45,7 +45,6 @@
 Sleeping sickness is a disease that affects speakers of many different languages, and symptoms can vary by geographic location. As a result, this app:
 * enables sleeping sickness researchers to easily make modifications (such as altering the text, asking different questions, or translating everything into a different language) without great levels of programming know-how;
 * submits reports to should contain up-to-date records of all submissions, including answers to all questions and geographic location;
-* provides more information about sleeping sickness (for example, what causes it, what the symptoms are, current prevalence rates, why using the app is important in combatting sleeping sickness, etc).
 
 ### Built With
 * [Django](https://www.djangoproject.com/)
